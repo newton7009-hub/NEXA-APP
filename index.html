@@ -6,37 +6,27 @@
 <title>NEXA — Hospitality Management</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
-/* ── RESET & VARIABLES ─────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --gold:#c9a84c;
-  --gold-dim:#c9a84c22;
-  --accent:#4cd1ff;
-  --bg:#0f1923;
-  --card:#1a2738;
-  --card2:#243447;
-  --white:#f0f4f8;
-  --muted:#8a9bb0;
-  --danger:#f87171;
-  --green:#22c55e;
-  --amber:#f59e0b;
-  --font-display:'Cormorant Garamond',serif;
-  --font-body:'DM Sans',sans-serif;
+  --gold:#c9a84c;--gold-dim:#c9a84c22;--gold-soft:#c9a84c18;
+  --accent:#4cd1ff;--bg:#0f1923;--card:#1a2738;--card2:#243447;
+  --white:#f0f4f8;--muted:#8a9bb0;--danger:#f87171;--green:#22c55e;--amber:#f59e0b;
+  --font-display:'Cormorant Garamond',serif;--font-body:'DM Sans',sans-serif;
 }
 html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--font-body);overflow:hidden}
 button{border:none;cursor:pointer;font-family:var(--font-body)}
-input{font-family:var(--font-body);outline:none}
+input,select,textarea{font-family:var(--font-body);outline:none}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:4px}
 
-/* ── APP SHELL ─────────────────────────────────────────────────────────── */
+/* ── APP SHELL ── */
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
 .screen{flex:1;overflow:hidden;display:none;flex-direction:column}
 .screen.active{display:flex}
 .scroll{flex:1;overflow-y:auto;padding:16px}
 
-/* ── HOTEL BG ──────────────────────────────────────────────────────────── */
+/* ── HOTEL BG ── */
 .hotel-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .hotel-bg span{position:absolute;border-radius:50%;border:1.5px solid rgba(201,168,76,0.1)}
 .hotel-bg .b1{width:280px;height:280px;top:-120px;left:50%;transform:translateX(-50%)}
@@ -48,14 +38,14 @@ input{font-family:var(--font-body);outline:none}
 .hotel-bg .dots{position:absolute;top:178px;display:flex;gap:40px;left:40px}
 .hotel-bg .dots i{width:5px;height:5px;background:rgba(201,168,76,0.2);border-radius:50%;display:block}
 
-/* ── TYPOGRAPHY ────────────────────────────────────────────────────────── */
+/* ── TYPOGRAPHY ── */
 .logo-mark{font-family:var(--font-display);font-size:44px;color:var(--gold);letter-spacing:8px;font-weight:700;line-height:1}
 .logo-sub{font-size:10px;letter-spacing:4px;color:var(--muted);margin-top:4px}
 .logo-divider{width:60px;height:1px;background:var(--gold);margin:12px auto;opacity:0.5}
 .screen-title{font-size:20px;font-weight:600;color:var(--white);margin-bottom:16px;letter-spacing:.5px}
 .section-label{font-size:10px;letter-spacing:2.5px;color:var(--muted);margin-bottom:6px;display:block}
 
-/* ── TOPBAR ────────────────────────────────────────────────────────────── */
+/* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card);border-bottom:1px solid rgba(255,255,255,0.05);flex-shrink:0}
 .topbar-title{font-weight:600;font-size:15px;flex:1;text-align:center}
 .topbar-btn{background:none;color:var(--white);padding:6px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
@@ -64,19 +54,18 @@ input{font-family:var(--font-body);outline:none}
 .topbar-btn.gold svg{color:var(--gold)}
 .notif-badge{position:absolute;top:-2px;right:-2px;background:var(--danger);border-radius:50%;width:15px;height:15px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700}
 
-/* ── CARDS ─────────────────────────────────────────────────────────────── */
+/* ── CARDS ── */
 .card{background:var(--card);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:16px;margin-bottom:12px}
 .card-title{font-weight:600;font-size:14px;margin-bottom:12px;color:var(--white)}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.card-border-l{border-left:4px solid var(--gold)}
 
-/* ── STATS ─────────────────────────────────────────────────────────────── */
+/* ── STATS ── */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
 .stat-card{background:var(--card);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:14px;text-align:center}
 .stat-val{font-size:20px;font-weight:700;color:var(--gold);font-family:var(--font-display)}
 .stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
 
-/* ── INPUTS ────────────────────────────────────────────────────────────── */
+/* ── INPUTS ── */
 .input-wrap{display:flex;align-items:center;background:var(--card);border:1px solid rgba(255,255,255,0.08);border-radius:10px;margin-bottom:6px;transition:border-color .2s}
 .input-wrap:focus-within{border-color:var(--gold)}
 .input-wrap svg{width:18px;height:18px;color:var(--gold);flex-shrink:0;margin-left:12px}
@@ -84,16 +73,24 @@ input{font-family:var(--font-body);outline:none}
 .input-wrap input::placeholder{color:var(--muted)}
 .input-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .error-text{color:var(--danger);font-size:11px;margin-bottom:4px;display:block}
+.form-input{width:100%;background:var(--card2);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 12px;color:var(--white);font-size:14px;margin-bottom:8px;font-family:var(--font-body);transition:border-color .2s}
+.form-input:focus{border-color:var(--gold)}
+.form-input::placeholder{color:var(--muted)}
+select.form-input{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a9bb0' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+select.form-input option{background:var(--card2);color:var(--white)}
+textarea.form-input{min-height:70px;resize:vertical}
+.form-box{background:var(--bg);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px;margin-bottom:12px}
 
-/* ── BUTTONS ───────────────────────────────────────────────────────────── */
+/* ── BUTTONS ── */
 .btn-gold{background:var(--gold);color:#1a1200;font-weight:700;font-size:14px;padding:13px 20px;border-radius:10px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s,transform .1s;cursor:pointer}
 .btn-gold:hover{opacity:.9}
 .btn-gold:active{transform:scale(.98)}
 .btn-gold:disabled{opacity:.5;cursor:not-allowed}
 .btn-outline-danger{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.4);color:var(--danger);font-weight:700;padding:10px 20px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:background .2s}
-.btn-outline-danger:hover{background:rgba(248,113,113,.18)}
+.add-btn{background:var(--gold);color:#1a1200;border:none;border-radius:8px;padding:5px 12px;font-weight:700;font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer}
+.add-btn svg{width:16px;height:16px}
 
-/* ── CHIPS ─────────────────────────────────────────────────────────────── */
+/* ── CHIPS ── */
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
 .chip{border:1px solid var(--gold);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--gold);background:none;cursor:pointer;transition:all .2s;white-space:nowrap}
 .chip:hover{background:rgba(201,168,76,.15)}
@@ -101,14 +98,14 @@ input{font-family:var(--font-body);outline:none}
 .chip.amber{border-color:var(--amber);color:var(--amber)}
 .chip.amber.active{background:var(--amber);color:#1a1200}
 
-/* ── STATUS PILLS ──────────────────────────────────────────────────────── */
+/* ── PILLS ── */
 .pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
 .pill-amber{background:rgba(245,158,11,.15);color:var(--amber)}
 .pill-green{background:rgba(34,197,94,.15);color:var(--green)}
 .pill-blue{background:rgba(76,209,255,.15);color:var(--accent)}
 .pill-red{background:rgba(248,113,113,.15);color:var(--danger)}
 
-/* ── ACTION BUTTONS ────────────────────────────────────────────────────── */
+/* ── ACTION BUTTONS ── */
 .action-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .abtn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;transition:opacity .2s}
 .abtn:hover{opacity:.8}
@@ -118,18 +115,18 @@ input{font-family:var(--font-body);outline:none}
 .abtn-red{border-color:var(--danger);background:rgba(248,113,113,.12);color:var(--danger)}
 .abtn svg{width:14px;height:14px}
 
-/* ── SEARCH ────────────────────────────────────────────────────────────── */
+/* ── SEARCH ── */
 .search-bar{display:flex;align-items:center;background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:0 12px;margin-bottom:10px;transition:border-color .2s}
 .search-bar:focus-within{border-color:var(--gold)}
 .search-bar svg{width:18px;height:18px;color:var(--gold);flex-shrink:0}
 .search-bar input{flex:1;background:none;border:none;padding:11px 8px;color:var(--white);font-size:14px}
 .search-bar input::placeholder{color:var(--muted)}
 
-/* ── PROGRESS BAR ──────────────────────────────────────────────────────── */
+/* ── PROGRESS ── */
 .progress-wrap{height:6px;background:var(--bg);border-radius:4px;overflow:hidden}
 .progress-fill{height:100%;border-radius:4px;transition:width .4s ease}
 
-/* ── BOOKING ROW ───────────────────────────────────────────────────────── */
+/* ── BOOKING ROW ── */
 .booking-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
 .booking-row:last-child{border-bottom:none}
 .booking-info{flex:1}
@@ -139,14 +136,14 @@ input{font-family:var(--font-body);outline:none}
 .delete-btn:hover{background:rgba(248,113,113,.12)}
 .delete-btn svg{width:16px;height:16px}
 
-/* ── USER WELCOME CARD ─────────────────────────────────────────────────── */
+/* ── WELCOME CARD ── */
 .welcome-card{display:flex;align-items:center;gap:14px;margin-bottom:12px}
 .welcome-avatar{background:var(--gold-dim);border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .welcome-avatar svg{width:24px;height:24px;color:var(--gold)}
 .welcome-name{font-weight:600;color:var(--white)}
 .welcome-id{font-size:11px;color:var(--muted)}
 
-/* ── ORDER CARD ────────────────────────────────────────────────────────── */
+/* ── ORDER CARD ── */
 .order-card{background:var(--card);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:16px;margin-bottom:12px;transition:opacity .3s}
 .order-card.urgent{border-left:4px solid var(--danger)}
 .order-card.done{opacity:.55}
@@ -158,33 +155,25 @@ input{font-family:var(--font-body);outline:none}
 .order-timer.done-t{color:var(--green)}
 .order-timer svg{width:14px;height:14px}
 
-/* ── TABLE CARD ────────────────────────────────────────────────────────── */
+/* ── TABLE CARD ── */
 .table-card{background:var(--card);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:16px;margin-bottom:12px}
 .table-card.busy{border-left:4px solid var(--danger)}
 .table-card.available{border-left:4px solid var(--green)}
 .table-card.cleaning{border-left:4px solid var(--amber)}
 
-/* ── STAFF PICKER ──────────────────────────────────────────────────────── */
+/* ── STAFF PICKER ── */
 .staff-picker{background:var(--bg);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px;margin-bottom:10px}
 .staff-picker p{font-size:12px;color:var(--muted);margin-bottom:8px}
 .staff-picker .chips{margin-bottom:0}
 
-/* ── FORM BOX ──────────────────────────────────────────────────────────── */
-.form-box{background:var(--bg);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px;margin-bottom:12px}
-.form-input{width:100%;background:var(--card2);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 12px;color:var(--white);font-size:14px;margin-bottom:8px;font-family:var(--font-body);transition:border-color .2s}
-.form-input:focus{outline:none;border-color:var(--gold)}
-.form-input::placeholder{color:var(--muted)}
-.add-btn{background:var(--gold);color:#1a1200;border:none;border-radius:8px;padding:5px 12px;font-weight:700;font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer}
-.add-btn svg{width:16px;height:16px}
-
-/* ── CHART ─────────────────────────────────────────────────────────────── */
+/* ── CHART ── */
 .chart-wrap{display:flex;align-items:flex-end;gap:4px;height:130px;margin-top:12px;overflow-x:auto;padding-bottom:2px}
 .chart-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:28px}
 .chart-val{font-size:8px;color:var(--muted);white-space:nowrap}
 .chart-bar{width:16px;border-radius:4px 4px 0 0;transition:height .4s ease;min-height:2px}
 .chart-label{font-size:9px;color:var(--muted)}
 
-/* ── LOGIN SCREEN ──────────────────────────────────────────────────────── */
+/* ── LOGIN SCREEN ── */
 #screen-login{align-items:center;justify-content:center;position:relative;overflow-y:auto}
 .login-inner{width:100%;max-width:320px;padding:30px 16px;display:flex;flex-direction:column;align-items:center;z-index:1;position:relative}
 .login-toggle{display:flex;background:var(--card);border-radius:12px;padding:4px;margin-bottom:24px}
@@ -196,13 +185,24 @@ input{font-family:var(--font-body);outline:none}
 .lock-banner svg{width:16px;height:16px;flex-shrink:0}
 .warn-banner{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:8px 14px;margin-bottom:8px;font-size:11px;color:var(--amber);text-align:center}
 .security-note{background:var(--card2);border-radius:10px;padding:10px 14px;font-size:11px;color:var(--muted);text-align:center;margin:10px 0;line-height:1.5}
-.social-row{display:flex;gap:8px;margin-top:10px}
-.social-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:13px;color:#fff;font-weight:500;cursor:pointer;border:none;opacity:.5}
-.social-btn svg{width:16px;height:16px}
 .pin-toggle{background:none;border:none;color:var(--muted);padding:0 12px;cursor:pointer;display:flex;align-items:center}
 .pin-toggle svg{width:18px;height:18px}
 
-/* ── DRAWER ────────────────────────────────────────────────────────────── */
+/* ── SOCIAL LOGIN BUTTONS ── */
+.social-divider{display:flex;align-items:center;gap:10px;margin:14px 0}
+.social-divider span{color:var(--muted);font-size:11px;white-space:nowrap}
+.social-divider::before,.social-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
+.social-grid{display:flex;flex-direction:column;gap:8px;width:100%;margin-top:4px}
+.social-btn-real{width:100%;display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:10px;font-size:13px;font-weight:600;color:var(--white);cursor:pointer;border:1px solid rgba(255,255,255,.1);background:var(--card2);transition:all .2s;position:relative;overflow:hidden}
+.social-btn-real:hover{border-color:rgba(255,255,255,.22);background:var(--card);transform:translateY(-1px)}
+.social-btn-real:active{transform:translateY(0)}
+.social-btn-real .provider-icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.social-btn-real .provider-name{flex:1;text-align:left}
+.social-btn-real .chevron-r{margin-left:auto;opacity:.4}
+.social-btn-real .chevron-r svg{width:14px;height:14px}
+.oauth-loading-overlay{position:absolute;inset:0;background:var(--card);display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--gold)}
+
+/* ── DRAWER ── */
 #drawer{position:fixed;inset:0;z-index:100;display:none}
 #drawer.open{display:flex}
 .drawer-overlay{flex:1;background:rgba(0,0,0,.6)}
@@ -219,7 +219,7 @@ input{font-family:var(--font-body);outline:none}
 .drawer-item:hover span,.drawer-item:hover svg,.drawer-item.active span,.drawer-item.active svg{color:var(--gold)}
 .drawer-bottom{margin-top:auto;padding-top:20px}
 
-/* ── SUPPORT MODAL ─────────────────────────────────────────────────────── */
+/* ── SUPPORT MODAL ── */
 #support{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end}
 #support.open{display:flex}
 .support-overlay{position:absolute;inset:0;background:rgba(0,0,0,.6)}
@@ -242,11 +242,8 @@ input{font-family:var(--font-body);outline:none}
 .status-ok{color:var(--green)}.status-ok .status-dot{background:var(--green)}
 .status-err{color:var(--danger)}.status-err .status-dot{background:var(--danger)}
 .status-right{display:flex;align-items:center;font-size:12px;font-weight:600}
-textarea.form-input{min-height:70px;resize:vertical}
-select.form-input{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a9bb0' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
-select.form-input option{background:var(--card2);color:var(--white)}
 
-/* ── GUEST / PAYMENT ───────────────────────────────────────────────────── */
+/* ── GUEST PORTAL ── */
 .guest-nav-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--card);border-radius:14px;border:1px solid rgba(255,255,255,.05);margin-bottom:10px;cursor:pointer;transition:border-color .2s}
 .guest-nav-card:hover{border-color:var(--gold)}
 .guest-icon{background:var(--gold-dim);border-radius:10px;padding:10px;display:flex}
@@ -272,9 +269,9 @@ select.form-input option{background:var(--card2);color:var(--white)}
 .success-note{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;margin-bottom:30px}
 .success-note svg{width:14px;height:14px}
 
-/* ── COUNTER ───────────────────────────────────────────────────────────── */
+/* ── COUNTER ── */
 .counter{display:flex;align-items:center;gap:12px;margin-top:8px}
-.counter-btn{background:var(--gold);color:#1a1200;border:none;border-radius:8px;width:34px;height:34px;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.counter-btn{background:var(--gold);color:#1a1200;border:none;border-radius:8px;width:34px;height:34px;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .counter-val{font-size:22px;font-weight:700;color:var(--white);min-width:30px;text-align:center}
 .menu-item-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:14px;margin-bottom:8px}
 .menu-item-icon{background:var(--gold-dim);border-radius:8px;padding:10px}
@@ -296,30 +293,171 @@ select.form-input option{background:var(--card2);color:var(--white)}
 .bank-label{color:var(--muted)}
 .bank-val{color:var(--white);font-weight:600}
 
-/* ── ANALYTICS ─────────────────────────────────────────────────────────── */
+/* ── ANALYTICS ── */
 .breakdown-row{margin-bottom:12px}
 .breakdown-header{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px}
 .peak-lbl{font-weight:600;color:var(--white);font-size:12px}
 .peak-time{font-size:11px;color:var(--muted)}
 .peak-pct{font-weight:700;color:var(--gold);font-size:12px}
 
-/* ── ACCESS DENIED ─────────────────────────────────────────────────────── */
-.access-denied{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px}
-.access-denied svg{width:48px;height:48px;color:var(--danger)}
+/* ── USER MGMT ── */
+.user-card-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.user-role-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.user-role-cell{background:var(--bg);border-radius:8px;padding:8px}
+.urc-label{font-size:10px;color:var(--muted);margin-bottom:2px}
+.urc-val{font-size:12px;color:var(--white);font-weight:500}
 
-/* ── ANIMATIONS ────────────────────────────────────────────────────────── */
-@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* ── LIVE INDICATORS ── */
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── REALTIME FEED ── */
+.activity-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.activity-text{font-size:12px;color:var(--white);line-height:1.5}
+.activity-time{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ── CHEF REALTIME ── */
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.kpi-cell{background:var(--bg);border-radius:10px;padding:12px;text-align:center;border:1px solid rgba(255,255,255,.05)}
+.kpi-val{font-size:22px;font-weight:700;font-family:var(--font-display)}
+.kpi-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ── TABLE TILE GRID ── */
+.table-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.table-tile{border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden;cursor:pointer;transition:transform .15s,border-color .2s}
+.table-tile:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.14)}
+.table-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.table-tile.busy::before{background:var(--danger)}
+.table-tile.available::before{background:var(--green)}
+.table-tile.cleaning::before{background:var(--amber)}
+.table-tile-name{font-weight:700;font-size:15px;margin-bottom:4px}
+.table-tile-info{font-size:11px;color:var(--muted)}
+.table-tile-status{font-size:10px;font-weight:600;margin-top:6px}
+
+/* ── CUSTOM CONFIRM MODAL (beautiful, animated) ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .28s ease;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{
+  background:linear-gradient(145deg, #1e2e42, #162030);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:22px;
+  padding:32px 26px 26px;
+  width:calc(100% - 48px);
+  max-width:340px;
+  transform:scale(.88) translateY(18px);
+  transition:transform .36s cubic-bezier(.34,1.56,.64,1), opacity .28s ease;
+  opacity:0;
+  box-shadow:0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(201,168,76,.08) inset;
+}
+.modal-overlay.open .modal-box{transform:scale(1) translateY(0);opacity:1}
+.modal-icon-ring{
+  width:60px;height:60px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;position:relative;
+}
+.modal-icon-ring::before{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:1.5px solid currentColor;opacity:.2;
+}
+.modal-icon-ring::after{
+  content:'';position:absolute;inset:-10px;border-radius:50%;
+  border:1px solid currentColor;opacity:.08;
+}
+.modal-icon-ring svg{width:28px;height:28px}
+.modal-icon-ring.danger{color:var(--danger);background:rgba(248,113,113,.12)}
+.modal-icon-ring.gold{color:var(--gold);background:rgba(201,168,76,.12)}
+.modal-icon-ring.green{color:var(--green);background:rgba(34,197,94,.12)}
+.modal-title{font-size:18px;font-weight:700;color:var(--white);text-align:center;margin-bottom:8px;letter-spacing:.2px}
+.modal-msg{font-size:13px;color:var(--muted);text-align:center;line-height:1.65;margin-bottom:26px}
+.modal-msg strong{color:var(--white)}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-btn{padding:13px;border-radius:11px;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:opacity .15s,transform .12s;letter-spacing:.2px}
+.modal-btn:active{transform:scale(.96)}
+.modal-btn.cancel{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid rgba(255,255,255,.08)}
+.modal-btn.cancel:hover{color:var(--white);background:rgba(255,255,255,.1)}
+.modal-btn.confirm-danger{background:linear-gradient(135deg,#f87171,#dc2626);color:#fff;box-shadow:0 4px 18px rgba(248,113,113,.35)}
+.modal-btn.confirm-danger:hover{opacity:.9}
+.modal-btn.confirm-gold{background:linear-gradient(135deg,#d4a84b,#b8882e);color:#1a1200;box-shadow:0 4px 18px rgba(201,168,76,.35)}
+.modal-btn.confirm-gold:hover{opacity:.9}
+.modal-highlight{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:8px 12px;margin-bottom:16px;font-size:12px;color:var(--gold);text-align:center}
+
+/* ── STK PUSH MODAL ── */
+.stk-modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:400;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.stk-modal.open{opacity:1;pointer-events:all}
+.stk-box{
+  background:linear-gradient(155deg,#1a2e20,#0f1923 60%,#1a2020);
+  border:1px solid rgba(76,175,80,.2);
+  border-radius:24px;
+  padding:30px 24px;
+  width:calc(100% - 48px);
+  max-width:340px;
+  text-align:center;
+  transform:scale(.88) translateY(20px);
+  transition:transform .38s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 0 60px rgba(76,175,80,.12), 0 30px 80px rgba(0,0,0,.7);
+}
+.stk-modal.open .stk-box{transform:scale(1) translateY(0)}
+.stk-pulse-ring{
+  width:88px;height:88px;border-radius:50%;
+  background:rgba(76,175,80,.1);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;position:relative;
+}
+.stk-pulse-ring::before,.stk-pulse-ring::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  border:1.5px solid rgba(76,175,80,.4);
+  animation:stk-ring 2s ease-out infinite;
+}
+.stk-pulse-ring::after{animation-delay:.7s}
+@keyframes stk-ring{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.7);opacity:0}}
+.stk-mpesa-logo{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(76,175,80,.15);border:2px solid rgba(76,175,80,.35);
+  display:flex;align-items:center;justify-content:center;
+}
+.stk-mpesa-logo svg{width:26px;height:26px;color:#4caf50}
+.stk-phone-num{font-size:20px;font-weight:700;color:var(--white);letter-spacing:2px;margin:6px 0 2px}
+.stk-amount-display{font-size:32px;font-weight:700;color:#4caf50;font-family:var(--font-display);margin:4px 0 18px}
+.stk-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;text-align:left}
+.stk-step{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px;transition:background .3s}
+.stk-step.active{background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.15)}
+.stk-step.done{background:rgba(76,175,80,.06);opacity:.7}
+.stk-step-num{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.1);color:var(--muted);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s}
+.stk-step.active .stk-step-num{background:#4caf50;color:#fff}
+.stk-step.done .stk-step-num{background:rgba(76,175,80,.3);color:#4caf50}
+.stk-step-text{font-size:12px;color:var(--muted);line-height:1.4}
+.stk-step.active .stk-step-text{color:var(--white)}
+.stk-cancel-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--muted);border-radius:10px;padding:11px;width:100%;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s}
+.stk-cancel-btn:hover{color:var(--danger);border-color:rgba(248,113,113,.3)}
+.stk-timer-ring{font-size:13px;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px}
+.stk-timer-ring svg{width:14px;height:14px;color:#4caf50}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fade-in{animation:fadeSlideIn .35s ease forwards}
+
+/* ── MISC ── */
 @keyframes spin{to{transform:rotate(360deg)}}
-.fade-in{animation:fadeIn .3s ease forwards}
-.spinner{width:18px;height:18px;border:2px solid rgba(26,18,0,.3);border-top-color:#1a1200;border-radius:50%;animation:spin .7s linear infinite}
-
-/* ── RESPONSIVE ────────────────────────────────────────────────────────── */
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.15);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite}
 @media(min-width:480px){.login-inner{max-width:380px}.drawer-panel{max-width:300px}}
 </style>
 </head>
 <body>
 
-<!-- ── SVG ICON DEFS ──────────────────────────────────────────────────── -->
+<!-- SVG ICON DEFS -->
 <svg style="display:none">
   <symbol id="ic-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
   <symbol id="ic-headset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></symbol>
@@ -368,11 +506,14 @@ select.form-input option{background:var(--card2);color:var(--white)}
   <symbol id="ic-apple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06z"/><path d="M10 2c0 2.5 2 4 4 4-1-2-1-3.5-4-4z"/></symbol>
   <symbol id="ic-google" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M17.5 12H12v2.5h3.5C14.8 16.2 13.5 17 12 17a5 5 0 1 1 4.9-6H17.5z"/></symbol>
   <symbol id="ic-windows" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5.5 10.5 4.5V11.5H3z"/><path d="M11.5 4.3 21 3V11.5H11.5z"/><path d="M3 12.5H10.5V19.5L3 18.5z"/><path d="M11.5 12.5H21V21L11.5 19.7z"/></symbol>
+  <symbol id="ic-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="ic-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="ic-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
 </svg>
 
 <div id="app">
 
-  <!-- ── LOGIN SCREEN ────────────────────────────────────────────────────── -->
+  <!-- LOGIN SCREEN -->
   <div class="screen active" id="screen-login">
     <div class="hotel-bg">
       <span class="b1"></span><span class="b2"></span>
@@ -384,7 +525,7 @@ select.form-input option{background:var(--card2);color:var(--white)}
         <button class="toggle-btn active" onclick="switchLoginTab('staff')">Staff Login</button>
         <button class="toggle-btn" onclick="switchLoginTab('guest')">Guest</button>
       </div>
-      <div class="logoWrap" style="text-align:center;margin-bottom:24px">
+      <div style="text-align:center;margin-bottom:24px">
         <svg style="width:28px;height:28px;color:var(--gold);margin-bottom:6px"><use href="#ic-diamond"/></svg>
         <div class="logo-mark">NEXA</div>
         <div class="logo-sub">HOSPITALITY MANAGEMENT</div>
@@ -396,17 +537,17 @@ select.form-input option{background:var(--card2);color:var(--white)}
           <svg><use href="#ic-lock"/></svg>
           <span id="lock-text">Account locked.</span>
         </div>
-        <div class="warn-banner" id="warn-banner" style="display:none" id="warn-banner"></div>
+        <div class="warn-banner" id="warn-banner" style="display:none"></div>
         <label class="section-label">STAFF ID</label>
         <div class="input-wrap">
           <svg><use href="#ic-id"/></svg>
-          <input type="text" id="inp-staff-id" placeholder="e.g. ADM-001" autocomplete="off" style="text-transform:uppercase" />
+          <input type="text" id="inp-staff-id" placeholder="e.g. ADM-001" autocomplete="off" style="text-transform:uppercase"/>
         </div>
         <span class="error-text" id="err-staffid"></span>
         <label class="section-label" style="margin-top:10px">4-DIGIT PIN</label>
         <div class="input-wrap">
           <svg><use href="#ic-keypad"/></svg>
-          <input type="password" id="inp-pin" placeholder="Enter PIN" maxlength="4" inputmode="numeric" />
+          <input type="password" id="inp-pin" placeholder="Enter PIN" maxlength="4" inputmode="numeric"/>
           <button class="pin-toggle" onclick="togglePin()" id="pin-toggle-btn">
             <svg id="pin-eye"><use href="#ic-eye"/></svg>
           </button>
@@ -417,6 +558,24 @@ select.form-input option{background:var(--card2);color:var(--white)}
           <svg style="width:16px;height:16px"><use href="#ic-shield-check"/></svg>
           <span id="btn-login-text">Secure Login</span>
         </button>
+        <div class="social-divider"><span>OR CONTINUE WITH</span></div>
+        <div class="social-grid">
+          <button class="social-btn-real" onclick="handleSocialLogin('google')">
+            <div class="provider-icon" style="background:#fff"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg></div>
+            <span class="provider-name">Continue with Google</span>
+            <span class="chevron-r"><svg><use href="#ic-chevron-right"/></svg></span>
+          </button>
+          <button class="social-btn-real" onclick="handleSocialLogin('microsoft')">
+            <div class="provider-icon" style="background:#fff"><svg viewBox="0 0 23 23" width="14" height="14"><path fill="#f25022" d="M0 0h11v11H0z"/><path fill="#00a4ef" d="M12 0h11v11H12z"/><path fill="#7fba00" d="M0 12h11v11H0z"/><path fill="#ffb900" d="M12 12h11v11H12z"/></svg></div>
+            <span class="provider-name">Continue with Microsoft</span>
+            <span class="chevron-r"><svg><use href="#ic-chevron-right"/></svg></span>
+          </button>
+          <button class="social-btn-real" onclick="handleSocialLogin('apple')">
+            <div class="provider-icon" style="background:#000;border:1px solid rgba(255,255,255,.1)"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></div>
+            <span class="provider-name">Continue with Apple</span>
+            <span class="chevron-r"><svg><use href="#ic-chevron-right"/></svg></span>
+          </button>
+        </div>
       </div>
       <!-- Guest panel -->
       <div class="login-panel" id="panel-guest" style="width:100%;text-align:center">
@@ -425,37 +584,44 @@ select.form-input option{background:var(--card2);color:var(--white)}
           <svg style="width:18px;height:18px"><use href="#ic-arrow-fwd"/></svg>
           Enter Guest Portal
         </button>
-        <p style="color:var(--muted);font-size:11px;margin-top:16px">Social login coming soon</p>
-        <div class="social-row" style="justify-content:center;margin-top:8px">
-          <button class="social-btn" style="background:#db4437"><svg style="width:16px;height:16px;color:#fff"><use href="#ic-google"/></svg>Google</button>
-          <button class="social-btn" style="background:#0078D4"><svg style="width:16px;height:16px;color:#fff"><use href="#ic-windows"/></svg>Microsoft</button>
-          <button class="social-btn" style="background:#000"><svg style="width:16px;height:16px;color:#fff"><use href="#ic-apple"/></svg>Apple</button>
+        <div class="social-divider" style="margin-top:20px"><span>OR SIGN IN AS GUEST</span></div>
+        <div class="social-grid">
+          <button class="social-btn-real" onclick="handleGuestSocialLogin('google')">
+            <div class="provider-icon" style="background:#fff"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg></div>
+            <span class="provider-name">Sign in with Google</span>
+            <span class="chevron-r"><svg><use href="#ic-chevron-right"/></svg></span>
+          </button>
+          <button class="social-btn-real" onclick="handleGuestSocialLogin('apple')">
+            <div class="provider-icon" style="background:#000;border:1px solid rgba(255,255,255,.1)"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></div>
+            <span class="provider-name">Sign in with Apple</span>
+            <span class="chevron-r"><svg><use href="#ic-chevron-right"/></svg></span>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── ADMIN DASHBOARD ─────────────────────────────────────────────────── -->
+  <!-- ADMIN DASHBOARD -->
   <div class="screen" id="screen-admin">
     <div class="topbar">
       <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
       <span class="topbar-title">Admin Dashboard</span>
       <div style="display:flex;gap:4px">
-        <button class="topbar-btn" onclick="showNotif()" style="position:relative">
+        <button class="topbar-btn" onclick="showNotifModal()" style="position:relative">
           <svg><use href="#ic-bell"/></svg>
           <div class="notif-badge" id="notif-badge">3</div>
         </button>
         <button class="topbar-btn gold" onclick="openSupport()"><svg><use href="#ic-headset"/></svg></button>
       </div>
     </div>
-    <div class="scroll" id="admin-scroll">
+    <div class="scroll">
       <div class="card welcome-card"><div class="welcome-avatar"><svg><use href="#ic-shield"/></svg></div><div><div class="welcome-name" id="admin-welcome-name">Welcome</div><div class="welcome-id" id="admin-welcome-id"></div></div></div>
       <div class="stats-row">
-        <div class="stat-card"><div class="stat-val" id="stat-bookings" style="color:var(--gold)">5</div><div class="stat-lbl">Bookings</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-bookings">5</div><div class="stat-lbl">Bookings</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--green)">13</div><div class="stat-lbl">Check-ins</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--accent)">$1.4K</div><div class="stat-lbl">Revenue</div></div>
       </div>
-      <div class="search-bar"><svg><use href="#ic-search"/></svg><input type="text" id="booking-search" placeholder="Search guest..." oninput="renderBookings()" /></div>
+      <div class="search-bar"><svg><use href="#ic-search"/></svg><input type="text" id="booking-search" placeholder="Search guest..." oninput="renderBookings()"/></div>
       <div class="chips" id="booking-filters">
         <button class="chip active" onclick="setFilter('All',this)">All</button>
         <button class="chip" onclick="setFilter('Ongoing',this)">Ongoing</button>
@@ -468,8 +634,8 @@ select.form-input option{background:var(--card2);color:var(--white)}
           <button class="add-btn" onclick="toggleAddForm()"><svg><use href="#ic-add"/></svg>Add</button>
         </div>
         <div class="form-box" id="add-form" style="display:none">
-          <input class="form-input" id="new-name" placeholder="Guest Name" />
-          <input class="form-input" id="new-time" placeholder="Time (e.g. 5:00 PM)" />
+          <input class="form-input" id="new-name" placeholder="Guest Name"/>
+          <input class="form-input" id="new-time" placeholder="Time (e.g. 5:00 PM)"/>
           <div class="chips" id="status-chips" style="margin-bottom:10px">
             <button class="chip active" onclick="setNewStatus('Upcoming',this)">Upcoming</button>
             <button class="chip" onclick="setNewStatus('Ready',this)">Ready</button>
@@ -479,7 +645,6 @@ select.form-input option{background:var(--card2);color:var(--white)}
         </div>
         <div id="bookings-list"></div>
       </div>
-      <!-- Inline analytics -->
       <div style="display:flex;align-items:center;gap:8px;margin:20px 0 8px">
         <svg style="width:18px;height:18px;color:var(--gold)"><use href="#ic-chart"/></svg>
         <span style="font-weight:600;font-size:16px">Analytics Overview</span>
@@ -500,18 +665,12 @@ select.form-input option{background:var(--card2);color:var(--white)}
         <div id="week-total" style="color:var(--muted);font-size:12px;margin-bottom:8px"></div>
         <div class="chart-wrap" id="inline-chart"></div>
       </div>
-      <div class="card">
-        <div class="card-title">Revenue Breakdown</div>
-        <div id="revenue-breakdown"></div>
-      </div>
-      <div class="card" style="margin-bottom:30px">
-        <div class="card-title">Peak Hours</div>
-        <div id="peak-hours"></div>
-      </div>
+      <div class="card"><div class="card-title">Revenue Breakdown</div><div id="revenue-breakdown"></div></div>
+      <div class="card" style="margin-bottom:30px"><div class="card-title">Peak Hours</div><div id="peak-hours"></div></div>
     </div>
   </div>
 
-  <!-- ── CHEF DASHBOARD ──────────────────────────────────────────────────── -->
+  <!-- CHEF DASHBOARD -->
   <div class="screen" id="screen-chef">
     <div class="topbar">
       <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
@@ -520,10 +679,26 @@ select.form-input option{background:var(--card2);color:var(--white)}
     </div>
     <div class="scroll">
       <div class="card welcome-card"><div class="welcome-avatar"><svg><use href="#ic-restaurant"/></svg></div><div><div class="welcome-name" id="chef-welcome-name">Welcome</div><div class="welcome-id" id="chef-welcome-id"></div></div></div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-val" id="stat-urgent" style="color:var(--danger)">2</div><div class="stat-lbl">Urgent</div></div>
-        <div class="stat-card"><div class="stat-val" id="stat-inprog" style="color:var(--amber)">4</div><div class="stat-lbl">In Progress</div></div>
-        <div class="stat-card"><div class="stat-val" id="stat-done" style="color:var(--green)">0</div><div class="stat-lbl">Done</div></div>
+      <div class="kpi-row">
+        <div class="kpi-cell"><div class="kpi-val" id="stat-urgent" style="color:var(--danger)">2</div><div class="kpi-lbl">🔴 Urgent</div></div>
+        <div class="kpi-cell"><div class="kpi-val" id="stat-inprog" style="color:var(--amber)">4</div><div class="kpi-lbl">In Progress</div></div>
+        <div class="kpi-cell"><div class="kpi-val" id="stat-done" style="color:var(--green)">0</div><div class="kpi-lbl">Completed</div></div>
+      </div>
+      <!-- New order form -->
+      <div class="card" id="chef-new-order-card">
+        <div class="card-header">
+          <span class="card-title" style="margin-bottom:0">New Order</span>
+          <button class="add-btn" onclick="toggleChefForm()"><svg><use href="#ic-add"/></svg>Add</button>
+        </div>
+        <div id="chef-order-form" style="display:none">
+          <input class="form-input" id="new-order-item" placeholder="Item name (e.g. Grilled Salmon)"/>
+          <input class="form-input" id="new-order-table" placeholder="Table (e.g. Table 4)"/>
+          <div class="chips" style="margin-bottom:8px" id="priority-chips">
+            <button class="chip active" onclick="setOrderPriority('Normal',this)">Normal</button>
+            <button class="chip" style="border-color:var(--danger);color:var(--danger)" onclick="setOrderPriority('Urgent',this)">🔴 Urgent</button>
+          </div>
+          <button class="btn-gold" onclick="addOrder()">Add to Queue</button>
+        </div>
       </div>
       <div class="chips" id="order-filters">
         <button class="chip active" onclick="setOrderFilter('All',this)">All</button>
@@ -534,7 +709,7 @@ select.form-input option{background:var(--card2);color:var(--white)}
     </div>
   </div>
 
-  <!-- ── STAFF DASHBOARD ─────────────────────────────────────────────────── -->
+  <!-- STAFF DASHBOARD -->
   <div class="screen" id="screen-staff">
     <div class="topbar">
       <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
@@ -543,16 +718,20 @@ select.form-input option{background:var(--card2);color:var(--white)}
     </div>
     <div class="scroll">
       <div class="card welcome-card"><div class="welcome-avatar"><svg><use href="#ic-people"/></svg></div><div><div class="welcome-name" id="staff-welcome-name">Welcome</div><div class="welcome-id" id="staff-welcome-id"></div></div></div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-val" id="stat-busy" style="color:var(--danger)">3</div><div class="stat-lbl">Busy</div></div>
-        <div class="stat-card"><div class="stat-val" id="stat-avail" style="color:var(--green)">2</div><div class="stat-lbl">Available</div></div>
-        <div class="stat-card"><div class="stat-val" id="stat-clean" style="color:var(--amber)">1</div><div class="stat-lbl">Cleaning</div></div>
+      <!-- Live stats -->
+      <div class="kpi-row">
+        <div class="kpi-cell"><div class="kpi-val" id="stat-busy" style="color:var(--danger)">3</div><div class="kpi-lbl">Busy</div></div>
+        <div class="kpi-cell"><div class="kpi-val" id="stat-avail" style="color:var(--green)">2</div><div class="kpi-lbl">Available</div></div>
+        <div class="kpi-cell"><div class="kpi-val" id="stat-clean" style="color:var(--amber)">1</div><div class="kpi-lbl">Cleaning</div></div>
       </div>
+      <!-- Table tile grid -->
+      <div id="table-grid-container"></div>
+      <!-- Full table detail -->
       <div id="tables-list"></div>
     </div>
   </div>
 
-  <!-- ── ANALYTICS DASHBOARD ────────────────────────────────────────────── -->
+  <!-- ANALYTICS DASHBOARD -->
   <div class="screen" id="screen-analytics">
     <div class="topbar">
       <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
@@ -575,32 +754,26 @@ select.form-input option{background:var(--card2);color:var(--white)}
         <button class="chip active" onclick="setAnaMetric('bookings',this)">Bookings</button>
         <button class="chip amber" onclick="setAnaMetric('revenue',this)">Revenue</button>
       </div>
-      <div class="card">
-        <div class="card-title" id="ana-chart-title">Weekly Bookings</div>
-        <div class="chart-wrap" id="ana-chart"></div>
-      </div>
+      <div class="card"><div class="card-title" id="ana-chart-title">Weekly Bookings</div><div class="chart-wrap" id="ana-chart"></div></div>
       <div class="card"><div class="card-title">Revenue Breakdown</div><div id="ana-breakdown"></div></div>
       <div class="card"><div class="card-title">Peak Hours</div><div id="ana-peaks"></div></div>
       <button class="btn-gold" style="margin-bottom:30px" onclick="exportReport()">
-        <svg style="width:18px;height:18px"><use href="#ic-download"/></svg>
-        Export Report
+        <svg style="width:18px;height:18px"><use href="#ic-download"/></svg>Export Report
       </button>
     </div>
   </div>
 
-  <!-- ── GUEST PORTAL ────────────────────────────────────────────────────── -->
+  <!-- GUEST PORTAL -->
   <div class="screen" id="screen-guest">
     <div class="topbar">
-      <button class="topbar-btn" onclick="showScreen('login')"><svg><use href="#ic-back"/></svg></button>
+      <button class="topbar-btn" onclick="guestGoBack()"><svg><use href="#ic-back"/></svg></button>
       <span class="topbar-title" id="guest-title">Guest Portal</span>
       <button class="topbar-btn gold" onclick="openSupport()"><svg><use href="#ic-headset"/></svg></button>
     </div>
-    <div class="scroll" id="guest-scroll">
-      <!-- content injected by JS -->
-    </div>
+    <div class="scroll" id="guest-scroll"></div>
   </div>
 
-  <!-- ── OPERATOR DASHBOARD ──────────────────────────────────────────────── -->
+  <!-- OPERATOR DASHBOARD -->
   <div class="screen" id="screen-operator">
     <div class="topbar">
       <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
@@ -613,7 +786,7 @@ select.form-input option{background:var(--card2);color:var(--white)}
     </div>
   </div>
 
-  <!-- ── MANAGER DASHBOARD ──────────────────────────────────────────────── -->
+  <!-- MANAGER DASHBOARD -->
   <div class="screen" id="screen-manager">
     <div class="topbar">
       <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
@@ -628,7 +801,7 @@ select.form-input option{background:var(--card2);color:var(--white)}
 
 </div><!-- #app -->
 
-<!-- ── DRAWER ───────────────────────────────────────────────────────────── -->
+<!-- DRAWER -->
 <div id="drawer">
   <div class="drawer-panel" id="drawer-panel">
     <div class="drawer-user">
@@ -639,7 +812,7 @@ select.form-input option{background:var(--card2);color:var(--white)}
     <div class="drawer-section-lbl">NAVIGATION</div>
     <div id="drawer-nav"></div>
     <div class="drawer-bottom">
-      <div class="drawer-item" onclick="handleLogout()">
+      <div class="drawer-item" onclick="confirmLogout()">
         <svg style="color:var(--danger)"><use href="#ic-logout"/></svg>
         <span style="color:var(--danger)">Logout</span>
       </div>
@@ -648,7 +821,7 @@ select.form-input option{background:var(--card2);color:var(--white)}
   <div class="drawer-overlay" onclick="closeDrawer()"></div>
 </div>
 
-<!-- ── SUPPORT MODAL ────────────────────────────────────────────────────── -->
+<!-- SUPPORT MODAL -->
 <div id="support">
   <div class="support-overlay" onclick="closeSupport()"></div>
   <div class="support-panel">
@@ -669,38 +842,91 @@ select.form-input option{background:var(--card2);color:var(--white)}
   </div>
 </div>
 
+<!-- CUSTOM CONFIRM MODAL -->
+<div class="modal-overlay" id="custom-modal">
+  <div class="modal-box">
+    <div class="modal-icon-ring" id="modal-icon-ring">
+      <svg id="modal-icon-svg"><use id="modal-icon-use" href="#ic-alert"/></svg>
+    </div>
+    <div class="modal-title" id="modal-title">Are you sure?</div>
+    <div class="modal-highlight" id="modal-highlight" style="display:none"></div>
+    <div class="modal-msg" id="modal-msg">This action cannot be undone.</div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" id="modal-cancel-btn">Cancel</button>
+      <button class="modal-btn confirm-danger" id="modal-confirm-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- STK PUSH MODAL -->
+<div class="stk-modal" id="stk-modal">
+  <div class="stk-box">
+    <div class="stk-pulse-ring">
+      <div class="stk-mpesa-logo">
+        <svg><use href="#ic-phone"/></svg>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:2px">Sending request to</div>
+    <div class="stk-phone-num" id="stk-phone-display">+254 7XX XXX XXX</div>
+    <div class="stk-amount-display" id="stk-amount-display">KSh 0</div>
+    <div class="stk-timer-ring" id="stk-timer-wrap">
+      <svg><use href="#ic-time"/></svg>
+      <span id="stk-countdown">Waiting... 60s</span>
+    </div>
+    <div class="stk-steps" id="stk-steps">
+      <div class="stk-step active" id="stk-s1">
+        <div class="stk-step-num">1</div>
+        <div class="stk-step-text">STK push sent to your phone</div>
+      </div>
+      <div class="stk-step" id="stk-s2">
+        <div class="stk-step-num">2</div>
+        <div class="stk-step-text">Enter your M-Pesa PIN on your phone</div>
+      </div>
+      <div class="stk-step" id="stk-s3">
+        <div class="stk-step-num">3</div>
+        <div class="stk-step-text">Payment confirmed by Safaricom</div>
+      </div>
+    </div>
+    <button class="stk-cancel-btn" id="stk-cancel-btn" onclick="cancelSTK()">Cancel Payment</button>
+  </div>
+</div>
+
+<!-- OAUTH LOADING OVERLAY -->
+<div id="oauth-overlay" style="position:fixed;inset:0;background:rgba(15,25,35,.95);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(10px)">
+  <div style="width:60px;height:60px;border-radius:50%;background:var(--gold-dim);display:flex;align-items:center;justify-content:center">
+    <div class="spinner" style="color:var(--gold);width:24px;height:24px;border-width:3px"></div>
+  </div>
+  <div style="font-weight:600;color:var(--white);font-size:15px" id="oauth-msg">Connecting...</div>
+  <div style="font-size:12px;color:var(--muted)" id="oauth-sub">Redirecting to authentication provider</div>
+</div>
+
 <script>
-/* ── DATA ─────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════ DATA ═══════════════════════════════ */
 let STAFF = [
-  {id:"OPR-001",name:"NEXA System",   role:"operator", pin:"0000", email:"operator@nexahotel.com",  phone:"+254703684899", dept:"Operations",  shift:"All Day",  addedBy:"system"},
-  {id:"ADM-001",name:"Sarah Johnson", role:"admin",    pin:"4821", email:"admin@nexahotel.com",     phone:"+254711000001", dept:"Management",  shift:"Morning",  addedBy:"OPR-001"},
-  {id:"MGR-001",name:"David Mwangi",  role:"manager",  pin:"6644", email:"mgr@nexahotel.com",       phone:"+254711000002", dept:"Operations",  shift:"Morning",  addedBy:"ADM-001"},
-  {id:"CHF-001",name:"Marco Rossi",   role:"chef",     pin:"7364", email:"chef@nexahotel.com",      phone:"+254711000003", dept:"Kitchen",     shift:"Morning",  addedBy:"MGR-001"},
-  {id:"CHF-002",name:"Aisha Kimani",  role:"chef",     pin:"2193", email:"chef2@nexahotel.com",     phone:"+254711000004", dept:"Kitchen",     shift:"Evening",  addedBy:"MGR-001"},
-  {id:"STF-001",name:"Carlos Mendez", role:"staff",    pin:"5507", email:"staff@nexahotel.com",     phone:"+254711000005", dept:"Front Desk",  shift:"Morning",  addedBy:"MGR-001"},
-  {id:"STF-002",name:"Diana Omondi",  role:"staff",    pin:"8830", email:"staff2@nexahotel.com",    phone:"+254711000006", dept:"Housekeeping",shift:"Evening",  addedBy:"MGR-001"},
-  {id:"ANA-001",name:"James Waweru",  role:"analytics",pin:"3312", email:"analytics@nexahotel.com", phone:"+254711000007", dept:"Finance",     shift:"Morning",  addedBy:"ADM-001"},
+  {id:"OPR-001",name:"NEXA System",   role:"operator", pin:"0000",email:"operator@nexahotel.com",  phone:"+254703684899",dept:"Operations",shift:"All Day",addedBy:"system"},
+  {id:"ADM-001",name:"Sarah Johnson", role:"admin",     pin:"4821",email:"admin@nexahotel.com",     phone:"+254711000001",dept:"Management",shift:"Morning",addedBy:"OPR-001"},
+  {id:"MGR-001",name:"David Mwangi",  role:"manager",   pin:"6644",email:"mgr@nexahotel.com",       phone:"+254711000002",dept:"Operations",shift:"Morning",addedBy:"ADM-001"},
+  {id:"CHF-001",name:"Marco Rossi",   role:"chef",      pin:"7364",email:"chef@nexahotel.com",      phone:"+254711000003",dept:"Kitchen",  shift:"Morning",addedBy:"MGR-001"},
+  {id:"CHF-002",name:"Aisha Kimani",  role:"chef",      pin:"2193",email:"chef2@nexahotel.com",     phone:"+254711000004",dept:"Kitchen",  shift:"Evening",addedBy:"MGR-001"},
+  {id:"STF-001",name:"Carlos Mendez", role:"staff",     pin:"5507",email:"staff@nexahotel.com",     phone:"+254711000005",dept:"Front Desk",shift:"Morning",addedBy:"MGR-001"},
+  {id:"STF-002",name:"Diana Omondi",  role:"staff",     pin:"8830",email:"staff2@nexahotel.com",    phone:"+254711000006",dept:"Housekeeping",shift:"Evening",addedBy:"MGR-001"},
+  {id:"ANA-001",name:"James Waweru",  role:"analytics", pin:"3312",email:"analytics@nexahotel.com",phone:"+254711000007",dept:"Finance",  shift:"Morning",addedBy:"ADM-001"},
 ];
 
-/* Role hierarchy — who can add whom (operator/admin cannot add another operator/admin) */
 const ROLE_HIERARCHY = {
-  operator: ["admin","manager","chef","staff","analytics"],
-  admin:    ["manager","chef","staff","analytics"],
-  manager:  ["chef","staff","analytics"],
-  chef:     [],
-  staff:    [],
-  analytics:[],
+  operator:["admin","manager","chef","staff","analytics"],
+  admin:   ["manager","chef","staff","analytics"],
+  manager: ["chef","staff","analytics"],
+  chef:[],staff:[],analytics:[],
 };
-
 const ROLE_META = {
-  operator: {label:"Operator",  color:"#c9a84c", icon:"ic-diamond",   prefix:"OPR"},
-  admin:    {label:"Admin",     color:"#f59e0b", icon:"ic-shield",     prefix:"ADM"},
-  manager:  {label:"Manager",   color:"#4cd1ff", icon:"ic-people",     prefix:"MGR"},
-  chef:     {label:"Chef",      color:"#f87171", icon:"ic-restaurant", prefix:"CHF"},
-  staff:    {label:"Staff",     color:"#22c55e", icon:"ic-person",     prefix:"STF"},
-  analytics:{label:"Analytics", color:"#a78bfa", icon:"ic-chart",      prefix:"ANA"},
+  operator:{label:"Operator", color:"#c9a84c",icon:"ic-diamond",  prefix:"OPR"},
+  admin:   {label:"Admin",    color:"#f59e0b",icon:"ic-shield",    prefix:"ADM"},
+  manager: {label:"Manager",  color:"#4cd1ff",icon:"ic-people",    prefix:"MGR"},
+  chef:    {label:"Chef",     color:"#f87171",icon:"ic-restaurant",prefix:"CHF"},
+  staff:   {label:"Staff",    color:"#22c55e",icon:"ic-person",    prefix:"STF"},
+  analytics:{label:"Analytics",color:"#a78bfa",icon:"ic-chart",   prefix:"ANA"},
 };
-
 const DEPARTMENTS=["Management","Operations","Kitchen","Front Desk","Housekeeping","Finance","Security","F&B"];
 const SHIFTS=["Morning","Afternoon","Evening","Night","All Day"];
 const MAX_ATT=3,LOCK_SECS=30;
@@ -720,46 +946,89 @@ let orders=[
   {id:3,item:"Grilled Salmon",    table:"Table 5",priority:"Urgent",status:"In Progress",elapsed:0},
   {id:4,item:"Pasta Carbonara",   table:"Table 2",priority:"Normal",status:"In Progress",elapsed:0},
 ];
-let orderFilter="All";
+let orderFilter="All",newOrderPriority="Normal";
 let tables=[
-  {id:1,name:"Table 1",status:"Available",assigned:null,bill:false},
-  {id:2,name:"Table 2",status:"Busy",     assigned:"Alice",bill:false},
-  {id:3,name:"Table 3",status:"Busy",     assigned:"Bob",  bill:true},
-  {id:4,name:"Table 4",status:"Cleaning", assigned:"Carlos",bill:false},
-  {id:5,name:"Table 5",status:"Available",assigned:null,bill:false},
-  {id:6,name:"Table 6",status:"Busy",     assigned:"Diana",bill:false},
+  {id:1,name:"Table 1",status:"Available",assigned:null,bill:false,covers:0},
+  {id:2,name:"Table 2",status:"Busy",     assigned:"Alice",  bill:false,covers:4},
+  {id:3,name:"Table 3",status:"Busy",     assigned:"Bob",    bill:true, covers:2},
+  {id:4,name:"Table 4",status:"Cleaning", assigned:"Carlos", bill:false,covers:0},
+  {id:5,name:"Table 5",status:"Available",assigned:null,bill:false,covers:0},
+  {id:6,name:"Table 6",status:"Busy",     assigned:"Diana",  bill:false,covers:6},
 ];
 let assigningTable=null;
-const STAFF_MEMBERS=["Alice","Bob","Carlos","Diana"];
+const STAFF_MEMBERS=["Alice","Bob","Carlos","Diana","Eve","Frank"];
 const ANA_DATA={
   weekly: {bookings:[12,18,9,15,20,25,17],revenue:[480,720,360,600,800,1000,680],labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]},
   monthly:{bookings:[80,95,110,130,120,140,160,155,170,145,190,210],revenue:[3200,3800,4400,5200,4800,5600,6400,6200,6800,5800,7600,8400],labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]},
   daily:  {bookings:[2,4,1,5,3,6,4,7,5,3,2,4],revenue:[80,160,40,200,120,240,160,280,200,120,80,160],labels:["6a","7a","8a","9a","10a","11a","12p","1p","2p","3p","4p","5p"]},
 };
-let anaPeriod="weekly",anaMetric="bookings";
-let inlineMetric="bookings";
+let anaPeriod="weekly",anaMetric="bookings",inlineMetric="bookings";
 let orderTimerInterval=null;
+let userListFilter='all',addFormRole=null,editingUser=null;
 
-/* ── SCREEN NAV ───────────────────────────────────────────────────────── */
+/* ═══════════════════════ SCREEN NAV ══════════════════════════════════ */
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const s=document.getElementById('screen-'+id);
-  if(s) s.classList.add('active');
+  if(s)s.classList.add('active');
   closeDrawer();
 }
 
-/* ── AUTH ─────────────────────────────────────────────────────────────── */
+/* ═══════════════════════ AUTH & SOCIAL LOGIN ════════════════════════ */
 function switchLoginTab(tab){
   document.querySelectorAll('.toggle-btn').forEach((b,i)=>b.classList.toggle('active',(tab==='staff'&&i===0)||(tab==='guest'&&i===1)));
   document.getElementById('panel-staff').classList.toggle('active',tab==='staff');
   document.getElementById('panel-guest').classList.toggle('active',tab==='guest');
 }
 function togglePin(){
-  const inp=document.getElementById('inp-pin');
-  const eye=document.getElementById('pin-eye');
+  const inp=document.getElementById('inp-pin'),eye=document.getElementById('pin-eye');
   if(inp.type==='password'){inp.type='text';eye.innerHTML='<use href="#ic-eye-off"/>';}
   else{inp.type='password';eye.innerHTML='<use href="#ic-eye"/>';}
 }
+
+// Social login for staff (simulated OAuth flow)
+const SOCIAL_STAFF_ACCOUNTS={
+  google: {id:"ADM-001",name:"Sarah Johnson",role:"admin",email:"admin@nexahotel.com"},
+  microsoft:{id:"MGR-001",name:"David Mwangi",role:"manager",email:"mgr@nexahotel.com"},
+  apple: {id:"CHF-001",name:"Marco Rossi",role:"chef",email:"chef@nexahotel.com"},
+};
+function handleSocialLogin(provider){
+  const overlay=document.getElementById('oauth-overlay');
+  const msg=document.getElementById('oauth-msg');
+  const sub=document.getElementById('oauth-sub');
+  const names={google:'Google',microsoft:'Microsoft',apple:'Apple'};
+  msg.textContent='Authenticating with '+names[provider]+'...';
+  sub.textContent='Please wait, verifying your credentials';
+  overlay.style.display='flex';
+  setTimeout(()=>{
+    sub.textContent='Fetching staff profile...';
+    setTimeout(()=>{
+      overlay.style.display='none';
+      const account=SOCIAL_STAFF_ACCOUNTS[provider];
+      if(account){
+        const user=STAFF.find(s=>s.id===account.id)||{...account,pin:'',phone:'',dept:'',shift:'',addedBy:'system'};
+        currentUser=user;
+        loginSuccess(user);
+      }
+    },800);
+  },1200);
+}
+
+// Social login for guests
+function handleGuestSocialLogin(provider){
+  const overlay=document.getElementById('oauth-overlay');
+  document.getElementById('oauth-msg').textContent='Signing in as Guest...';
+  document.getElementById('oauth-sub').textContent='Connecting your '+provider+' account';
+  overlay.style.display='flex';
+  setTimeout(()=>{
+    overlay.style.display='none';
+    currentUser=null;
+    guestState.guestName=provider==='google'?'Google User':'Apple User';
+    showScreen('guest');
+    renderGuestHome();
+  },1500);
+}
+
 function handleLogin(){
   if(locked)return;
   const sid=document.getElementById('inp-staff-id').value.trim().toUpperCase();
@@ -771,7 +1040,7 @@ function handleLogin(){
   if(pin.length<4){document.getElementById('err-pin').textContent='PIN must be 4 digits.';return;}
   const btn=document.getElementById('btn-login');
   btn.disabled=true;
-  btn.innerHTML='<div class="spinner"></div>';
+  btn.innerHTML='<div class="spinner" style="color:#1a1200"></div>';
   setTimeout(()=>{
     const user=STAFF.find(u=>u.id===sid&&u.pin===pin);
     if(user){
@@ -796,18 +1065,17 @@ function handleLogin(){
         },1000);
         document.getElementById('err-pin').textContent='Too many attempts. Locked for '+LOCK_SECS+'s.';
       } else {
-        const left=MAX_ATT-attempts;
         document.getElementById('warn-banner').style.display='block';
-        document.getElementById('warn-banner').textContent='Warning: '+left+' attempt(s) remaining before lockout';
+        document.getElementById('warn-banner').textContent='Warning: '+(MAX_ATT-attempts)+' attempt(s) remaining before lockout';
         document.getElementById('err-pin').textContent='Invalid ID or PIN.';
       }
     }
   },900);
 }
+
 function loginSuccess(user){
   updateDrawer(user);
   const roleScreen={operator:'operator',admin:'admin',manager:'manager',chef:'chef',staff:'staff',analytics:'analytics'}[user.role]||'admin';
-  // Update all welcome cards
   ['admin','chef','staff','analytics','operator','manager'].forEach(r=>{
     const n=document.getElementById(r+'-welcome-name');
     const i=document.getElementById(r+'-welcome-id');
@@ -818,46 +1086,60 @@ function loginSuccess(user){
   renderBookings();renderInlineChart();renderBreakdown();renderPeaks();
   renderOrders();renderTables();renderAnaChart();renderAnaBreakdown();renderAnaPeaks();
   renderOperatorDashboard();renderManagerDashboard();
-  startOrderTimers();
-  renderSupportContent();
+  startOrderTimers();renderSupportContent();
 }
-function goToGuest(){currentUser=null;showScreen('guest');renderGuestHome();}
-function handleLogout(){currentUser=null;if(orderTimerInterval)clearInterval(orderTimerInterval);showScreen('login');}
 
-/* ── DRAWER ───────────────────────────────────────────────────────────── */
+function goToGuest(){currentUser=null;showScreen('guest');renderGuestHome();}
+
+function confirmLogout(){
+  showModal({
+    icon:'ic-logout',iconStyle:'danger',
+    title:'Log Out?',
+    highlight:'',
+    msg:'You will be returned to the login screen. Any unsaved changes will be lost.',
+    confirmLabel:'Log Out',confirmStyle:'confirm-danger',
+    onConfirm:()=>{
+      currentUser=null;
+      if(orderTimerInterval)clearInterval(orderTimerInterval);
+      showScreen('login');
+    }
+  });
+}
+
+/* ═══════════════════════ DRAWER ═══════════════════════════════════════ */
 const ROLE_NAV={
   operator:[
-    {icon:'ic-diamond',  label:'Operator Hub',  target:'operator'},
-    {icon:'ic-shield',   label:'Admin View',    target:'admin'},
-    {icon:'ic-people',   label:'Manager View',  target:'manager'},
-    {icon:'ic-restaurant',label:'Chef View',   target:'chef'},
-    {icon:'ic-people',   label:'Staff View',    target:'staff'},
-    {icon:'ic-chart',    label:'Analytics',     target:'analytics'},
-    {icon:'ic-person',   label:'Guest Portal',  target:'guest-home'},
+    {icon:'ic-diamond',  label:'Operator Hub',   target:'operator'},
+    {icon:'ic-shield',   label:'Admin View',      target:'admin'},
+    {icon:'ic-people',   label:'Manager View',    target:'manager'},
+    {icon:'ic-restaurant',label:'Chef View',      target:'chef'},
+    {icon:'ic-people',   label:'Staff View',      target:'staff'},
+    {icon:'ic-chart',    label:'Analytics',       target:'analytics'},
+    {icon:'ic-person',   label:'Guest Portal',    target:'guest-home'},
   ],
   admin:[
-    {icon:'ic-shield',   label:'Dashboard',     target:'admin'},
-    {icon:'ic-people',   label:'Manager View',  target:'manager'},
-    {icon:'ic-restaurant',label:'Chef View',   target:'chef'},
-    {icon:'ic-people',   label:'Staff View',    target:'staff'},
-    {icon:'ic-chart',    label:'Analytics',     target:'analytics'},
-    {icon:'ic-person',   label:'Guest Portal',  target:'guest-home'},
+    {icon:'ic-shield',   label:'Dashboard',       target:'admin'},
+    {icon:'ic-people',   label:'Manager View',    target:'manager'},
+    {icon:'ic-restaurant',label:'Chef View',      target:'chef'},
+    {icon:'ic-people',   label:'Staff View',      target:'staff'},
+    {icon:'ic-chart',    label:'Analytics',       target:'analytics'},
+    {icon:'ic-person',   label:'Guest Portal',    target:'guest-home'},
   ],
   manager:[
-    {icon:'ic-people',   label:'Manager Hub',   target:'manager'},
-    {icon:'ic-restaurant',label:'Chef View',   target:'chef'},
-    {icon:'ic-people',   label:'Staff View',    target:'staff'},
-    {icon:'ic-chart',    label:'Analytics',     target:'analytics'},
+    {icon:'ic-people',   label:'Manager Hub',     target:'manager'},
+    {icon:'ic-restaurant',label:'Chef View',      target:'chef'},
+    {icon:'ic-people',   label:'Staff View',      target:'staff'},
+    {icon:'ic-chart',    label:'Analytics',       target:'analytics'},
   ],
   chef:[
-    {icon:'ic-restaurant',label:'Chef Dashboard',target:'chef'},
-    {icon:'ic-chart',    label:'Analytics',     target:'analytics'},
+    {icon:'ic-restaurant',label:'Chef Dashboard', target:'chef'},
+    {icon:'ic-chart',    label:'Analytics',       target:'analytics'},
   ],
   staff:[
-    {icon:'ic-people',   label:'Staff Dashboard',target:'staff'},
+    {icon:'ic-people',   label:'Staff Dashboard', target:'staff'},
   ],
   analytics:[
-    {icon:'ic-chart',    label:'Analytics',     target:'analytics'},
+    {icon:'ic-chart',    label:'Analytics',       target:'analytics'},
   ],
 };
 function updateDrawer(user){
@@ -879,7 +1161,33 @@ function drawerNav(target){
 function openDrawer(){document.getElementById('drawer').classList.add('open');}
 function closeDrawer(){document.getElementById('drawer').classList.remove('open');}
 
-/* ── SUPPORT ──────────────────────────────────────────────────────────── */
+/* ═══════════════════════ CUSTOM MODAL ════════════════════════════════ */
+let _modalConfirmCb=null;
+function showModal({icon='ic-alert',iconStyle='danger',title='Are you sure?',highlight='',msg='',confirmLabel='Confirm',confirmStyle='confirm-danger',cancelLabel='Cancel',onConfirm=null}){
+  const overlay=document.getElementById('custom-modal');
+  const ring=document.getElementById('modal-icon-ring');
+  document.getElementById('modal-icon-use').setAttribute('href','#'+icon);
+  ring.className='modal-icon-ring '+iconStyle;
+  document.getElementById('modal-title').textContent=title;
+  const hl=document.getElementById('modal-highlight');
+  if(highlight){hl.textContent=highlight;hl.style.display='block';}
+  else hl.style.display='none';
+  document.getElementById('modal-msg').innerHTML=msg;
+  document.getElementById('modal-confirm-btn').textContent=confirmLabel;
+  document.getElementById('modal-confirm-btn').className='modal-btn '+confirmStyle;
+  document.getElementById('modal-cancel-btn').textContent=cancelLabel;
+  _modalConfirmCb=onConfirm;
+  overlay.classList.add('open');
+}
+function closeModal(){
+  document.getElementById('custom-modal').classList.remove('open');
+  _modalConfirmCb=null;
+}
+document.getElementById('custom-modal').addEventListener('click',e=>{if(e.target===document.getElementById('custom-modal'))closeModal();});
+document.getElementById('modal-cancel-btn').addEventListener('click',closeModal);
+document.getElementById('modal-confirm-btn').addEventListener('click',()=>{if(_modalConfirmCb)_modalConfirmCb();closeModal();});
+
+/* ═══════════════════════ SUPPORT ═════════════════════════════════════ */
 function openSupport(){document.getElementById('support').classList.add('open');}
 function closeSupport(){document.getElementById('support').classList.remove('open');}
 function setSupTab(tab,btn){
@@ -916,12 +1224,11 @@ function renderSupportContent(){
 }
 function sendSupportMsg(){
   const btn=document.getElementById('sup-send-btn');
-  btn.textContent='Message Sent!';btn.disabled=true;
-  setTimeout(()=>{btn.textContent='Send Message';btn.disabled=false;if(document.getElementById('sup-msg'))document.getElementById('sup-msg').value='';},2500);
+  if(btn){btn.textContent='Message Sent ✓';btn.disabled=true;setTimeout(()=>{btn.textContent='Send Message';btn.disabled=false;const m=document.getElementById('sup-msg');if(m)m.value='';},2500);}
 }
 renderSupportContent();
 
-/* ── ADMIN BOOKINGS ───────────────────────────────────────────────────── */
+/* ═══════════════════════ ADMIN BOOKINGS ══════════════════════════════ */
 function setFilter(f,btn){
   bookingFilter=f;
   document.querySelectorAll('#booking-filters .chip').forEach(c=>c.classList.remove('active'));
@@ -936,18 +1243,29 @@ function toggleAddForm(){const f=document.getElementById('add-form');f.style.dis
 function addBooking(){
   const n=document.getElementById('new-name').value.trim();
   const t=document.getElementById('new-time').value.trim();
-  if(!n||!t){alert('Please fill in name and time.');return;}
+  if(!n||!t){showModal({icon:'ic-alert',iconStyle:'gold',title:'Missing Fields',msg:'Please fill in <strong>guest name</strong> and <strong>time</strong> before saving.',confirmLabel:'Got it',confirmStyle:'confirm-gold',cancelLabel:''});return;}
   bookings.unshift({id:Date.now(),name:n,time:t,status:newBookingStatus});
-  document.getElementById('new-name').value='';document.getElementById('new-time').value='';
+  document.getElementById('new-name').value='';
+  document.getElementById('new-time').value='';
   document.getElementById('add-form').style.display='none';
   document.getElementById('stat-bookings').textContent=bookings.length;
   renderBookings();
 }
 function deleteBooking(id){
-  if(!confirm('Cancel this booking?'))return;
-  bookings=bookings.filter(b=>b.id!==id);
-  document.getElementById('stat-bookings').textContent=bookings.length;
-  renderBookings();
+  const b=bookings.find(x=>x.id===id);
+  if(!b)return;
+  showModal({
+    icon:'ic-trash',iconStyle:'danger',
+    title:'Cancel Booking?',
+    highlight:b.name+' — '+b.time,
+    msg:'This will permanently remove the booking for <strong>'+b.name+'</strong>. The guest will not be notified automatically.',
+    confirmLabel:'Yes, Cancel',confirmStyle:'confirm-danger',
+    onConfirm:()=>{
+      bookings=bookings.filter(x=>x.id!==id);
+      document.getElementById('stat-bookings').textContent=bookings.length;
+      renderBookings();
+    }
+  });
 }
 function renderBookings(){
   const q=document.getElementById('booking-search').value.toLowerCase();
@@ -962,12 +1280,12 @@ function renderBookings(){
         <button class="delete-btn" onclick="deleteBooking(${b.id})"><svg><use href="#ic-trash"/></svg></button>
       </div>`).join('');
 }
-function showNotif(){
+function showNotifModal(){
   document.getElementById('notif-badge').style.display='none';
-  alert('Notifications: 3 new bookings received.');
+  showModal({icon:'ic-bell',iconStyle:'gold',title:'3 New Notifications',msg:'• John Doe booking confirmed (2:00 PM)<br>• Table 3 bill requested<br>• Grilled Salmon overdue by 5 min',confirmLabel:'Dismiss',confirmStyle:'confirm-gold',cancelLabel:''});
 }
 
-/* ── INLINE ANALYTICS ─────────────────────────────────────────────────── */
+/* ═══════════════════════ INLINE ANALYTICS ════════════════════════════ */
 function setMetric(m){
   inlineMetric=m;
   document.getElementById('metric-bookings').classList.toggle('active',m==='bookings');
@@ -976,8 +1294,7 @@ function setMetric(m){
 }
 function renderInlineChart(){
   const vals=inlineMetric==='bookings'?ANA_DATA.weekly.bookings:ANA_DATA.weekly.revenue;
-  const labels=ANA_DATA.weekly.labels;
-  const max=Math.max(...vals);
+  const labels=ANA_DATA.weekly.labels,max=Math.max(...vals);
   const color=inlineMetric==='bookings'?'var(--accent)':'var(--amber)';
   const total=vals.reduce((a,b)=>a+b,0);
   document.getElementById('week-total').textContent='Week total: '+(inlineMetric==='revenue'?'$'+total.toLocaleString():total+' bookings');
@@ -1003,7 +1320,7 @@ function renderPeaks(){
     </div>`).join('');
 }
 
-/* ── CHEF / ORDERS ────────────────────────────────────────────────────── */
+/* ═══════════════════════ CHEF / ORDERS ═══════════════════════════════ */
 function startOrderTimers(){
   if(orderTimerInterval)clearInterval(orderTimerInterval);
   orderTimerInterval=setInterval(()=>{
@@ -1022,12 +1339,37 @@ function setOrderFilter(f,btn){
   document.querySelectorAll('#order-filters .chip').forEach(c=>c.classList.remove('active'));
   btn.classList.add('active');renderOrders();
 }
-function markOrderDone(id){orders=orders.map(o=>o.id===id?{...o,status:'Done'}:o);renderOrders();updateChefStats();}
+function setOrderPriority(p,btn){
+  newOrderPriority=p;
+  document.querySelectorAll('#priority-chips .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleChefForm(){const f=document.getElementById('chef-order-form');f.style.display=f.style.display==='none'?'block':'none';}
+function addOrder(){
+  const item=document.getElementById('new-order-item').value.trim();
+  const table=document.getElementById('new-order-table').value.trim();
+  if(!item||!table){showModal({icon:'ic-alert',iconStyle:'gold',title:'Missing Fields',msg:'Please fill in both the <strong>item name</strong> and <strong>table number</strong>.',confirmLabel:'OK',confirmStyle:'confirm-gold',cancelLabel:''});return;}
+  orders.unshift({id:Date.now(),item,table,priority:newOrderPriority,status:'In Progress',elapsed:0});
+  document.getElementById('new-order-item').value='';
+  document.getElementById('new-order-table').value='';
+  document.getElementById('chef-order-form').style.display='none';
+  updateChefStats();renderOrders();
+}
+function markOrderDone(id){
+  const o=orders.find(x=>x.id===id);
+  showModal({
+    icon:'ic-check-circle',iconStyle:'green',
+    title:'Mark as Done?',
+    highlight:o?o.item+' — '+o.table:'',
+    msg:'Confirm this order is plated and ready to be served.',
+    confirmLabel:'Mark Done',confirmStyle:'confirm-gold',
+    onConfirm:()=>{orders=orders.map(x=>x.id===id?{...x,status:'Done'}:x);renderOrders();updateChefStats();}
+  });
+}
 function renderOrders(){
   const list=orderFilter==='All'?orders:orders.filter(o=>o.status===orderFilter);
   document.getElementById('orders-list').innerHTML=list.map(o=>{
     const urgent=o.priority==='Urgent',done=o.status==='Done',over=o.elapsed>900;
-    const timerColor=done?'var(--green)':over?'var(--danger)':'var(--muted)';
     const timerText=done?'✓ Completed':fmtTime(o.elapsed)+(over?' ⚠ Overdue':'');
     return `<div class="order-card${urgent&&!done?' urgent':''}${done?' done':''}">
       <div class="order-header">
@@ -1039,57 +1381,105 @@ function renderOrders(){
       </div>
       ${!done?`<div class="action-btns">
         <button class="abtn abtn-green" onclick="markOrderDone(${o.id})"><svg><use href="#ic-check"/></svg>Mark Done</button>
-        <button class="abtn abtn-amber" onclick="alert('${o.item} is In Progress.')"><svg><use href="#ic-flame"/></svg>In Progress</button>
+        <button class="abtn abtn-amber"><svg><use href="#ic-flame"/></svg>In Progress</button>
       </div>`:`<div class="action-btns"><div class="abtn abtn-green"><svg><use href="#ic-check"/></svg>Done ✓</div></div>`}
     </div>`;
   }).join('');
 }
 
-/* ── STAFF / TABLES ───────────────────────────────────────────────────── */
+/* ═══════════════════════ STAFF / TABLES ══════════════════════════════ */
 function tableColor(s){return s==='Available'?'var(--green)':s==='Cleaning'?'var(--amber)':'var(--danger)';}
 function updateStaffStats(){
   document.getElementById('stat-busy').textContent=tables.filter(t=>t.status==='Busy').length;
   document.getElementById('stat-avail').textContent=tables.filter(t=>t.status==='Available').length;
   document.getElementById('stat-clean').textContent=tables.filter(t=>t.status==='Cleaning').length;
 }
-function markTableClean(id){tables=tables.map(t=>t.id===id?{...t,status:'Available',assigned:null,bill:false}:t);renderTables();updateStaffStats();}
+function markTableClean(id){
+  const t=tables.find(x=>x.id===id);
+  showModal({
+    icon:'ic-sparkle',iconStyle:'green',
+    title:'Mark Table Ready?',
+    highlight:t?t.name:'',
+    msg:'Confirm this table has been <strong>cleaned and reset</strong>. Status will change to Available.',
+    confirmLabel:'Mark Clean',confirmStyle:'confirm-gold',
+    onConfirm:()=>{tables=tables.map(x=>x.id===id?{...x,status:'Available',assigned:null,bill:false,covers:0}:x);renderTables();updateStaffStats();}
+  });
+}
 function callBill(id){
-  tables=tables.map(t=>t.id===id?{...t,bill:true}:t);
-  const tbl=tables.find(t=>t.id===id);alert('Bill called for '+tbl.name+'.');renderTables();
+  const t=tables.find(x=>x.id===id);
+  if(!t||t.bill)return;
+  showModal({
+    icon:'ic-receipt',iconStyle:'gold',
+    title:'Call Bill for '+t.name+'?',
+    highlight:'Assigned to '+t.assigned,
+    msg:'This will notify the cashier to prepare the bill for this table.',
+    confirmLabel:'Call Bill',confirmStyle:'confirm-gold',
+    onConfirm:()=>{tables=tables.map(x=>x.id===id?{...x,bill:true}:x);renderTables();}
+  });
 }
 function toggleAssign(id){assigningTable=assigningTable===id?null:id;renderTables();}
-function assignStaff(tableId,staff){tables=tables.map(t=>t.id===tableId?{...t,assigned:staff}:t);assigningTable=null;renderTables();}
+function assignStaff(tableId,staff){
+  tables=tables.map(t=>t.id===tableId?{...t,assigned:staff}:t);
+  assigningTable=null;renderTables();
+}
+function changeTableStatus(id,newStatus){
+  tables=tables.map(t=>t.id===id?{...t,status:newStatus}:t);
+  renderTables();updateStaffStats();
+}
 function renderTables(){
+  updateStaffStats();
+  // Tile grid
+  document.getElementById('table-grid-container').innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span class="live-dot"></span>
+      <span style="font-weight:600;font-size:14px">Live Floor View</span>
+    </div>
+    <div class="table-grid">${tables.map(t=>{
+      const c=tableColor(t.status);
+      return `<div class="table-tile ${t.status.toLowerCase()}" onclick="scrollToTable(${t.id})">
+        <div class="table-tile-name" style="color:var(--white)">${t.name}</div>
+        <div class="table-tile-info">${t.assigned?t.assigned:'Unassigned'}${t.covers?` • ${t.covers} covers`:''}</div>
+        <div class="table-tile-status" style="color:${c}">${t.status}${t.bill?' 🧾 Bill':''}</div>
+      </div>`;
+    }).join('')}</div>`;
+
+  // Full detail cards
   document.getElementById('tables-list').innerHTML=tables.map(t=>{
     const c=tableColor(t.status);
     const pickerHtml=assigningTable===t.id?`
       <div class="staff-picker">
-        <p>Select staff member:</p>
+        <p>Assign staff member:</p>
         <div class="chips">${STAFF_MEMBERS.map(s=>`<button class="chip${t.assigned===s?' active':''}" onclick="assignStaff(${t.id},'${s}')">${s}</button>`).join('')}</div>
       </div>`:''
     ;
-    return `<div class="table-card ${t.status.toLowerCase()}">
+    return `<div class="table-card ${t.status.toLowerCase()}" id="table-detail-${t.id}">
       <div class="card-header">
-        <span style="font-weight:600;font-size:15px;color:var(--white)">${t.name}</span>
+        <span style="font-weight:700;font-size:15px;color:var(--white)">${t.name}</span>
         <span class="pill" style="background:${c}22;color:${c}">${t.status}</span>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
-        <svg style="width:14px;height:14px;color:var(--muted)"><use href="#ic-person"/></svg>
-        <span style="color:var(--muted);font-size:12px">${t.assigned?'Assigned: '+t.assigned:'Unassigned'}</span>
+      <div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap">
+        <div style="font-size:12px;color:var(--muted)">👤 ${t.assigned||'Unassigned'}</div>
+        ${t.covers?`<div style="font-size:12px;color:var(--muted)">🪑 ${t.covers} covers</div>`:''}
+        ${t.bill?`<div style="font-size:12px;color:var(--amber)">🧾 Bill called</div>`:''}
       </div>
       ${pickerHtml}
       <div class="action-btns">
         <button class="abtn abtn-blue" onclick="toggleAssign(${t.id})"><svg><use href="#ic-person-add"/></svg>Assign</button>
-        ${t.status!=='Available'?`<button class="abtn abtn-green" onclick="markTableClean(${t.id})"><svg><use href="#ic-sparkle"/></svg>Mark Clean</button>`:''}
-        ${t.status==='Busy'?`<button class="abtn ${t.bill?'abtn-amber':'abtn-red'}" onclick="if(!${t.bill})callBill(${t.id})" ${t.bill?'disabled':''}>
-          <svg><use href="#ic-receipt"/></svg>${t.bill?'Bill Called ✓':'Call Bill'}
-        </button>`:''}
+        ${t.status==='Busy'?`<button class="abtn abtn-amber" onclick="changeTableStatus(${t.id},'Cleaning')"><svg><use href="#ic-sparkle"/></svg>Set Cleaning</button>`:''}
+        ${t.status==='Cleaning'?`<button class="abtn abtn-green" onclick="markTableClean(${t.id})"><svg><use href="#ic-check"/></svg>Mark Clean</button>`:''}
+        ${t.status==='Available'?`<button class="abtn abtn-red" onclick="changeTableStatus(${t.id},'Busy')"><svg><use href="#ic-people"/></svg>Seat Guests</button>`:''}
+        ${t.status==='Busy'&&!t.bill?`<button class="abtn abtn-red" onclick="callBill(${t.id})"><svg><use href="#ic-receipt"/></svg>Call Bill</button>`:''}
+        ${t.status==='Busy'&&t.bill?`<button class="abtn abtn-amber" disabled style="opacity:.5"><svg><use href="#ic-receipt"/></svg>Bill Called ✓</button>`:''}
       </div>
     </div>`;
   }).join('');
 }
+function scrollToTable(id){
+  const el=document.getElementById('table-detail-'+id);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
+}
 
-/* ── ANALYTICS SCREEN ─────────────────────────────────────────────────── */
+/* ═══════════════════════ ANALYTICS ══════════════════════════════════ */
 function setPeriod(p,btn){
   anaPeriod=p;
   document.querySelectorAll('#period-chips .chip').forEach(c=>c.classList.remove('active'));
@@ -1101,8 +1491,8 @@ function setAnaMetric(m,btn){
   btn.classList.add('active');renderAnaChart();
 }
 function renderAnaChart(){
-  const ds=ANA_DATA[anaPeriod];const vals=ds[anaMetric];const labels=ds.labels;
-  const max=Math.max(...vals);const color=anaMetric==='revenue'?'var(--amber)':'var(--accent)';
+  const ds=ANA_DATA[anaPeriod],vals=ds[anaMetric],labels=ds.labels;
+  const max=Math.max(...vals),color=anaMetric==='revenue'?'var(--amber)':'var(--accent)';
   document.getElementById('ana-chart-title').textContent=anaPeriod.charAt(0).toUpperCase()+anaPeriod.slice(1)+' '+anaMetric.charAt(0).toUpperCase()+anaMetric.slice(1);
   document.getElementById('ana-chart').innerHTML=vals.map((v,i)=>{
     const h=max>0?Math.round((v/max)*110):2;
@@ -1125,47 +1515,106 @@ function renderAnaPeaks(){
       <div class="progress-wrap"><div class="progress-fill" style="width:${p.pct}%;background:var(--gold)"></div></div>
     </div>`).join('');
 }
-function exportReport(){alert('NEXA Weekly Report\n\nTotal Bookings: 116\nTotal Revenue: $4,640\nAvg/Day: 17 bookings\nPeak Day: Saturday (25)\nTop Revenue: Saturday ($1,000)\n\nReport saved to downloads.');}
+function exportReport(){
+  showModal({icon:'ic-download',iconStyle:'gold',title:'Export Report',msg:'NEXA Weekly Analytics Report<br><br>Total Bookings: <strong>116</strong> &nbsp;|&nbsp; Revenue: <strong>$4,640</strong><br>Avg/Day: <strong>17</strong> &nbsp;|&nbsp; Peak: <strong>Saturday</strong><br><br>Report will be saved to your downloads folder.',confirmLabel:'Download',confirmStyle:'confirm-gold',cancelLabel:'Cancel',onConfirm:()=>{}});
+}
 
-/* ── GUEST PORTAL ─────────────────────────────────────────────────────── */
-let guestState={view:'home',guests:2,date:'Today',time:null,roomType:null,nights:1,menuCat:'All',cart:{},bookingType:'',total:0,payMethod:null};
+/* ═══════════════════════ M-PESA STK PUSH ════════════════════════════ */
+let stkInterval=null,stkCountdown=60;
+function triggerSTKPush(phone,amount,onSuccess){
+  const modal=document.getElementById('stk-modal');
+  document.getElementById('stk-phone-display').textContent=phone;
+  document.getElementById('stk-amount-display').textContent='KSh '+Math.round(amount*130).toLocaleString();
+  // Reset steps
+  ['stk-s1','stk-s2','stk-s3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.className='stk-step'+(i===0?' active':'');
+  });
+  document.getElementById('stk-cancel-btn').style.display='block';
+  stkCountdown=60;
+  document.getElementById('stk-countdown').textContent='Waiting... '+stkCountdown+'s';
+  modal.classList.add('open');
+
+  // Simulate STK flow
+  stkInterval=setInterval(()=>{
+    stkCountdown--;
+    document.getElementById('stk-countdown').textContent='Waiting... '+stkCountdown+'s';
+  },1000);
+
+  // Step 1→2 after 2s
+  setTimeout(()=>{
+    document.getElementById('stk-s1').className='stk-step done';
+    document.getElementById('stk-s2').className='stk-step active';
+  },2000);
+
+  // Step 2→3 (user "entered PIN") after 6s
+  setTimeout(()=>{
+    document.getElementById('stk-s2').className='stk-step done';
+    document.getElementById('stk-s3').className='stk-step active';
+    document.getElementById('stk-countdown').textContent='Confirming with Safaricom...';
+    document.getElementById('stk-cancel-btn').style.display='none';
+  },6000);
+
+  // Success after 9s
+  setTimeout(()=>{
+    clearInterval(stkInterval);
+    document.getElementById('stk-s3').className='stk-step done';
+    document.getElementById('stk-modal').classList.remove('open');
+    if(onSuccess)onSuccess();
+  },9000);
+}
+function cancelSTK(){
+  clearInterval(stkInterval);
+  document.getElementById('stk-modal').classList.remove('open');
+  showModal({icon:'ic-alert',iconStyle:'danger',title:'Payment Cancelled',msg:'The M-Pesa STK push was cancelled. You can retry the payment.',confirmLabel:'OK',confirmStyle:'confirm-danger',cancelLabel:''});
+}
+
+/* ═══════════════════════ GUEST PORTAL ════════════════════════════════ */
+let guestState={view:'home',guests:2,date:'Today',time:null,roomType:null,nights:1,menuCat:'All',cart:{},bookingType:'',total:0,payMethod:null,phone:'+254 7XX XXX XXX',guestName:''};
 const MENU_ITEMS=[
   {id:1,name:'Grilled Chicken',price:12,cat:'Mains'},{id:2,name:'Caesar Salad',price:8,cat:'Starters'},
   {id:3,name:'Pasta Carbonara',price:14,cat:'Mains'},{id:4,name:'Chocolate Lava',price:6,cat:'Desserts'},
   {id:5,name:'Mango Juice',price:4,cat:'Drinks'},{id:6,name:'Garlic Bread',price:5,cat:'Starters'},
 ];
 const PAY_METHODS=[
-  {id:'mpesa',label:'M-Pesa',icon:'ic-phone',color:'#4caf50',region:'East Africa'},
-  {id:'card',label:'Card',icon:'ic-card',color:'#c9a84c',region:'Worldwide'},
-  {id:'paypal',label:'PayPal',icon:'ic-paypal',color:'#003087',region:'International'},
-  {id:'apple',label:'Apple Pay',icon:'ic-apple',color:'#f0f4f8',region:'International'},
-  {id:'google',label:'Google Pay',icon:'ic-google',color:'#4285F4',region:'International'},
-  {id:'pesalink',label:'PesaLink',icon:'ic-swap',color:'#e91e63',region:'East Africa'},
-  {id:'airtel',label:'Airtel Money',icon:'ic-wifi',color:'#f44336',region:'East Africa'},
-  {id:'bank',label:'Bank Transfer',icon:'ic-business',color:'#8a9bb0',region:'Worldwide'},
+  {id:'mpesa',  label:'M-Pesa',       icon:'ic-phone',    color:'#4caf50',region:'East Africa'},
+  {id:'airtel', label:'Airtel Money', icon:'ic-wifi',     color:'#f44336',region:'East Africa'},
+  {id:'pesalink',label:'PesaLink',    icon:'ic-swap',     color:'#e91e63',region:'East Africa'},
+  {id:'card',   label:'Visa/MC',      icon:'ic-card',     color:'#c9a84c',region:'Worldwide'},
+  {id:'paypal', label:'PayPal',       icon:'ic-paypal',   color:'#003087',region:'International'},
+  {id:'apple',  label:'Apple Pay',    icon:'ic-apple',    color:'#f0f4f8',region:'International'},
+  {id:'google', label:'Google Pay',   icon:'ic-google',   color:'#4285F4',region:'International'},
+  {id:'bank',   label:'Bank Transfer',icon:'ic-business', color:'#8a9bb0',region:'Worldwide'},
 ];
 const TIME_SLOTS=['12:00 PM','1:00 PM','2:00 PM','6:00 PM','7:00 PM','8:00 PM','9:00 PM'];
+let guestNavHistory=['home'];
 
 function setGuestTitle(t){document.getElementById('guest-title').textContent=t;}
-function guestBack(view){guestState.view=view;renderGuest();}
+function guestGoBack(){
+  guestNavHistory.pop();
+  const prev=guestNavHistory[guestNavHistory.length-1]||'home';
+  if(prev==='login'){showScreen('login');return;}
+  guestState.view=prev;
+  renderGuest();
+}
+function guestNav(view){
+  guestNavHistory.push(view);
+  guestState.view=view;
+  renderGuest();
+}
 
 function renderGuest(){
-  const gs=guestState;
-  const el=document.getElementById('guest-scroll');
-  if(gs.view==='home'){setGuestTitle('Guest Portal');renderGuestHome();return;}
-  if(gs.view==='table'){setGuestTitle('Book a Table');renderGuestTable();return;}
-  if(gs.view==='room'){setGuestTitle('Book a Room');renderGuestRoom();return;}
-  if(gs.view==='menu'){setGuestTitle('Our Menu');renderGuestMenu();return;}
-  if(gs.view==='payment'){setGuestTitle('Payment');renderGuestPayment();return;}
-  if(gs.view==='paid'){setGuestTitle('Payment');renderGuestPaid();return;}
+  const views={home:renderGuestHome,table:renderGuestTable,room:renderGuestRoom,menu:renderGuestMenu,payment:renderGuestPayment,paid:renderGuestPaid};
+  if(views[guestState.view])views[guestState.view]();
 }
 
 function renderGuestHome(){
-  guestState.view='home';
+  guestNavHistory=['home'];
+  guestState.view='home';setGuestTitle('Guest Portal');
   document.getElementById('guest-scroll').innerHTML=`
-    <div class="card" style="margin-bottom:12px">
-      <div style="color:var(--gold);font-weight:700;font-size:16px;margin-bottom:4px">Welcome to NEXA</div>
-      <div style="color:var(--muted);font-size:13px">What would you like to do today?</div>
+    <div class="card" style="margin-bottom:12px;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.05))">
+      <div style="color:var(--gold);font-weight:700;font-size:18px;margin-bottom:4px;font-family:var(--font-display)">Welcome to NEXA${guestState.guestName?' — '+guestState.guestName:''}</div>
+      <div style="color:var(--muted);font-size:13px">Luxury hospitality at your fingertips</div>
     </div>
     <div class="guest-nav-card" onclick="guestNav('table')">
       <div class="guest-icon"><svg><use href="#ic-restaurant"/></svg></div>
@@ -1179,34 +1628,32 @@ function renderGuestHome(){
     </div>
     <div class="guest-nav-card" onclick="guestNav('menu')">
       <div class="guest-icon"><svg><use href="#ic-food"/></svg></div>
-      <span class="guest-nav-title">Browse Menu</span>
+      <span class="guest-nav-title">Browse & Order Menu</span>
       <div class="chevron"><svg><use href="#ic-chevron-right"/></svg></div>
     </div>`;
 }
-function guestNav(view){guestState.view=view;renderGuest();}
 
 function renderGuestTable(){
   setGuestTitle('Book a Table');
   const gs=guestState;
   const dates=['Today','Tomorrow','Wed','Thu','Fri'];
   document.getElementById('guest-scroll').innerHTML=`
-    <div class="card">
-      <div class="card-title">Select Date</div>
+    <div class="card"><div class="card-title">Select Date</div>
       <div class="chips">${dates.map(d=>`<button class="chip${gs.date===d?' active':''}" onclick="guestSetDate('${d}')">${d}</button>`).join('')}</div>
     </div>
-    <div class="card">
-      <div class="card-title">Number of Guests</div>
+    <div class="card"><div class="card-title">Number of Guests</div>
       <div class="counter">
-        <button class="counter-btn" onclick="guestAdj('guests',-1)">-</button>
+        <button class="counter-btn" onclick="guestAdj('guests',-1)">−</button>
         <span class="counter-val">${gs.guests}</span>
         <button class="counter-btn" onclick="guestAdj('guests',1)">+</button>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title">Select Time</div>
-      <div class="chips" style="flex-wrap:wrap">${TIME_SLOTS.map(t=>`<button class="chip${gs.time===t?' active':''}" onclick="guestSetTime('${t}')">${t}</button>`).join('')}</div>
+    <div class="card"><div class="card-title">Select Time</div>
+      <div class="chips">${TIME_SLOTS.map(t=>`<button class="chip${gs.time===t?' active':''}" onclick="guestSetTime('${t}')">${t}</button>`).join('')}</div>
     </div>
-    <button class="btn-gold" style="margin-top:8px" onclick="guestProceedPayment('Table',20)">Proceed to Payment</button>`;
+    <button class="btn-gold" style="margin-top:8px" onclick="guestProceedPayment('Table',20)">
+      <svg style="width:18px;height:18px"><use href="#ic-arrow-fwd"/></svg>Proceed to Payment
+    </button>`;
 }
 function guestSetDate(d){guestState.date=d;renderGuestTable();}
 function guestSetTime(t){guestState.time=t;renderGuestTable();}
@@ -1217,36 +1664,44 @@ function guestAdj(field,delta){
 }
 
 function renderGuestRoom(){
+  setGuestTitle('Book a Room');
   const gs=guestState;
-  const rooms=[{type:'Standard',price:80,icon:'ic-bed'},{type:'Deluxe',price:130,icon:'ic-star'},{type:'Suite',price:220,icon:'ic-diamond'}];
+  const rooms=[{type:'Standard',price:80,icon:'ic-bed',desc:'Cozy & comfortable'},{type:'Deluxe',price:130,icon:'ic-star',desc:'Premium amenities'},{type:'Suite',price:220,icon:'ic-diamond',desc:'The ultimate luxury'}];
   document.getElementById('guest-scroll').innerHTML=`
-    <div class="card">
-      <div class="card-title">Room Type</div>
+    <div class="card"><div class="card-title">Room Type</div>
       ${rooms.map(r=>`<div class="room-option${gs.roomType===r.type?' selected':''}" onclick="guestSetRoom('${r.type}')">
         <svg><use href="#${r.icon}"/></svg>
-        <div><div style="font-weight:600;color:var(--white)">${r.type}</div><div style="font-size:12px;color:var(--muted)">$${r.price}/night</div></div>
+        <div style="flex:1"><div style="font-weight:600;color:var(--white)">${r.type}</div><div style="font-size:11px;color:var(--muted)">${r.desc}</div></div>
+        <div style="font-weight:700;color:var(--gold)">$${r.price}/night</div>
         ${gs.roomType===r.type?`<div class="room-check"><svg><use href="#ic-check-circle"/></svg></div>`:''}
       </div>`).join('')}
     </div>
-    <div class="card">
-      <div class="card-title">Number of Nights</div>
+    <div class="card"><div class="card-title">Number of Nights</div>
       <div class="counter">
-        <button class="counter-btn" onclick="guestAdj('nights',-1)">-</button>
+        <button class="counter-btn" onclick="guestAdj('nights',-1)">−</button>
         <span class="counter-val">${gs.nights}</span>
         <button class="counter-btn" onclick="guestAdj('nights',1)">+</button>
       </div>
     </div>
-    <button class="btn-gold" style="margin-top:8px" onclick="guestProceedRoom()">Proceed to Payment</button>`;
+    ${gs.roomType?`<div class="card" style="border-color:var(--gold-dim)">
+      <div style="display:flex;justify-content:space-between">
+        <span style="color:var(--muted)">Subtotal</span>
+        <span style="color:var(--gold);font-weight:700">$${({Standard:80,Deluxe:130,Suite:220}[gs.roomType])*gs.nights}</span>
+      </div>
+    </div>`:''}
+    <button class="btn-gold" style="margin-top:8px" onclick="guestProceedRoom()">
+      <svg style="width:18px;height:18px"><use href="#ic-arrow-fwd"/></svg>Proceed to Payment
+    </button>`;
 }
 function guestSetRoom(t){guestState.roomType=t;renderGuestRoom();}
 function guestProceedRoom(){
-  const gs=guestState;
-  if(!gs.roomType){alert('Please select a room type.');return;}
+  if(!guestState.roomType){showModal({icon:'ic-alert',iconStyle:'gold',title:'Select a Room',msg:'Please choose a room type before continuing.',confirmLabel:'OK',confirmStyle:'confirm-gold',cancelLabel:''});return;}
   const prices={Standard:80,Deluxe:130,Suite:220};
-  guestProceedPayment('Room',prices[gs.roomType]*gs.nights);
+  guestProceedPayment('Room',prices[guestState.roomType]*guestState.nights);
 }
 
 function renderGuestMenu(){
+  setGuestTitle('Our Menu');
   const gs=guestState;
   const cats=['All','Starters','Mains','Desserts','Drinks'];
   const filtered=gs.menuCat==='All'?MENU_ITEMS:MENU_ITEMS.filter(m=>m.cat===gs.menuCat);
@@ -1263,44 +1718,49 @@ function renderGuestMenu(){
           <div class="menu-item-price">$${item.price}</div>
         </div>
         <div class="menu-item-qty">
-          <button class="qty-btn" onclick="guestQty(${item.id},-1)">-</button>
+          <button class="qty-btn" onclick="guestQty(${item.id},-1)">−</button>
           <span class="qty-val">${gs.cart[item.id]||0}</span>
           <button class="qty-btn" onclick="guestQty(${item.id},1)">+</button>
         </div>
       </div>`).join('')}
-    ${cartItems.length>0?`
-      <div class="cart-summary">
-        <div class="card-title">Your Order</div>
-        ${cartItems.map(i=>`<div class="cart-row"><span>${i.name} x${gs.cart[i.id]}</span><span class="cart-price">$${i.price*gs.cart[i.id]}</span></div>`).join('')}
-        <button class="btn-gold" style="margin-top:10px" onclick="guestProceedPayment('Order',${cartTotal})">Proceed to Payment</button>
-      </div>`:''}`;
+    ${cartItems.length>0?`<div class="cart-summary">
+      <div class="card-title">🛒 Your Order (${cartItems.length} item${cartItems.length>1?'s':''})</div>
+      ${cartItems.map(i=>`<div class="cart-row"><span>${i.name} ×${gs.cart[i.id]}</span><span class="cart-price">$${i.price*gs.cart[i.id]}</span></div>`).join('')}
+      <div class="cart-row" style="border-top:1px solid rgba(255,255,255,.08);margin-top:6px;padding-top:8px;font-weight:700">
+        <span>Total</span><span class="cart-price" style="font-size:16px">$${cartTotal}</span>
+      </div>
+      <button class="btn-gold" style="margin-top:10px" onclick="guestProceedPayment('Order',${cartTotal})">
+        <svg style="width:18px;height:18px"><use href="#ic-arrow-fwd"/></svg>Checkout — $${cartTotal}
+      </button>
+    </div>`:''}`;
 }
 function guestSetMenuCat(c){guestState.menuCat=c;renderGuestMenu();}
 function guestQty(id,delta){guestState.cart[id]=Math.max(0,(guestState.cart[id]||0)+delta);renderGuestMenu();}
 
 function guestProceedPayment(type,total){
-  if(type==='Table'&&!guestState.time){alert('Select a time slot first.');return;}
+  if(type==='Table'&&!guestState.time){showModal({icon:'ic-alert',iconStyle:'gold',title:'Select a Time',msg:'Please pick a time slot before proceeding.',confirmLabel:'OK',confirmStyle:'confirm-gold',cancelLabel:''});return;}
   guestState.bookingType=type;guestState.total=total;guestState.payMethod=null;
-  guestState.view='payment';renderGuestPayment();
+  guestNav('payment');
 }
 
 function renderGuestPayment(){
+  setGuestTitle('Checkout');
   const gs=guestState;
-  const summaryText=gs.bookingType==='Table'?`${gs.date} • ${gs.time} • ${gs.guests} guest(s)`:gs.bookingType==='Room'?`${gs.roomType} Room x${gs.nights} night(s)`:'Food Order';
+  const summaryText=gs.bookingType==='Table'?`${gs.date} • ${gs.time} • ${gs.guests} guest(s)`:gs.bookingType==='Room'?`${gs.roomType} Room × ${gs.nights} night(s)`:'Food Order';
   document.getElementById('guest-scroll').innerHTML=`
-    <div class="card">
-      <div class="card-title">Order Summary</div>
+    <div class="card" style="border-color:rgba(201,168,76,.2)">
+      <div style="color:var(--muted);font-size:12px;margin-bottom:4px">${summaryText}</div>
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="color:var(--muted);font-size:13px">${summaryText}</span>
-        <span style="color:var(--gold);font-weight:700;font-size:18px">$${gs.total}</span>
+        <span style="font-weight:600">Total Due</span>
+        <span style="color:var(--gold);font-weight:700;font-size:22px;font-family:var(--font-display)">$${gs.total}</span>
       </div>
     </div>
     <div class="card">
-      <div class="card-title">Select Payment Method</div>
-      <p style="color:var(--muted);font-size:11px;margin-bottom:12px">East Africa + International options</p>
+      <div class="card-title">Payment Method</div>
+      <p style="color:var(--muted);font-size:11px;margin-bottom:12px">🇰🇪 East Africa & International options</p>
       <div class="payment-grid">
         ${PAY_METHODS.map(pm=>`
-          <div class="pay-method${gs.payMethod===pm.id?' selected':''}" onclick="guestSetPay('${pm.id}')" style="${gs.payMethod===pm.id?'border-color:'+pm.color+';border-width:2px;background:'+pm.color+'20':''}">
+          <div class="pay-method${gs.payMethod===pm.id?' selected':''}" onclick="guestSetPay('${pm.id}')" style="${gs.payMethod===pm.id?'border-color:'+pm.color+';border-width:2px;background:'+pm.color+'18':''}">
             <svg style="color:${pm.color}"><use href="#${pm.icon}"/></svg>
             <div class="pay-method-name">${pm.label}</div>
             <div class="pay-method-region">${pm.region}</div>
@@ -1308,7 +1768,7 @@ function renderGuestPayment(){
       </div>
     </div>
     <div id="pay-fields"></div>
-    <div class="ssl-note"><svg style="width:13px;height:13px"><use href="#ic-lock"/></svg>256-bit SSL • PCI DSS compliant</div>
+    <div class="ssl-note"><svg><use href="#ic-lock"/></svg>256-bit SSL • PCI DSS Compliant</div>
     <button class="btn-gold" style="margin-bottom:30px" id="pay-btn" onclick="guestPay()">
       <svg style="width:18px;height:18px"><use href="#ic-shield-check"/></svg>
       Pay $${gs.total} Securely
@@ -1317,178 +1777,159 @@ function renderGuestPayment(){
 function guestSetPay(id){
   guestState.payMethod=id;
   renderGuestPayment();
-  // Render extra fields
-  const pm=guestState.payMethod;
-  let html='';
-  if(pm==='mpesa'||pm==='pesalink'||pm==='airtel'){
-    html=`<div class="card"><div class="card-title">${pm==='mpesa'?'M-Pesa':pm==='pesalink'?'PesaLink':'Airtel Money'} Details</div>
-      ${pm==='mpesa'?'<p style="color:var(--muted);font-size:12px;margin-bottom:8px">An STK push will be sent to your phone.</p>':''}
-      <div class="input-wrap"><svg><use href="#ic-phone"/></svg><input type="tel" placeholder="+254 7XX XXX XXX" /></div></div>`;
+  const pm=guestState.payMethod;let html='';
+  if(pm==='mpesa'){
+    html=`<div class="card" style="border-color:rgba(76,175,80,.2)">
+      <div class="card-title" style="color:#4caf50;display:flex;align-items:center;gap:8px">
+        <svg style="width:18px;height:18px;color:#4caf50"><use href="#ic-phone"/></svg>M-Pesa STK Push
+      </div>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:10px">An STK push notification will be sent to your Safaricom number. Enter your M-Pesa PIN when prompted.</p>
+      <div class="input-wrap"><svg><use href="#ic-phone"/></svg><input type="tel" id="mpesa-phone" placeholder="+254 7XX XXX XXX" value="${guestState.phone}" oninput="guestState.phone=this.value"/></div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-top:6px">
+        <svg style="width:12px;height:12px;color:#4caf50"><use href="#ic-shield-check"/></svg>
+        Powered by Safaricom Daraja API
+      </div>
+    </div>`;
+  } else if(pm==='airtel'){
+    html=`<div class="card" style="border-color:rgba(244,67,54,.2)"><div class="card-title">Airtel Money</div>
+      <div class="input-wrap"><svg><use href="#ic-phone"/></svg><input type="tel" placeholder="+254 7XX XXX XXX"/></div></div>`;
+  } else if(pm==='pesalink'){
+    html=`<div class="card"><div class="card-title">PesaLink</div>
+      <div class="input-wrap"><svg><use href="#ic-phone"/></svg><input type="tel" placeholder="Your phone number"/></div></div>`;
   } else if(pm==='card'){
     html=`<div class="card"><div class="card-title">Card Details</div>
       <p style="color:var(--muted);font-size:11px;margin-bottom:10px">Visa • Mastercard • Amex accepted</p>
-      <div class="input-wrap"><svg><use href="#ic-card"/></svg><input type="text" placeholder="Card number" maxlength="19" /></div>
-      <div class="input-wrap"><svg><use href="#ic-person"/></svg><input type="text" placeholder="Cardholder name" /></div>
+      <div class="input-wrap"><svg><use href="#ic-card"/></svg><input type="text" placeholder="Card number" maxlength="19"/></div>
+      <div class="input-wrap"><svg><use href="#ic-person"/></svg><input type="text" placeholder="Cardholder name"/></div>
       <div class="input-row">
-        <div class="input-wrap"><svg><use href="#ic-calendar"/></svg><input type="text" placeholder="MM/YY" maxlength="5" /></div>
-        <div class="input-wrap"><svg><use href="#ic-lock"/></svg><input type="password" placeholder="CVV" maxlength="4" /></div>
+        <div class="input-wrap"><svg><use href="#ic-calendar"/></svg><input type="text" placeholder="MM/YY" maxlength="5"/></div>
+        <div class="input-wrap"><svg><use href="#ic-lock"/></svg><input type="password" placeholder="CVV" maxlength="4"/></div>
       </div></div>`;
   } else if(pm==='bank'){
     html=`<div class="card"><div class="card-title">Bank Transfer Details</div>
-      ${[['Bank','Equity Bank Kenya'],['Account','0123456789'],['Name','NEXA Hospitality Ltd'],['Ref','BK-'+Date.now().toString().slice(-6)]].map(r=>`<div class="bank-row"><span class="bank-label">${r[0]}</span><span class="bank-val">${r[1]}</span></div>`).join('')}
+      ${[['Bank','Equity Bank Kenya'],['Account','0123456789'],['Name','NEXA Hospitality Ltd'],['Reference','BK-'+Date.now().toString().slice(-6)]].map(r=>`<div class="bank-row"><span class="bank-label">${r[0]}</span><span class="bank-val">${r[1]}</span></div>`).join('')}
     </div>`;
-  } else if(pm==='paypal'||pm==='apple'||pm==='google'){
-    const name=pm==='paypal'?'PayPal':pm==='apple'?'Apple Pay':'Google Pay';
-    html=`<div class="card"><div class="card-title">${name}</div>
-      <p style="color:var(--muted);font-size:13px;text-align:center;margin:10px 0">You will be redirected to complete your $${guestState.total} payment.</p></div>`;
+  } else if(['paypal','apple','google'].includes(pm)){
+    const names={paypal:'PayPal',apple:'Apple Pay',google:'Google Pay'};
+    html=`<div class="card"><div class="card-title">${names[pm]}</div>
+      <p style="color:var(--muted);font-size:13px;text-align:center;padding:10px 0">You will be redirected to complete your $${guestState.total} payment securely.</p></div>`;
   }
   document.getElementById('pay-fields').innerHTML=html;
 }
 function guestPay(){
   const btn=document.getElementById('pay-btn');
-  if(!guestState.payMethod){alert('Select a payment method.');return;}
-  btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
-  setTimeout(()=>{guestState.view='paid';renderGuestPaid();},1800);
+  if(!guestState.payMethod){showModal({icon:'ic-alert',iconStyle:'gold',title:'No Payment Method',msg:'Please select a payment method to continue.',confirmLabel:'OK',confirmStyle:'confirm-gold',cancelLabel:''});return;}
+  btn.disabled=true;btn.innerHTML='<div class="spinner" style="color:#1a1200"></div>';
+  if(guestState.payMethod==='mpesa'){
+    const phone=document.getElementById('mpesa-phone')?.value||guestState.phone;
+    setTimeout(()=>{
+      btn.disabled=false;btn.innerHTML=`<svg style="width:18px;height:18px"><use href="#ic-shield-check"/></svg>Pay $${guestState.total} Securely`;
+      triggerSTKPush(phone,guestState.total,()=>{
+        guestNav('paid');
+      });
+    },400);
+  } else {
+    setTimeout(()=>{guestNav('paid');},2000);
+  }
 }
 function renderGuestPaid(){
+  setGuestTitle('Payment Complete');
   const gs=guestState;
   const sumText=gs.bookingType==='Table'?`${gs.date} at ${gs.time} for ${gs.guests} guest(s)`:gs.bookingType==='Room'?`${gs.roomType} Room for ${gs.nights} night(s)`:'Your food order';
   document.getElementById('guest-scroll').innerHTML=`
-    <div class="success-screen">
-      <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none">
-        <span style="position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;border:1.5px solid rgba(34,197,94,.12)"></span>
-      </div>
+    <div class="success-screen fade-in">
       <div class="success-icon"><svg><use href="#ic-check-circle"/></svg></div>
-      <div style="font-size:22px;font-weight:700;color:var(--white);margin-bottom:6px">Payment Successful!</div>
-      <div style="color:var(--muted);text-align:center">${sumText}</div>
+      <div style="font-size:24px;font-weight:700;color:var(--white);margin-bottom:6px;font-family:var(--font-display)">Payment Successful!</div>
+      <div style="color:var(--muted);text-align:center;font-size:14px">${sumText}</div>
       <div class="success-amount">$${gs.total} paid</div>
       <div class="success-note"><svg><use href="#ic-mail"/></svg>Receipt sent to your email.</div>
-      <button class="btn-gold" onclick="guestState={view:'home',guests:2,date:'Today',time:null,roomType:null,nights:1,menuCat:'All',cart:{},bookingType:'',total:0,payMethod:null};renderGuestHome()">Back to Home</button>
+      <div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);border-radius:12px;padding:12px 16px;font-size:12px;color:var(--muted);margin-bottom:24px;text-align:left;width:100%">
+        <div style="color:var(--green);font-weight:600;margin-bottom:4px">✓ Booking Confirmed</div>
+        Ref: NX-${Date.now().toString().slice(-8).toUpperCase()}<br>
+        ${gs.payMethod?gs.payMethod.toUpperCase():''} • ${new Date().toLocaleString()}
+      </div>
+      <button class="btn-gold" onclick="guestState={view:'home',guests:2,date:'Today',time:null,roomType:null,nights:1,menuCat:'All',cart:{},bookingType:'',total:0,payMethod:null,phone:'+254 7XX XXX XXX',guestName:guestState.guestName};renderGuestHome()">
+        Back to Home
+      </button>
     </div>`;
 }
 
-/* ── USER MANAGEMENT (shared by operator + manager) ───────────────────── */
-let userMgmtView='list'; // list | add | edit | view
-let editingUser=null;
-let addFormRole=null;
-let userListFilter='all';
-
+/* ═══════════════════════ USER MANAGEMENT ════════════════════════════ */
 function generateId(role){
   const prefix=ROLE_META[role].prefix;
-  const existing=STAFF.filter(s=>s.role===role).map(s=>parseInt(s.id.split('-')[1]||0));
-  const next=(existing.length>0?Math.max(...existing):0)+1;
-  return prefix+'-'+String(next).padStart(3,'0');
+  const nums=STAFF.filter(s=>s.role===role).map(s=>parseInt(s.id.split('-')[1]||0));
+  return prefix+'-'+String((nums.length?Math.max(...nums):0)+1).padStart(3,'0');
 }
+function canManage(actorRole,targetRole){return(ROLE_HIERARCHY[actorRole]||[]).includes(targetRole);}
 
-function canManage(actorRole, targetRole){
-  return (ROLE_HIERARCHY[actorRole]||[]).includes(targetRole);
-}
-
-function renderUserCard(u, actorRole){
+function renderUserCard(u,actorRole){
   const meta=ROLE_META[u.role];
   const canEdit=canManage(actorRole,u.role);
   const addedByUser=STAFF.find(s=>s.id===u.addedBy);
-  return `<div class="card" style="border-left:4px solid ${meta.color}20;margin-bottom:10px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+  return `<div class="card" style="border-left:4px solid ${meta.color}30;margin-bottom:10px">
+    <div class="user-card-inner">
       <div style="display:flex;align-items:center;gap:12px">
         <div style="background:${meta.color}18;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
           <svg style="width:20px;height:20px;color:${meta.color}"><use href="#${meta.icon}"/></svg>
         </div>
-        <div>
-          <div style="font-weight:600;color:var(--white);font-size:14px">${u.name}</div>
-          <div style="font-size:11px;color:var(--muted)">${u.id}</div>
-        </div>
+        <div><div style="font-weight:600;color:var(--white);font-size:14px">${u.name}</div><div style="font-size:11px;color:var(--muted)">${u.id}</div></div>
       </div>
       <span class="pill" style="background:${meta.color}18;color:${meta.color}">${meta.label}</span>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
-      <div style="background:var(--bg);border-radius:8px;padding:8px">
-        <div style="font-size:10px;color:var(--muted);margin-bottom:2px">DEPARTMENT</div>
-        <div style="font-size:12px;color:var(--white);font-weight:500">${u.dept||'—'}</div>
-      </div>
-      <div style="background:var(--bg);border-radius:8px;padding:8px">
-        <div style="font-size:10px;color:var(--muted);margin-bottom:2px">SHIFT</div>
-        <div style="font-size:12px;color:var(--white);font-weight:500">${u.shift||'—'}</div>
-      </div>
-      <div style="background:var(--bg);border-radius:8px;padding:8px">
-        <div style="font-size:10px;color:var(--muted);margin-bottom:2px">PHONE</div>
-        <div style="font-size:12px;color:var(--white);font-weight:500">${u.phone||'—'}</div>
-      </div>
-      <div style="background:var(--bg);border-radius:8px;padding:8px">
-        <div style="font-size:10px;color:var(--muted);margin-bottom:2px">ADDED BY</div>
-        <div style="font-size:12px;color:var(--white);font-weight:500">${addedByUser?addedByUser.name:u.addedBy||'—'}</div>
-      </div>
+    <div class="user-role-grid">
+      <div class="user-role-cell"><div class="urc-label">DEPARTMENT</div><div class="urc-val">${u.dept||'—'}</div></div>
+      <div class="user-role-cell"><div class="urc-label">SHIFT</div><div class="urc-val">${u.shift||'—'}</div></div>
+      <div class="user-role-cell"><div class="urc-label">PHONE</div><div class="urc-val">${u.phone||'—'}</div></div>
+      <div class="user-role-cell"><div class="urc-label">ADDED BY</div><div class="urc-val">${addedByUser?addedByUser.name:u.addedBy||'—'}</div></div>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;word-break:break-all">${u.email||''}</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">${u.email||''}</div>
     ${canEdit?`<div class="action-btns">
       <button class="abtn abtn-blue" onclick="openEditUser('${u.id}','${actorRole}')"><svg><use href="#ic-id"/></svg>Edit</button>
-      <button class="abtn abtn-red" onclick="deleteUser('${u.id}','${actorRole}')"><svg><use href="#ic-trash"/></svg>Remove</button>
+      <button class="abtn abtn-red" onclick="deleteUserConfirm('${u.id}','${actorRole}')"><svg><use href="#ic-trash"/></svg>Remove</button>
     </div>`:'<div style="font-size:11px;color:var(--muted)">View only</div>'}
   </div>`;
 }
 
-function renderAddUserForm(actorRole, containerId){
+function renderAddUserForm(actorRole,containerId){
   const canAdd=ROLE_HIERARCHY[actorRole]||[];
-  if(canAdd.length===0){return '<p style="color:var(--muted);text-align:center;padding:20px">No roles available to add.</p>';}
+  if(!canAdd.length)return '<p style="color:var(--muted);text-align:center;padding:20px">No roles available to add.</p>';
   if(!addFormRole)addFormRole=canAdd[0];
   return `<div class="card">
-    <div class="card-title" style="display:flex;align-items:center;gap:8px">
-      <svg style="width:18px;height:18px;color:var(--gold)"><use href="#ic-person-add"/></svg>
-      Add New Staff Member
-    </div>
-
+    <div class="card-title" style="display:flex;align-items:center;gap:8px"><svg style="width:18px;height:18px;color:var(--gold)"><use href="#ic-person-add"/></svg>Add New Staff Member</div>
     <label class="section-label">FULL NAME *</label>
-    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-person"/></svg><input type="text" id="nf-name" placeholder="e.g. Jane Doe" /></div>
-
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-person"/></svg><input type="text" id="nf-name" placeholder="e.g. Jane Doe"/></div>
     <label class="section-label">ROLE *</label>
     <div class="chips" id="nf-role-chips">
       ${canAdd.map(r=>`<button class="chip${addFormRole===r?' active':''}" onclick="setAddFormRole('${r}','${containerId}')" style="border-color:${ROLE_META[r].color};${addFormRole===r?'background:'+ROLE_META[r].color+';color:#1a1200':''}">${ROLE_META[r].label}</button>`).join('')}
     </div>
-
-    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:var(--muted)">
-      Auto-generated ID: <strong style="color:var(--gold)">${generateId(addFormRole)}</strong>
-    </div>
-
-    <label class="section-label">EMAIL ADDRESS *</label>
-    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-mail"/></svg><input type="email" id="nf-email" placeholder="e.g. jane@nexahotel.com" /></div>
-
-    <label class="section-label">PHONE NUMBER *</label>
-    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-phone"/></svg><input type="tel" id="nf-phone" placeholder="+254 7XX XXX XXX" /></div>
-
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:var(--muted)">Auto ID: <strong style="color:var(--gold)">${generateId(addFormRole)}</strong></div>
+    <label class="section-label">EMAIL *</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-mail"/></svg><input type="email" id="nf-email" placeholder="e.g. jane@nexahotel.com"/></div>
+    <label class="section-label">PHONE *</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-phone"/></svg><input type="tel" id="nf-phone" placeholder="+254 7XX XXX XXX"/></div>
     <label class="section-label">4-DIGIT PIN *</label>
-    <div class="input-wrap" style="width:100%;margin-bottom:10px">
-      <svg><use href="#ic-keypad"/></svg>
-      <input type="password" id="nf-pin" placeholder="Set 4-digit PIN" maxlength="4" inputmode="numeric" />
-    </div>
-
+    <div class="input-wrap" style="width:100%;margin-bottom:6px"><svg><use href="#ic-keypad"/></svg><input type="password" id="nf-pin" placeholder="Set PIN" maxlength="4" inputmode="numeric"/></div>
     <label class="section-label">CONFIRM PIN *</label>
-    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-lock"/></svg><input type="password" id="nf-pin2" placeholder="Confirm PIN" maxlength="4" inputmode="numeric" /></div>
-
-    <label class="section-label">DEPARTMENT *</label>
-    <select class="form-input" id="nf-dept">
-      ${DEPARTMENTS.map(d=>`<option value="${d}">${d}</option>`).join('')}
-    </select>
-
-    <label class="section-label" style="margin-top:8px">SHIFT *</label>
-    <select class="form-input" id="nf-shift">
-      ${SHIFTS.map(s=>`<option value="${s}">${s}</option>`).join('')}
-    </select>
-
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-lock"/></svg><input type="password" id="nf-pin2" placeholder="Confirm PIN" maxlength="4" inputmode="numeric"/></div>
+    <label class="section-label">DEPARTMENT</label>
+    <select class="form-input" id="nf-dept">${DEPARTMENTS.map(d=>`<option>${d}</option>`).join('')}</select>
+    <label class="section-label" style="margin-top:8px">SHIFT</label>
+    <select class="form-input" id="nf-shift">${SHIFTS.map(s=>`<option>${s}</option>`).join('')}</select>
     <span class="error-text" id="nf-error" style="margin-top:6px"></span>
     <button class="btn-gold" style="margin-top:12px" onclick="submitAddUser('${actorRole}','${containerId}')">
-      <svg style="width:16px;height:16px"><use href="#ic-check"/></svg>
-      Create Account
+      <svg style="width:16px;height:16px"><use href="#ic-check"/></svg>Create Account
     </button>
+    <button style="width:100%;margin-top:8px;background:var(--card2);color:var(--muted);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;font-weight:600;cursor:pointer" onclick="reloadHub('${actorRole}','${containerId}')">Cancel</button>
   </div>`;
 }
 
-function setAddFormRole(r, containerId){
+function setAddFormRole(r,containerId){
   addFormRole=r;
   const host=document.getElementById(containerId);
-  if(host) host.innerHTML=renderHubContent(currentUser.role,containerId,'add');
+  if(host)host.innerHTML=renderHubContent(actorRole,containerId,'add');
 }
 
-function submitAddUser(actorRole, containerId){
+function submitAddUser(actorRole,containerId){
   const name=document.getElementById('nf-name').value.trim();
   const email=document.getElementById('nf-email').value.trim();
   const phone=document.getElementById('nf-phone').value.trim();
@@ -1497,30 +1938,27 @@ function submitAddUser(actorRole, containerId){
   const dept=document.getElementById('nf-dept').value;
   const shift=document.getElementById('nf-shift').value;
   const errEl=document.getElementById('nf-error');
-
-  if(!name){errEl.textContent='Full name is required.';return;}
-  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){errEl.textContent='Valid email is required.';return;}
-  if(!phone||phone.length<10){errEl.textContent='Valid phone number is required.';return;}
+  if(!name){errEl.textContent='Full name required.';return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){errEl.textContent='Valid email required.';return;}
+  if(!phone||phone.length<10){errEl.textContent='Valid phone required.';return;}
   if(!pin||pin.length<4){errEl.textContent='PIN must be 4 digits.';return;}
   if(pin!==pin2){errEl.textContent='PINs do not match.';return;}
   if(STAFF.find(s=>s.email===email)){errEl.textContent='Email already in use.';return;}
-
   const newId=generateId(addFormRole);
   STAFF.push({id:newId,name,role:addFormRole,pin,email,phone,dept,shift,addedBy:currentUser.id});
-  addFormRole=null;userMgmtView='list';
-  alert('Account created successfully!\nID: '+newId+'\nPIN: '+pin+'\nShare these credentials securely with '+name+'.');
-  const host=document.getElementById(containerId);
-  if(host)host.innerHTML=renderHubContent(actorRole,containerId,'list');
+  addFormRole=null;
+  showModal({icon:'ic-check-circle',iconStyle:'green',title:'Account Created!',highlight:newId,msg:'Share the ID and PIN securely with <strong>'+name+'</strong>.<br><br>PIN: <strong>'+pin+'</strong>',confirmLabel:'Done',confirmStyle:'confirm-gold',cancelLabel:'',onConfirm:()=>reloadHub(actorRole,containerId)});
 }
 
-function openEditUser(uid, actorRole){
+function openEditUser(uid,actorRole){
   editingUser=STAFF.find(s=>s.id===uid);
   if(!editingUser)return;
-  const host=document.getElementById(actorRole==='operator'?'operator-body':'manager-body');
-  if(host)host.innerHTML=renderEditUserForm(actorRole, actorRole==='operator'?'operator-body':'manager-body');
+  const containerId=actorRole==='operator'?'operator-body':'manager-body';
+  const host=document.getElementById(containerId);
+  if(host)host.innerHTML=renderEditUserForm(actorRole,containerId);
 }
 
-function renderEditUserForm(actorRole, containerId){
+function renderEditUserForm(actorRole,containerId){
   const u=editingUser;
   return `<div class="card">
     <div class="card-title">Edit: ${u.name}</div>
@@ -1528,41 +1966,28 @@ function renderEditUserForm(actorRole, containerId){
       <span style="color:var(--muted)">ID: </span><strong style="color:var(--gold)">${u.id}</strong>
       <span style="color:var(--muted);margin-left:12px">Role: </span><strong style="color:var(--white)">${ROLE_META[u.role].label}</strong>
     </div>
-
     <label class="section-label">FULL NAME *</label>
-    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-person"/></svg><input type="text" id="ef-name" value="${u.name}" /></div>
-
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-person"/></svg><input type="text" id="ef-name" value="${u.name}"/></div>
     <label class="section-label">EMAIL *</label>
-    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-mail"/></svg><input type="email" id="ef-email" value="${u.email||''}" /></div>
-
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-mail"/></svg><input type="email" id="ef-email" value="${u.email||''}"/></div>
     <label class="section-label">PHONE *</label>
-    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-phone"/></svg><input type="tel" id="ef-phone" value="${u.phone||''}" /></div>
-
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-phone"/></svg><input type="tel" id="ef-phone" value="${u.phone||''}"/></div>
     <label class="section-label">DEPARTMENT</label>
-    <select class="form-input" id="ef-dept">
-      ${DEPARTMENTS.map(d=>`<option value="${d}"${u.dept===d?' selected':''}>${d}</option>`).join('')}
-    </select>
-
+    <select class="form-input" id="ef-dept">${DEPARTMENTS.map(d=>`<option${u.dept===d?' selected':''}>${d}</option>`).join('')}</select>
     <label class="section-label" style="margin-top:8px">SHIFT</label>
-    <select class="form-input" id="ef-shift">
-      ${SHIFTS.map(s=>`<option value="${s}"${u.shift===s?' selected':''}>${s}</option>`).join('')}
-    </select>
-
-    <label class="section-label" style="margin-top:8px">RESET PIN (leave blank to keep current)</label>
-    <div class="input-wrap" style="width:100%;margin-bottom:6px"><svg><use href="#ic-keypad"/></svg><input type="password" id="ef-pin" placeholder="New 4-digit PIN" maxlength="4" /></div>
-    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-lock"/></svg><input type="password" id="ef-pin2" placeholder="Confirm new PIN" maxlength="4" /></div>
-
+    <select class="form-input" id="ef-shift">${SHIFTS.map(s=>`<option${u.shift===s?' selected':''}>${s}</option>`).join('')}</select>
+    <label class="section-label" style="margin-top:8px">RESET PIN (blank = keep current)</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:6px"><svg><use href="#ic-keypad"/></svg><input type="password" id="ef-pin" placeholder="New PIN" maxlength="4"/></div>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-lock"/></svg><input type="password" id="ef-pin2" placeholder="Confirm PIN" maxlength="4"/></div>
     <span class="error-text" id="ef-error"></span>
     <div style="display:flex;gap:10px;margin-top:12px">
-      <button class="btn-gold" style="flex:1" onclick="submitEditUser('${actorRole}','${containerId}')">
-        <svg style="width:16px;height:16px"><use href="#ic-check"/></svg>Save Changes
-      </button>
-      <button style="flex:1;background:var(--card2);color:var(--muted);border-radius:10px;padding:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.1)" onclick="cancelEdit('${actorRole}','${containerId}')">Cancel</button>
+      <button class="btn-gold" style="flex:1" onclick="submitEditUser('${actorRole}','${containerId}')"><svg style="width:16px;height:16px"><use href="#ic-check"/></svg>Save</button>
+      <button style="flex:1;background:var(--card2);color:var(--muted);border-radius:10px;padding:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.1)" onclick="reloadHub('${actorRole}','${containerId}')">Cancel</button>
     </div>
   </div>`;
 }
 
-function submitEditUser(actorRole, containerId){
+function submitEditUser(actorRole,containerId){
   const name=document.getElementById('ef-name').value.trim();
   const email=document.getElementById('ef-email').value.trim();
   const phone=document.getElementById('ef-phone').value.trim();
@@ -1571,145 +1996,112 @@ function submitEditUser(actorRole, containerId){
   const pin=document.getElementById('ef-pin').value.trim();
   const pin2=document.getElementById('ef-pin2').value.trim();
   const errEl=document.getElementById('ef-error');
-
-  if(!name){errEl.textContent='Name is required.';return;}
+  if(!name){errEl.textContent='Name required.';return;}
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){errEl.textContent='Valid email required.';return;}
-  if(!phone){errEl.textContent='Phone is required.';return;}
   if(pin&&pin.length<4){errEl.textContent='PIN must be 4 digits.';return;}
   if(pin&&pin!==pin2){errEl.textContent='PINs do not match.';return;}
-
   const idx=STAFF.findIndex(s=>s.id===editingUser.id);
-  if(idx>-1){
-    STAFF[idx].name=name;STAFF[idx].email=email;STAFF[idx].phone=phone;
-    STAFF[idx].dept=dept;STAFF[idx].shift=shift;
-    if(pin)STAFF[idx].pin=pin;
-  }
+  if(idx>-1){STAFF[idx]={...STAFF[idx],name,email,phone,dept,shift,...(pin?{pin}:{})};} 
   editingUser=null;
+  reloadHub(actorRole,containerId);
+}
+
+function deleteUserConfirm(uid,actorRole){
+  const u=STAFF.find(s=>s.id===uid);if(!u)return;
+  showModal({
+    icon:'ic-trash',iconStyle:'danger',
+    title:'Remove Staff Member?',
+    highlight:u.name+' — '+u.id,
+    msg:'This will permanently remove <strong>'+u.name+'</strong> from the system. Their login credentials will be revoked immediately.',
+    confirmLabel:'Remove',confirmStyle:'confirm-danger',
+    onConfirm:()=>{
+      STAFF.splice(STAFF.findIndex(s=>s.id===uid),1);
+      const containerId=actorRole==='operator'?'operator-body':'manager-body';
+      reloadHub(actorRole,containerId);
+    }
+  });
+}
+
+function reloadHub(actorRole,containerId){
   const host=document.getElementById(containerId);
   if(host)host.innerHTML=renderHubContent(actorRole,containerId,'list');
 }
 
-function cancelEdit(actorRole, containerId){
-  editingUser=null;
-  const host=document.getElementById(containerId);
-  if(host)host.innerHTML=renderHubContent(actorRole,containerId,'list');
-}
-
-function deleteUser(uid, actorRole){
-  const u=STAFF.find(s=>s.id===uid);
-  if(!u)return;
-  if(!confirm('Remove '+u.name+' ('+u.id+') from the system? This cannot be undone.'))return;
-  const idx=STAFF.findIndex(s=>s.id===uid);
-  if(idx>-1)STAFF.splice(idx,1);
-  const containerId=actorRole==='operator'?'operator-body':'manager-body';
-  const host=document.getElementById(containerId);
-  if(host)host.innerHTML=renderHubContent(actorRole,containerId,'list');
-}
-
-function renderHubContent(actorRole, containerId, view){
+function renderHubContent(actorRole,containerId,view){
   if(view==='add')return renderAddUserForm(actorRole,containerId);
-
   const manageable=ROLE_HIERARCHY[actorRole]||[];
   const filterAll=['all',...manageable];
   if(!manageable.includes(userListFilter)&&userListFilter!=='all')userListFilter='all';
   const visible=STAFF.filter(s=>userListFilter==='all'?manageable.includes(s.role):s.role===userListFilter);
-
   const stats=manageable.map(r=>({r,count:STAFF.filter(s=>s.role===r).length}));
-
   return `
-    <!-- Stats -->
     <div style="display:grid;grid-template-columns:repeat(${Math.min(stats.length,3)},1fr);gap:8px;margin-bottom:14px">
-      ${stats.map(s=>`<div class="stat-card">
-        <div class="stat-val" style="color:${ROLE_META[s.r].color};font-size:22px">${s.count}</div>
-        <div class="stat-lbl">${ROLE_META[s.r].label}s</div>
-      </div>`).join('')}
+      ${stats.map(s=>`<div class="stat-card"><div class="stat-val" style="color:${ROLE_META[s.r].color};font-size:20px">${s.count}</div><div class="stat-lbl">${ROLE_META[s.r].label}s</div></div>`).join('')}
     </div>
-
-    <!-- Add button -->
-    <button class="btn-gold" style="margin-bottom:14px" onclick="addFormRole=null;const h=document.getElementById('${containerId}');if(h)h.innerHTML=renderHubContent('${actorRole}','${containerId}','add')">
-      <svg style="width:16px;height:16px"><use href="#ic-person-add"/></svg>
-      Add Staff Member
+    <button class="btn-gold" style="margin-bottom:14px" onclick="addFormRole=null;const h=document.getElementById('${containerId}');if(h)h.innerHTML=renderAddUserForm('${actorRole}','${containerId}')">
+      <svg style="width:16px;height:16px"><use href="#ic-person-add"/></svg>Add Staff Member
     </button>
-
-    <!-- Filter chips -->
     <div class="chips">
-      ${filterAll.map(f=>`<button class="chip${userListFilter===f?' active':''}" onclick="userListFilter='${f}';const h=document.getElementById('${containerId}');if(h)h.innerHTML=renderHubContent('${actorRole}','${containerId}','list')" style="${f!=='all'?'border-color:'+ROLE_META[f].color+(userListFilter===f?';background:'+ROLE_META[f].color+';color:#1a1200':''):''}">${f==='all'?'All':ROLE_META[f].label}</button>`).join('')}
+      ${filterAll.map(f=>`<button class="chip${userListFilter===f?' active':''}" onclick="userListFilter='${f}';reloadHub('${actorRole}','${containerId}')" style="${f!=='all'?'border-color:'+ROLE_META[f].color+(userListFilter===f?';background:'+ROLE_META[f].color+';color:#1a1200':''):''}">${f==='all'?'All':ROLE_META[f].label}</button>`).join('')}
     </div>
-
-    <!-- User list -->
     ${visible.length===0?'<p style="color:var(--muted);text-align:center;padding:20px">No staff found.</p>':visible.map(u=>renderUserCard(u,actorRole)).join('')}
   `;
 }
 
-/* ── OPERATOR DASHBOARD ───────────────────────────────────────────────── */
+/* ═════════════════════ OPERATOR DASHBOARD ════════════════════════════ */
 function renderOperatorDashboard(){
   const host=document.getElementById('operator-body');
   if(!host||!currentUser)return;
-  if(currentUser.role!=='operator'){host.innerHTML='<p style="color:var(--muted);padding:20px">Access denied.</p>';return;}
-
-  // System-wide stats
-  const totalStaff=STAFF.filter(s=>s.role!=='operator').length;
+  if(currentUser.role!=='operator'){host.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted)">Access denied.</div>';return;}
   const byRole=Object.keys(ROLE_META).filter(r=>r!=='operator').map(r=>({r,count:STAFF.filter(s=>s.role===r).length}));
-
   host.innerHTML=`
-    <!-- System overview -->
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <svg style="width:18px;height:18px;color:var(--gold)"><use href="#ic-diamond"/></svg>
-      <span style="font-weight:600;font-size:15px;color:var(--white)">System Overview</span>
+      <span style="font-weight:600;font-size:15px">System Overview</span>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
-      <div class="stat-card"><div class="stat-val" style="color:var(--gold)">${totalStaff}</div><div class="stat-lbl">Total Staff</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--gold)">${STAFF.filter(s=>s.role!=='operator').length}</div><div class="stat-lbl">Total Staff</div></div>
       <div class="stat-card"><div class="stat-val" style="color:var(--green)">${STAFF.filter(s=>s.role==='admin').length}</div><div class="stat-lbl">Admins</div></div>
       <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${STAFF.filter(s=>s.role==='manager').length}</div><div class="stat-lbl">Managers</div></div>
     </div>
-
-    <!-- Breakdown by role -->
     <div class="card" style="margin-bottom:14px">
       <div class="card-title">Staff by Role</div>
       ${byRole.map(({r,count})=>`
         <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
           <div style="display:flex;align-items:center;gap:10px">
             <div style="background:${ROLE_META[r].color}18;border-radius:6px;padding:6px;display:flex"><svg style="width:16px;height:16px;color:${ROLE_META[r].color}"><use href="#${ROLE_META[r].icon}"/></svg></div>
-            <span style="color:var(--white);font-size:13px">${ROLE_META[r].label}</span>
+            <span style="font-size:13px">${ROLE_META[r].label}</span>
           </div>
           <span style="color:${ROLE_META[r].color};font-weight:700">${count}</span>
         </div>`).join('')}
     </div>
-
-    <!-- User management -->
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <svg style="width:18px;height:18px;color:var(--gold)"><use href="#ic-people"/></svg>
-      <span style="font-weight:600;font-size:15px;color:var(--white)">Staff Management</span>
+      <span style="font-weight:600;font-size:15px">Staff Management</span>
     </div>
-    ${renderHubContent('operator','operator-body','list')}
-  `;
+    ${renderHubContent('operator','operator-body','list')}`;
 }
 
-/* ── MANAGER DASHBOARD ────────────────────────────────────────────────── */
+/* ═════════════════════ MANAGER DASHBOARD ════════════════════════════ */
 function renderManagerDashboard(){
   const host=document.getElementById('manager-body');
   if(!host||!currentUser)return;
   if(!['operator','admin','manager'].includes(currentUser.role)){host.innerHTML='<p style="color:var(--muted);padding:20px">Access denied.</p>';return;}
-
   const manageable=ROLE_HIERARCHY[currentUser.role]||[];
-  const myTeam=STAFF.filter(s=>manageable.includes(s.role));
-
   host.innerHTML=`
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <svg style="width:18px;height:18px;color:var(--accent)"><use href="#ic-people"/></svg>
-      <span style="font-weight:600;font-size:15px;color:var(--white)">Team Management</span>
+      <span style="font-weight:600;font-size:15px">Team Management</span>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
-      <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${myTeam.length}</div><div class="stat-lbl">Team Members</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${STAFF.filter(s=>manageable.includes(s.role)).length}</div><div class="stat-lbl">Team Members</div></div>
       <div class="stat-card"><div class="stat-val" style="color:var(--gold)">${manageable.length}</div><div class="stat-lbl">Manageable Roles</div></div>
     </div>
-    ${renderHubContent(currentUser.role,'manager-body','list')}
-  `;
+    ${renderHubContent(currentUser.role,'manager-body','list')}`;
 }
 
-/* ── INIT ─────────────────────────────────────────────────────────────── */
+/* ═══════════════════════ INIT ════════════════════════════════════════ */
 renderSupportContent();
-// Enter on login
 document.getElementById('inp-pin').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin();});
 document.getElementById('inp-staff-id').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('inp-pin').focus();});
 </script>
