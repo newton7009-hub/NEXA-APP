@@ -243,6 +243,8 @@ input{font-family:var(--font-body);outline:none}
 .status-err{color:var(--danger)}.status-err .status-dot{background:var(--danger)}
 .status-right{display:flex;align-items:center;font-size:12px;font-weight:600}
 textarea.form-input{min-height:70px;resize:vertical}
+select.form-input{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a9bb0' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+select.form-input option{background:var(--card2);color:var(--white)}
 
 /* ── GUEST / PAYMENT ───────────────────────────────────────────────────── */
 .guest-nav-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--card);border-radius:14px;border:1px solid rgba(255,255,255,.05);margin-bottom:10px;cursor:pointer;transition:border-color .2s}
@@ -598,6 +600,32 @@ textarea.form-input{min-height:70px;resize:vertical}
     </div>
   </div>
 
+  <!-- ── OPERATOR DASHBOARD ──────────────────────────────────────────────── -->
+  <div class="screen" id="screen-operator">
+    <div class="topbar">
+      <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
+      <span class="topbar-title">Operator Hub</span>
+      <button class="topbar-btn gold" onclick="openSupport()"><svg><use href="#ic-headset"/></svg></button>
+    </div>
+    <div class="scroll">
+      <div class="card welcome-card"><div class="welcome-avatar" style="background:rgba(201,168,76,.15)"><svg style="color:var(--gold)"><use href="#ic-diamond"/></svg></div><div><div class="welcome-name" id="operator-welcome-name">Welcome</div><div class="welcome-id" id="operator-welcome-id"></div></div></div>
+      <div id="operator-body"></div>
+    </div>
+  </div>
+
+  <!-- ── MANAGER DASHBOARD ──────────────────────────────────────────────── -->
+  <div class="screen" id="screen-manager">
+    <div class="topbar">
+      <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
+      <span class="topbar-title">Manager Hub</span>
+      <button class="topbar-btn gold" onclick="openSupport()"><svg><use href="#ic-headset"/></svg></button>
+    </div>
+    <div class="scroll">
+      <div class="card welcome-card"><div class="welcome-avatar" style="background:rgba(76,209,255,.1)"><svg style="color:var(--accent)"><use href="#ic-people"/></svg></div><div><div class="welcome-name" id="manager-welcome-name">Welcome</div><div class="welcome-id" id="manager-welcome-id"></div></div></div>
+      <div id="manager-body"></div>
+    </div>
+  </div>
+
 </div><!-- #app -->
 
 <!-- ── DRAWER ───────────────────────────────────────────────────────────── -->
@@ -643,14 +671,38 @@ textarea.form-input{min-height:70px;resize:vertical}
 
 <script>
 /* ── DATA ─────────────────────────────────────────────────────────────── */
-const STAFF = [
-  {id:"ADM-001",name:"Sarah Johnson", role:"admin",     pin:"4821"},
-  {id:"CHF-001",name:"Marco Rossi",   role:"chef",      pin:"7364"},
-  {id:"CHF-002",name:"Aisha Kimani",  role:"chef",      pin:"2193"},
-  {id:"STF-001",name:"Carlos Mendez", role:"staff",     pin:"5507"},
-  {id:"STF-002",name:"Diana Omondi",  role:"staff",     pin:"8830"},
-  {id:"ANA-001",name:"James Waweru",  role:"analytics", pin:"3312"},
+let STAFF = [
+  {id:"OPR-001",name:"NEXA System",   role:"operator", pin:"0000", email:"operator@nexahotel.com",  phone:"+254703684899", dept:"Operations",  shift:"All Day",  addedBy:"system"},
+  {id:"ADM-001",name:"Sarah Johnson", role:"admin",    pin:"4821", email:"admin@nexahotel.com",     phone:"+254711000001", dept:"Management",  shift:"Morning",  addedBy:"OPR-001"},
+  {id:"MGR-001",name:"David Mwangi",  role:"manager",  pin:"6644", email:"mgr@nexahotel.com",       phone:"+254711000002", dept:"Operations",  shift:"Morning",  addedBy:"ADM-001"},
+  {id:"CHF-001",name:"Marco Rossi",   role:"chef",     pin:"7364", email:"chef@nexahotel.com",      phone:"+254711000003", dept:"Kitchen",     shift:"Morning",  addedBy:"MGR-001"},
+  {id:"CHF-002",name:"Aisha Kimani",  role:"chef",     pin:"2193", email:"chef2@nexahotel.com",     phone:"+254711000004", dept:"Kitchen",     shift:"Evening",  addedBy:"MGR-001"},
+  {id:"STF-001",name:"Carlos Mendez", role:"staff",    pin:"5507", email:"staff@nexahotel.com",     phone:"+254711000005", dept:"Front Desk",  shift:"Morning",  addedBy:"MGR-001"},
+  {id:"STF-002",name:"Diana Omondi",  role:"staff",    pin:"8830", email:"staff2@nexahotel.com",    phone:"+254711000006", dept:"Housekeeping",shift:"Evening",  addedBy:"MGR-001"},
+  {id:"ANA-001",name:"James Waweru",  role:"analytics",pin:"3312", email:"analytics@nexahotel.com", phone:"+254711000007", dept:"Finance",     shift:"Morning",  addedBy:"ADM-001"},
 ];
+
+/* Role hierarchy — who can add whom (operator/admin cannot add another operator/admin) */
+const ROLE_HIERARCHY = {
+  operator: ["admin","manager","chef","staff","analytics"],
+  admin:    ["manager","chef","staff","analytics"],
+  manager:  ["chef","staff","analytics"],
+  chef:     [],
+  staff:    [],
+  analytics:[],
+};
+
+const ROLE_META = {
+  operator: {label:"Operator",  color:"#c9a84c", icon:"ic-diamond",   prefix:"OPR"},
+  admin:    {label:"Admin",     color:"#f59e0b", icon:"ic-shield",     prefix:"ADM"},
+  manager:  {label:"Manager",   color:"#4cd1ff", icon:"ic-people",     prefix:"MGR"},
+  chef:     {label:"Chef",      color:"#f87171", icon:"ic-restaurant", prefix:"CHF"},
+  staff:    {label:"Staff",     color:"#22c55e", icon:"ic-person",     prefix:"STF"},
+  analytics:{label:"Analytics", color:"#a78bfa", icon:"ic-chart",      prefix:"ANA"},
+};
+
+const DEPARTMENTS=["Management","Operations","Kitchen","Front Desk","Housekeeping","Finance","Security","F&B"];
+const SHIFTS=["Morning","Afternoon","Evening","Night","All Day"];
 const MAX_ATT=3,LOCK_SECS=30;
 let attempts=0,locked=false,lockTimer=0,lockInterval=null;
 let currentUser=null;
@@ -754,25 +806,18 @@ function handleLogin(){
 }
 function loginSuccess(user){
   updateDrawer(user);
-  const roleScreen={admin:'admin',chef:'chef',staff:'staff',analytics:'analytics'}[user.role]||'admin';
-  // Update welcome cards
-  if(user.role==='admin'||user.role==='analytics'){
-    document.getElementById('admin-welcome-name').textContent='Welcome, '+user.name;
-    document.getElementById('admin-welcome-id').textContent=user.id+' • Administrator';
-    document.getElementById('ana-welcome-name').textContent='Welcome, '+user.name;
-    document.getElementById('ana-welcome-id').textContent=user.id+' • Analytics';
-  }
-  if(user.role==='chef'){
-    document.getElementById('chef-welcome-name').textContent='Welcome, '+user.name;
-    document.getElementById('chef-welcome-id').textContent=user.id+' • Chef';
-  }
-  if(user.role==='staff'){
-    document.getElementById('staff-welcome-name').textContent='Welcome, '+user.name;
-    document.getElementById('staff-welcome-id').textContent=user.id+' • Staff';
-  }
+  const roleScreen={operator:'operator',admin:'admin',manager:'manager',chef:'chef',staff:'staff',analytics:'analytics'}[user.role]||'admin';
+  // Update all welcome cards
+  ['admin','chef','staff','analytics','operator','manager'].forEach(r=>{
+    const n=document.getElementById(r+'-welcome-name');
+    const i=document.getElementById(r+'-welcome-id');
+    if(n)n.textContent='Welcome, '+user.name;
+    if(i)i.textContent=user.id+' • '+ROLE_META[user.role].label;
+  });
   showScreen(roleScreen);
   renderBookings();renderInlineChart();renderBreakdown();renderPeaks();
   renderOrders();renderTables();renderAnaChart();renderAnaBreakdown();renderAnaPeaks();
+  renderOperatorDashboard();renderManagerDashboard();
   startOrderTimers();
   renderSupportContent();
 }
@@ -781,10 +826,39 @@ function handleLogout(){currentUser=null;if(orderTimerInterval)clearInterval(ord
 
 /* ── DRAWER ───────────────────────────────────────────────────────────── */
 const ROLE_NAV={
-  admin:[{icon:'ic-shield',label:'Dashboard',target:'admin'},{icon:'ic-restaurant',label:'Chef View',target:'chef'},{icon:'ic-people',label:'Staff View',target:'staff'},{icon:'ic-chart',label:'Analytics',target:'analytics'},{icon:'ic-person',label:'Guest Portal',target:'guest-home'}],
-  chef:[{icon:'ic-restaurant',label:'Chef Dashboard',target:'chef'},{icon:'ic-chart',label:'Analytics',target:'analytics'}],
-  staff:[{icon:'ic-people',label:'Staff Dashboard',target:'staff'}],
-  analytics:[{icon:'ic-chart',label:'Analytics',target:'analytics'}],
+  operator:[
+    {icon:'ic-diamond',  label:'Operator Hub',  target:'operator'},
+    {icon:'ic-shield',   label:'Admin View',    target:'admin'},
+    {icon:'ic-people',   label:'Manager View',  target:'manager'},
+    {icon:'ic-restaurant',label:'Chef View',   target:'chef'},
+    {icon:'ic-people',   label:'Staff View',    target:'staff'},
+    {icon:'ic-chart',    label:'Analytics',     target:'analytics'},
+    {icon:'ic-person',   label:'Guest Portal',  target:'guest-home'},
+  ],
+  admin:[
+    {icon:'ic-shield',   label:'Dashboard',     target:'admin'},
+    {icon:'ic-people',   label:'Manager View',  target:'manager'},
+    {icon:'ic-restaurant',label:'Chef View',   target:'chef'},
+    {icon:'ic-people',   label:'Staff View',    target:'staff'},
+    {icon:'ic-chart',    label:'Analytics',     target:'analytics'},
+    {icon:'ic-person',   label:'Guest Portal',  target:'guest-home'},
+  ],
+  manager:[
+    {icon:'ic-people',   label:'Manager Hub',   target:'manager'},
+    {icon:'ic-restaurant',label:'Chef View',   target:'chef'},
+    {icon:'ic-people',   label:'Staff View',    target:'staff'},
+    {icon:'ic-chart',    label:'Analytics',     target:'analytics'},
+  ],
+  chef:[
+    {icon:'ic-restaurant',label:'Chef Dashboard',target:'chef'},
+    {icon:'ic-chart',    label:'Analytics',     target:'analytics'},
+  ],
+  staff:[
+    {icon:'ic-people',   label:'Staff Dashboard',target:'staff'},
+  ],
+  analytics:[
+    {icon:'ic-chart',    label:'Analytics',     target:'analytics'},
+  ],
 };
 function updateDrawer(user){
   document.getElementById('drawer-name').textContent=user.name;
@@ -798,6 +872,8 @@ function updateDrawer(user){
 function drawerNav(target){
   closeDrawer();
   if(target==='guest-home'){showScreen('guest');renderGuestHome();}
+  else if(target==='operator'){showScreen('operator');renderOperatorDashboard();}
+  else if(target==='manager'){showScreen('manager');renderManagerDashboard();}
   else showScreen(target);
 }
 function openDrawer(){document.getElementById('drawer').classList.add('open');}
@@ -825,9 +901,10 @@ function renderSupportContent(){
   ];
   document.getElementById('sup-faq').innerHTML=faqs.map(f=>`<div class="faq-item"><div class="faq-q">Q: ${f.q}</div><div class="faq-a">A: ${f.a}</div></div>`).join('');
   document.getElementById('sup-contact').innerHTML=`
-    <div class="contact-item"><svg><use href="#ic-call"/></svg><div><div class="contact-lbl">Phone</div><div class="contact-val">+254 700 123 456</div></div></div>
+    <div class="contact-item"><svg><use href="#ic-call"/></svg><div><div class="contact-lbl">Phone 1</div><div class="contact-val">+254 703 684 899</div></div></div>
+    <div class="contact-item"><svg><use href="#ic-call"/></svg><div><div class="contact-lbl">Phone 2</div><div class="contact-val">+254 795 608 151</div></div></div>
     <div class="contact-item"><svg><use href="#ic-mail"/></svg><div><div class="contact-lbl">Email</div><div class="contact-val">support@nexahotel.com</div></div></div>
-    <div class="contact-item"><svg><use href="#ic-whatsapp"/></svg><div><div class="contact-lbl">WhatsApp</div><div class="contact-val">+254 700 123 456</div></div></div>
+    <div class="contact-item"><svg><use href="#ic-whatsapp"/></svg><div><div class="contact-lbl">WhatsApp</div><div class="contact-val">+254 703 684 899</div></div></div>
     <div class="contact-item"><svg><use href="#ic-time"/></svg><div><div class="contact-lbl">Hours</div><div class="contact-val">24/7 Available</div></div></div>
     <p style="color:var(--muted);font-size:12px;margin:12px 0 6px">Send us a message</p>
     <textarea class="form-input" id="sup-msg" placeholder="Describe your issue..." rows="3"></textarea>
@@ -1288,6 +1365,346 @@ function renderGuestPaid(){
       <div class="success-note"><svg><use href="#ic-mail"/></svg>Receipt sent to your email.</div>
       <button class="btn-gold" onclick="guestState={view:'home',guests:2,date:'Today',time:null,roomType:null,nights:1,menuCat:'All',cart:{},bookingType:'',total:0,payMethod:null};renderGuestHome()">Back to Home</button>
     </div>`;
+}
+
+/* ── USER MANAGEMENT (shared by operator + manager) ───────────────────── */
+let userMgmtView='list'; // list | add | edit | view
+let editingUser=null;
+let addFormRole=null;
+let userListFilter='all';
+
+function generateId(role){
+  const prefix=ROLE_META[role].prefix;
+  const existing=STAFF.filter(s=>s.role===role).map(s=>parseInt(s.id.split('-')[1]||0));
+  const next=(existing.length>0?Math.max(...existing):0)+1;
+  return prefix+'-'+String(next).padStart(3,'0');
+}
+
+function canManage(actorRole, targetRole){
+  return (ROLE_HIERARCHY[actorRole]||[]).includes(targetRole);
+}
+
+function renderUserCard(u, actorRole){
+  const meta=ROLE_META[u.role];
+  const canEdit=canManage(actorRole,u.role);
+  const addedByUser=STAFF.find(s=>s.id===u.addedBy);
+  return `<div class="card" style="border-left:4px solid ${meta.color}20;margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="background:${meta.color}18;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg style="width:20px;height:20px;color:${meta.color}"><use href="#${meta.icon}"/></svg>
+        </div>
+        <div>
+          <div style="font-weight:600;color:var(--white);font-size:14px">${u.name}</div>
+          <div style="font-size:11px;color:var(--muted)">${u.id}</div>
+        </div>
+      </div>
+      <span class="pill" style="background:${meta.color}18;color:${meta.color}">${meta.label}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+      <div style="background:var(--bg);border-radius:8px;padding:8px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:2px">DEPARTMENT</div>
+        <div style="font-size:12px;color:var(--white);font-weight:500">${u.dept||'—'}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:8px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:2px">SHIFT</div>
+        <div style="font-size:12px;color:var(--white);font-weight:500">${u.shift||'—'}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:8px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:2px">PHONE</div>
+        <div style="font-size:12px;color:var(--white);font-weight:500">${u.phone||'—'}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:8px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:2px">ADDED BY</div>
+        <div style="font-size:12px;color:var(--white);font-weight:500">${addedByUser?addedByUser.name:u.addedBy||'—'}</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;word-break:break-all">${u.email||''}</div>
+    ${canEdit?`<div class="action-btns">
+      <button class="abtn abtn-blue" onclick="openEditUser('${u.id}','${actorRole}')"><svg><use href="#ic-id"/></svg>Edit</button>
+      <button class="abtn abtn-red" onclick="deleteUser('${u.id}','${actorRole}')"><svg><use href="#ic-trash"/></svg>Remove</button>
+    </div>`:'<div style="font-size:11px;color:var(--muted)">View only</div>'}
+  </div>`;
+}
+
+function renderAddUserForm(actorRole, containerId){
+  const canAdd=ROLE_HIERARCHY[actorRole]||[];
+  if(canAdd.length===0){return '<p style="color:var(--muted);text-align:center;padding:20px">No roles available to add.</p>';}
+  if(!addFormRole)addFormRole=canAdd[0];
+  return `<div class="card">
+    <div class="card-title" style="display:flex;align-items:center;gap:8px">
+      <svg style="width:18px;height:18px;color:var(--gold)"><use href="#ic-person-add"/></svg>
+      Add New Staff Member
+    </div>
+
+    <label class="section-label">FULL NAME *</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-person"/></svg><input type="text" id="nf-name" placeholder="e.g. Jane Doe" /></div>
+
+    <label class="section-label">ROLE *</label>
+    <div class="chips" id="nf-role-chips">
+      ${canAdd.map(r=>`<button class="chip${addFormRole===r?' active':''}" onclick="setAddFormRole('${r}','${containerId}')" style="border-color:${ROLE_META[r].color};${addFormRole===r?'background:'+ROLE_META[r].color+';color:#1a1200':''}">${ROLE_META[r].label}</button>`).join('')}
+    </div>
+
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:var(--muted)">
+      Auto-generated ID: <strong style="color:var(--gold)">${generateId(addFormRole)}</strong>
+    </div>
+
+    <label class="section-label">EMAIL ADDRESS *</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-mail"/></svg><input type="email" id="nf-email" placeholder="e.g. jane@nexahotel.com" /></div>
+
+    <label class="section-label">PHONE NUMBER *</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-phone"/></svg><input type="tel" id="nf-phone" placeholder="+254 7XX XXX XXX" /></div>
+
+    <label class="section-label">4-DIGIT PIN *</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px">
+      <svg><use href="#ic-keypad"/></svg>
+      <input type="password" id="nf-pin" placeholder="Set 4-digit PIN" maxlength="4" inputmode="numeric" />
+    </div>
+
+    <label class="section-label">CONFIRM PIN *</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-lock"/></svg><input type="password" id="nf-pin2" placeholder="Confirm PIN" maxlength="4" inputmode="numeric" /></div>
+
+    <label class="section-label">DEPARTMENT *</label>
+    <select class="form-input" id="nf-dept">
+      ${DEPARTMENTS.map(d=>`<option value="${d}">${d}</option>`).join('')}
+    </select>
+
+    <label class="section-label" style="margin-top:8px">SHIFT *</label>
+    <select class="form-input" id="nf-shift">
+      ${SHIFTS.map(s=>`<option value="${s}">${s}</option>`).join('')}
+    </select>
+
+    <span class="error-text" id="nf-error" style="margin-top:6px"></span>
+    <button class="btn-gold" style="margin-top:12px" onclick="submitAddUser('${actorRole}','${containerId}')">
+      <svg style="width:16px;height:16px"><use href="#ic-check"/></svg>
+      Create Account
+    </button>
+  </div>`;
+}
+
+function setAddFormRole(r, containerId){
+  addFormRole=r;
+  const host=document.getElementById(containerId);
+  if(host) host.innerHTML=renderHubContent(currentUser.role,containerId,'add');
+}
+
+function submitAddUser(actorRole, containerId){
+  const name=document.getElementById('nf-name').value.trim();
+  const email=document.getElementById('nf-email').value.trim();
+  const phone=document.getElementById('nf-phone').value.trim();
+  const pin=document.getElementById('nf-pin').value.trim();
+  const pin2=document.getElementById('nf-pin2').value.trim();
+  const dept=document.getElementById('nf-dept').value;
+  const shift=document.getElementById('nf-shift').value;
+  const errEl=document.getElementById('nf-error');
+
+  if(!name){errEl.textContent='Full name is required.';return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){errEl.textContent='Valid email is required.';return;}
+  if(!phone||phone.length<10){errEl.textContent='Valid phone number is required.';return;}
+  if(!pin||pin.length<4){errEl.textContent='PIN must be 4 digits.';return;}
+  if(pin!==pin2){errEl.textContent='PINs do not match.';return;}
+  if(STAFF.find(s=>s.email===email)){errEl.textContent='Email already in use.';return;}
+
+  const newId=generateId(addFormRole);
+  STAFF.push({id:newId,name,role:addFormRole,pin,email,phone,dept,shift,addedBy:currentUser.id});
+  addFormRole=null;userMgmtView='list';
+  alert('Account created successfully!\nID: '+newId+'\nPIN: '+pin+'\nShare these credentials securely with '+name+'.');
+  const host=document.getElementById(containerId);
+  if(host)host.innerHTML=renderHubContent(actorRole,containerId,'list');
+}
+
+function openEditUser(uid, actorRole){
+  editingUser=STAFF.find(s=>s.id===uid);
+  if(!editingUser)return;
+  const host=document.getElementById(actorRole==='operator'?'operator-body':'manager-body');
+  if(host)host.innerHTML=renderEditUserForm(actorRole, actorRole==='operator'?'operator-body':'manager-body');
+}
+
+function renderEditUserForm(actorRole, containerId){
+  const u=editingUser;
+  return `<div class="card">
+    <div class="card-title">Edit: ${u.name}</div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px">
+      <span style="color:var(--muted)">ID: </span><strong style="color:var(--gold)">${u.id}</strong>
+      <span style="color:var(--muted);margin-left:12px">Role: </span><strong style="color:var(--white)">${ROLE_META[u.role].label}</strong>
+    </div>
+
+    <label class="section-label">FULL NAME *</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-person"/></svg><input type="text" id="ef-name" value="${u.name}" /></div>
+
+    <label class="section-label">EMAIL *</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-mail"/></svg><input type="email" id="ef-email" value="${u.email||''}" /></div>
+
+    <label class="section-label">PHONE *</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-phone"/></svg><input type="tel" id="ef-phone" value="${u.phone||''}" /></div>
+
+    <label class="section-label">DEPARTMENT</label>
+    <select class="form-input" id="ef-dept">
+      ${DEPARTMENTS.map(d=>`<option value="${d}"${u.dept===d?' selected':''}>${d}</option>`).join('')}
+    </select>
+
+    <label class="section-label" style="margin-top:8px">SHIFT</label>
+    <select class="form-input" id="ef-shift">
+      ${SHIFTS.map(s=>`<option value="${s}"${u.shift===s?' selected':''}>${s}</option>`).join('')}
+    </select>
+
+    <label class="section-label" style="margin-top:8px">RESET PIN (leave blank to keep current)</label>
+    <div class="input-wrap" style="width:100%;margin-bottom:6px"><svg><use href="#ic-keypad"/></svg><input type="password" id="ef-pin" placeholder="New 4-digit PIN" maxlength="4" /></div>
+    <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-lock"/></svg><input type="password" id="ef-pin2" placeholder="Confirm new PIN" maxlength="4" /></div>
+
+    <span class="error-text" id="ef-error"></span>
+    <div style="display:flex;gap:10px;margin-top:12px">
+      <button class="btn-gold" style="flex:1" onclick="submitEditUser('${actorRole}','${containerId}')">
+        <svg style="width:16px;height:16px"><use href="#ic-check"/></svg>Save Changes
+      </button>
+      <button style="flex:1;background:var(--card2);color:var(--muted);border-radius:10px;padding:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.1)" onclick="cancelEdit('${actorRole}','${containerId}')">Cancel</button>
+    </div>
+  </div>`;
+}
+
+function submitEditUser(actorRole, containerId){
+  const name=document.getElementById('ef-name').value.trim();
+  const email=document.getElementById('ef-email').value.trim();
+  const phone=document.getElementById('ef-phone').value.trim();
+  const dept=document.getElementById('ef-dept').value;
+  const shift=document.getElementById('ef-shift').value;
+  const pin=document.getElementById('ef-pin').value.trim();
+  const pin2=document.getElementById('ef-pin2').value.trim();
+  const errEl=document.getElementById('ef-error');
+
+  if(!name){errEl.textContent='Name is required.';return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){errEl.textContent='Valid email required.';return;}
+  if(!phone){errEl.textContent='Phone is required.';return;}
+  if(pin&&pin.length<4){errEl.textContent='PIN must be 4 digits.';return;}
+  if(pin&&pin!==pin2){errEl.textContent='PINs do not match.';return;}
+
+  const idx=STAFF.findIndex(s=>s.id===editingUser.id);
+  if(idx>-1){
+    STAFF[idx].name=name;STAFF[idx].email=email;STAFF[idx].phone=phone;
+    STAFF[idx].dept=dept;STAFF[idx].shift=shift;
+    if(pin)STAFF[idx].pin=pin;
+  }
+  editingUser=null;
+  const host=document.getElementById(containerId);
+  if(host)host.innerHTML=renderHubContent(actorRole,containerId,'list');
+}
+
+function cancelEdit(actorRole, containerId){
+  editingUser=null;
+  const host=document.getElementById(containerId);
+  if(host)host.innerHTML=renderHubContent(actorRole,containerId,'list');
+}
+
+function deleteUser(uid, actorRole){
+  const u=STAFF.find(s=>s.id===uid);
+  if(!u)return;
+  if(!confirm('Remove '+u.name+' ('+u.id+') from the system? This cannot be undone.'))return;
+  const idx=STAFF.findIndex(s=>s.id===uid);
+  if(idx>-1)STAFF.splice(idx,1);
+  const containerId=actorRole==='operator'?'operator-body':'manager-body';
+  const host=document.getElementById(containerId);
+  if(host)host.innerHTML=renderHubContent(actorRole,containerId,'list');
+}
+
+function renderHubContent(actorRole, containerId, view){
+  if(view==='add')return renderAddUserForm(actorRole,containerId);
+
+  const manageable=ROLE_HIERARCHY[actorRole]||[];
+  const filterAll=['all',...manageable];
+  if(!manageable.includes(userListFilter)&&userListFilter!=='all')userListFilter='all';
+  const visible=STAFF.filter(s=>userListFilter==='all'?manageable.includes(s.role):s.role===userListFilter);
+
+  const stats=manageable.map(r=>({r,count:STAFF.filter(s=>s.role===r).length}));
+
+  return `
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:repeat(${Math.min(stats.length,3)},1fr);gap:8px;margin-bottom:14px">
+      ${stats.map(s=>`<div class="stat-card">
+        <div class="stat-val" style="color:${ROLE_META[s.r].color};font-size:22px">${s.count}</div>
+        <div class="stat-lbl">${ROLE_META[s.r].label}s</div>
+      </div>`).join('')}
+    </div>
+
+    <!-- Add button -->
+    <button class="btn-gold" style="margin-bottom:14px" onclick="addFormRole=null;const h=document.getElementById('${containerId}');if(h)h.innerHTML=renderHubContent('${actorRole}','${containerId}','add')">
+      <svg style="width:16px;height:16px"><use href="#ic-person-add"/></svg>
+      Add Staff Member
+    </button>
+
+    <!-- Filter chips -->
+    <div class="chips">
+      ${filterAll.map(f=>`<button class="chip${userListFilter===f?' active':''}" onclick="userListFilter='${f}';const h=document.getElementById('${containerId}');if(h)h.innerHTML=renderHubContent('${actorRole}','${containerId}','list')" style="${f!=='all'?'border-color:'+ROLE_META[f].color+(userListFilter===f?';background:'+ROLE_META[f].color+';color:#1a1200':''):''}">${f==='all'?'All':ROLE_META[f].label}</button>`).join('')}
+    </div>
+
+    <!-- User list -->
+    ${visible.length===0?'<p style="color:var(--muted);text-align:center;padding:20px">No staff found.</p>':visible.map(u=>renderUserCard(u,actorRole)).join('')}
+  `;
+}
+
+/* ── OPERATOR DASHBOARD ───────────────────────────────────────────────── */
+function renderOperatorDashboard(){
+  const host=document.getElementById('operator-body');
+  if(!host||!currentUser)return;
+  if(currentUser.role!=='operator'){host.innerHTML='<p style="color:var(--muted);padding:20px">Access denied.</p>';return;}
+
+  // System-wide stats
+  const totalStaff=STAFF.filter(s=>s.role!=='operator').length;
+  const byRole=Object.keys(ROLE_META).filter(r=>r!=='operator').map(r=>({r,count:STAFF.filter(s=>s.role===r).length}));
+
+  host.innerHTML=`
+    <!-- System overview -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:18px;height:18px;color:var(--gold)"><use href="#ic-diamond"/></svg>
+      <span style="font-weight:600;font-size:15px;color:var(--white)">System Overview</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
+      <div class="stat-card"><div class="stat-val" style="color:var(--gold)">${totalStaff}</div><div class="stat-lbl">Total Staff</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--green)">${STAFF.filter(s=>s.role==='admin').length}</div><div class="stat-lbl">Admins</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${STAFF.filter(s=>s.role==='manager').length}</div><div class="stat-lbl">Managers</div></div>
+    </div>
+
+    <!-- Breakdown by role -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">Staff by Role</div>
+      ${byRole.map(({r,count})=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="background:${ROLE_META[r].color}18;border-radius:6px;padding:6px;display:flex"><svg style="width:16px;height:16px;color:${ROLE_META[r].color}"><use href="#${ROLE_META[r].icon}"/></svg></div>
+            <span style="color:var(--white);font-size:13px">${ROLE_META[r].label}</span>
+          </div>
+          <span style="color:${ROLE_META[r].color};font-weight:700">${count}</span>
+        </div>`).join('')}
+    </div>
+
+    <!-- User management -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:18px;height:18px;color:var(--gold)"><use href="#ic-people"/></svg>
+      <span style="font-weight:600;font-size:15px;color:var(--white)">Staff Management</span>
+    </div>
+    ${renderHubContent('operator','operator-body','list')}
+  `;
+}
+
+/* ── MANAGER DASHBOARD ────────────────────────────────────────────────── */
+function renderManagerDashboard(){
+  const host=document.getElementById('manager-body');
+  if(!host||!currentUser)return;
+  if(!['operator','admin','manager'].includes(currentUser.role)){host.innerHTML='<p style="color:var(--muted);padding:20px">Access denied.</p>';return;}
+
+  const manageable=ROLE_HIERARCHY[currentUser.role]||[];
+  const myTeam=STAFF.filter(s=>manageable.includes(s.role));
+
+  host.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:18px;height:18px;color:var(--accent)"><use href="#ic-people"/></svg>
+      <span style="font-weight:600;font-size:15px;color:var(--white)">Team Management</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${myTeam.length}</div><div class="stat-lbl">Team Members</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--gold)">${manageable.length}</div><div class="stat-lbl">Manageable Roles</div></div>
+    </div>
+    ${renderHubContent(currentUser.role,'manager-body','list')}
+  `;
 }
 
 /* ── INIT ─────────────────────────────────────────────────────────────── */
