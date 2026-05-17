@@ -812,6 +812,15 @@ textarea.form-input{min-height:70px;resize:vertical}
     <div class="drawer-section-lbl">NAVIGATION</div>
     <div id="drawer-nav"></div>
     <div class="drawer-bottom">
+      <div class="drawer-section-lbl" style="margin-top:8px">ACCOUNT</div>
+      <div class="drawer-item" onclick="openProfile()">
+        <svg><use href="#ic-person"/></svg>
+        <span>My Profile & PIN</span>
+      </div>
+      <div class="drawer-item" id="drawer-settings-item" onclick="openSettings()">
+        <svg><use href="#ic-shield"/></svg>
+        <span>Settings</span>
+      </div>
       <div class="drawer-item" onclick="confirmLogout()">
         <svg style="color:var(--danger)"><use href="#ic-logout"/></svg>
         <span style="color:var(--danger)">Logout</span>
@@ -842,7 +851,33 @@ textarea.form-input{min-height:70px;resize:vertical}
   </div>
 </div>
 
-<!-- CUSTOM CONFIRM MODAL -->
+<!-- PROFILE MODAL -->
+<div id="profile-modal" style="position:fixed;inset:0;z-index:200;display:none;align-items:flex-end">
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,.6)" onclick="closeProfile()"></div>
+  <div style="position:relative;z-index:1;width:100%;max-height:90vh;background:var(--card);border-radius:20px 20px 0 0;padding:20px;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div style="font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px">
+        <svg style="width:20px;height:20px;color:var(--gold)"><use href="#ic-person"/></svg>My Profile
+      </div>
+      <button onclick="closeProfile()" style="background:none;border:none;color:var(--muted);cursor:pointer"><svg style="width:26px;height:26px"><use href="#ic-close"/></svg></button>
+    </div>
+    <div id="profile-body"></div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" style="position:fixed;inset:0;z-index:200;display:none;align-items:flex-end">
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,.6)" onclick="closeSettings()"></div>
+  <div style="position:relative;z-index:1;width:100%;max-height:90vh;background:var(--card);border-radius:20px 20px 0 0;padding:20px;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div style="font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px">
+        <svg style="width:20px;height:20px;color:var(--gold)"><use href="#ic-shield"/></svg>Settings
+      </div>
+      <button onclick="closeSettings()" style="background:none;border:none;color:var(--muted);cursor:pointer"><svg style="width:26px;height:26px"><use href="#ic-close"/></svg></button>
+    </div>
+    <div id="settings-body"></div>
+  </div>
+</div>
 <div class="modal-overlay" id="custom-modal">
   <div class="modal-box">
     <div class="modal-icon-ring" id="modal-icon-ring">
@@ -2189,7 +2224,675 @@ function renderManagerDashboard(){
     ${renderHubContent(currentUser.role,'manager-body','list')}`;
 }
 
-/* ═══════════════════════ INIT ════════════════════════════════════════ */
+/* ═══════════════════ MANAGER HUB — ENHANCED ═════════════════════════ */
+function renderManagerDashboard(){
+  const host=document.getElementById('manager-body');
+  if(!host||!currentUser)return;
+  if(!['operator','admin','manager'].includes(currentUser.role)){host.innerHTML='<p style="color:var(--muted);padding:20px">Access denied.</p>';return;}
+  const manageable=ROLE_HIERARCHY[currentUser.role]||[];
+  const myTeam=STAFF.filter(s=>manageable.includes(s.role));
+  const onDutyShifts=['Morning','All Day'];
+  const onDuty=myTeam.filter(s=>onDutyShifts.includes(s.shift)).length;
+  // Activity feed (simulated real-time)
+  const activities=[
+    {dot:'var(--green)',text:'Carlos Mendez checked in — Front Desk',time:'2 min ago'},
+    {dot:'var(--amber)',text:'Diana Omondi started housekeeping round',time:'11 min ago'},
+    {dot:'var(--accent)',text:'Marco Rossi completed 6 orders this shift',time:'22 min ago'},
+    {dot:'var(--danger)',text:'Table 3 bill flagged — waiting cashier',time:'34 min ago'},
+    {dot:'var(--green)',text:'Aisha Kimani logged in — Evening shift',time:'1 hr ago'},
+  ];
+  host.innerHTML=`
+    <!-- KPI row -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${myTeam.length}</div><div class="stat-lbl">Team Size</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--green)">${onDuty}</div><div class="stat-lbl">On Duty</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--gold)">${orders.filter(o=>o.status==='In Progress').length}</div><div class="stat-lbl">Live Orders</div></div>
+    </div>
+
+    <!-- Quick actions -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-zap"/></svg>
+      <span style="font-weight:600;font-size:14px">Quick Actions</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <button onclick="drawerNav('chef');closeDrawer()" class="abtn abtn-amber" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px"><svg><use href="#ic-restaurant"/></svg>Kitchen View</button>
+      <button onclick="drawerNav('staff');closeDrawer()" class="abtn abtn-green" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px"><svg><use href="#ic-people"/></svg>Floor View</button>
+      <button onclick="drawerNav('analytics');closeDrawer()" class="abtn abtn-blue" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px"><svg><use href="#ic-chart"/></svg>Analytics</button>
+      <button onclick="broadcastMessage()" class="abtn abtn-red" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px"><svg><use href="#ic-bell"/></svg>Broadcast</button>
+    </div>
+
+    <!-- Shift Schedule -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-time"/></svg>
+      <span style="font-weight:600;font-size:14px">Today's Shifts</span>
+    </div>
+    <div class="card" style="padding:12px;margin-bottom:14px">
+      ${['Morning','Afternoon','Evening','Night'].map(shift=>{
+        const crew=myTeam.filter(s=>s.shift===shift||s.shift==='All Day');
+        return `<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:13px;font-weight:600;color:var(--white)">${shift}</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            ${crew.length?crew.map(s=>`<span style="background:${ROLE_META[s.role].color}18;color:${ROLE_META[s.role].color};padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">${s.name.split(' ')[0]}</span>`).join(''):'<span style="color:var(--muted);font-size:12px">—</span>'}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <!-- Activity Feed -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span class="live-dot"></span>
+      <span style="font-weight:600;font-size:14px">Team Activity</span>
+    </div>
+    <div class="card" style="padding:12px;margin-bottom:14px">
+      ${activities.map(a=>`
+        <div class="activity-item">
+          <div class="activity-dot" style="background:${a.dot}"></div>
+          <div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div>
+        </div>`).join('')}
+    </div>
+
+    <!-- Staff management -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-people"/></svg>
+      <span style="font-weight:600;font-size:14px">Staff Management</span>
+    </div>
+    ${renderHubContent(currentUser.role,'manager-body','list')}`;
+}
+
+function broadcastMessage(){
+  showModal({
+    icon:'ic-bell',iconStyle:'gold',
+    title:'Broadcast to All Staff',
+    msg:'<textarea id="broadcast-msg" class="form-input" placeholder="Type your message to all staff on duty..." rows="3" style="margin-top:8px"></textarea>',
+    confirmLabel:'Send Broadcast',confirmStyle:'confirm-gold',
+    onConfirm:()=>{
+      const msg=document.getElementById('broadcast-msg')?.value?.trim();
+      if(msg){
+        activityLog.unshift({dot:'var(--gold)',text:'Broadcast sent: "'+msg.slice(0,50)+(msg.length>50?'...':'')+'"',time:'Just now'});
+        showModal({icon:'ic-check-circle',iconStyle:'green',title:'Broadcast Sent',msg:'Your message has been sent to all '+STAFF.filter(s=>s.role!=='operator').length+' staff members.',confirmLabel:'OK',confirmStyle:'confirm-gold',cancelLabel:''});
+      }
+    }
+  });
+  setTimeout(()=>{const el=document.getElementById('broadcast-msg');if(el)el.focus();},200);
+}
+
+/* ═══════════════════ OPERATOR HUB — ENHANCED ════════════════════════ */
+let hotelSettings={name:'NEXA Hotel',phone:'+254 703 684 899',email:'info@nexahotel.com',address:'Nairobi, Kenya',currency:'KSh/USD',timezone:'EAT (UTC+3)'};
+let activityLog=[
+  {dot:'var(--green)',  text:'Sarah Johnson (ADM-001) logged in',time:'5 min ago'},
+  {dot:'var(--accent)', text:'New booking: Mark Lee — 7:00 PM',time:'12 min ago'},
+  {dot:'var(--amber)',  text:'Table 3 bill called by Carlos',time:'28 min ago'},
+  {dot:'var(--danger)', text:'Grilled Salmon overdue — Table 5',time:'35 min ago'},
+  {dot:'var(--green)',  text:'Marco Rossi (CHF-001) marked 2 orders done',time:'1 hr ago'},
+  {dot:'var(--accent)', text:'Guest Ana Cruz booked Room: Suite × 2 nights',time:'2 hr ago'},
+  {dot:'var(--gold)',   text:'System backup completed successfully',time:'4 hr ago'},
+];
+
+function renderOperatorDashboard(){
+  const host=document.getElementById('operator-body');
+  if(!host||!currentUser)return;
+  if(currentUser.role!=='operator'){host.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted)">Access denied.</div>';return;}
+  const byRole=Object.keys(ROLE_META).filter(r=>r!=='operator').map(r=>({r,count:STAFF.filter(s=>s.role===r).length}));
+  const totalStaff=STAFF.filter(s=>s.role!=='operator').length;
+  host.innerHTML=`
+    <!-- System KPIs -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+      <div class="stat-card"><div class="stat-val" style="color:var(--gold)">${totalStaff}</div><div class="stat-lbl">Staff</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--green)">${bookings.length}</div><div class="stat-lbl">Bookings</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${tables.filter(t=>t.status==='Busy').length}</div><div class="stat-lbl">Busy Tables</div></div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-zap"/></svg>
+      <span style="font-weight:600;font-size:14px">System Actions</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <button onclick="broadcastMessage()" class="abtn abtn-amber" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px"><svg><use href="#ic-bell"/></svg>Broadcast</button>
+      <button onclick="openSettings()" class="abtn abtn-blue" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px"><svg><use href="#ic-shield"/></svg>Hotel Settings</button>
+      <button onclick="drawerNav('analytics');closeDrawer()" class="abtn abtn-green" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px"><svg><use href="#ic-chart"/></svg>Analytics</button>
+      <button onclick="exportFullReport()" class="abtn abtn-red" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px"><svg><use href="#ic-download"/></svg>Full Report</button>
+    </div>
+
+    <!-- Staff by role -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">Staff by Role</div>
+      ${byRole.map(({r,count})=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="background:${ROLE_META[r].color}18;border-radius:6px;padding:6px;display:flex"><svg style="width:16px;height:16px;color:${ROLE_META[r].color}"><use href="#${ROLE_META[r].icon}"/></svg></div>
+            <span style="font-size:13px;color:var(--white)">${ROLE_META[r].label}</span>
+          </div>
+          <span style="color:${ROLE_META[r].color};font-weight:700">${count}</span>
+        </div>`).join('')}
+    </div>
+
+    <!-- Activity Log -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span class="live-dot"></span>
+      <span style="font-weight:600;font-size:14px">System Activity Log</span>
+    </div>
+    <div class="card" style="padding:12px;margin-bottom:14px">
+      ${activityLog.map(a=>`
+        <div class="activity-item">
+          <div class="activity-dot" style="background:${a.dot}"></div>
+          <div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div>
+        </div>`).join('')}
+    </div>
+
+    <!-- Staff management -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-people"/></svg>
+      <span style="font-weight:600;font-size:14px">Staff Management</span>
+    </div>
+    ${renderHubContent('operator','operator-body','list')}`;
+}
+
+function exportFullReport(){
+  showModal({
+    icon:'ic-download',iconStyle:'gold',
+    title:'Export Full System Report',
+    msg:`<div style="text-align:left;font-size:12px;line-height:2">
+      <div>📋 <strong>Staff:</strong> ${STAFF.length} accounts</div>
+      <div>📅 <strong>Bookings:</strong> ${bookings.length} active</div>
+      <div>🍽️ <strong>Orders:</strong> ${orders.length} total (${orders.filter(o=>o.status==='In Progress').length} in progress)</div>
+      <div>🪑 <strong>Tables:</strong> ${tables.filter(t=>t.status==='Busy').length} busy / ${tables.length} total</div>
+      <div>💰 <strong>Revenue (week):</strong> $4,640</div>
+    </div>`,
+    confirmLabel:'Download CSV',confirmStyle:'confirm-gold',
+    onConfirm:()=>{
+      activityLog.unshift({dot:'var(--gold)',text:'Full system report exported by Operator',time:'Just now'});
+    }
+  });
+}
+
+/* ═══════════════════ PROFILE & CHANGE PIN ═══════════════════════════ */
+function openProfile(){
+  closeDrawer();
+  if(!currentUser){showScreen('login');return;}
+  document.getElementById('profile-modal').style.display='flex';
+  renderProfileBody();
+}
+function closeProfile(){document.getElementById('profile-modal').style.display='none';}
+
+function renderProfileBody(){
+  const u=currentUser;
+  const meta=ROLE_META[u.role];
+  const addedByUser=STAFF.find(s=>s.id===u.addedBy);
+  document.getElementById('profile-body').innerHTML=`
+    <!-- Avatar & identity -->
+    <div style="display:flex;flex-direction:column;align-items:center;padding:20px 0 24px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:18px">
+      <div style="width:72px;height:72px;border-radius:50%;background:${meta.color}18;border:2px solid ${meta.color}40;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+        <svg style="width:36px;height:36px;color:${meta.color}"><use href="#${meta.icon}"/></svg>
+      </div>
+      <div style="font-size:20px;font-weight:700;font-family:var(--font-display)">${u.name}</div>
+      <span class="pill" style="background:${meta.color}18;color:${meta.color};margin-top:6px">${meta.label}</span>
+    </div>
+
+    <!-- Details grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+      ${[['Staff ID',u.id],['Department',u.dept||'—'],['Shift',u.shift||'—'],['Phone',u.phone||'—'],['Email',u.email||'—'],['Added By',addedByUser?addedByUser.name:u.addedBy||'—']].map(([l,v])=>`
+        <div style="background:var(--bg);border-radius:10px;padding:10px 12px">
+          <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:3px">${l.toUpperCase()}</div>
+          <div style="font-size:13px;color:var(--white);font-weight:500;word-break:break-all">${v}</div>
+        </div>`).join('')}
+    </div>
+
+    <!-- Change PIN -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-lock"/></svg>
+      <span style="font-weight:600;font-size:14px">Change PIN</span>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <label class="section-label">CURRENT PIN</label>
+      <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-keypad"/></svg><input type="password" id="prof-cur-pin" placeholder="Enter current PIN" maxlength="4" inputmode="numeric"/></div>
+      <label class="section-label">NEW PIN</label>
+      <div class="input-wrap" style="width:100%;margin-bottom:6px"><svg><use href="#ic-lock"/></svg><input type="password" id="prof-new-pin" placeholder="4-digit new PIN" maxlength="4" inputmode="numeric"/></div>
+      <label class="section-label">CONFIRM NEW PIN</label>
+      <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-shield-check"/></svg><input type="password" id="prof-confirm-pin" placeholder="Confirm new PIN" maxlength="4" inputmode="numeric"/></div>
+      <span class="error-text" id="pin-change-err"></span>
+      <button class="btn-gold" onclick="submitPINChange()">
+        <svg style="width:16px;height:16px"><use href="#ic-check"/></svg>Update PIN
+      </button>
+    </div>
+
+    <!-- Update contact -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-phone"/></svg>
+      <span style="font-weight:600;font-size:14px">Update Contact Info</span>
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <label class="section-label">PHONE NUMBER</label>
+      <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-phone"/></svg><input type="tel" id="prof-phone" value="${u.phone||''}" placeholder="+254 7XX XXX XXX"/></div>
+      <label class="section-label">EMAIL ADDRESS</label>
+      <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-mail"/></svg><input type="email" id="prof-email" value="${u.email||''}" placeholder="your@email.com"/></div>
+      <span class="error-text" id="contact-change-err"></span>
+      <button class="btn-gold" onclick="submitContactUpdate()">
+        <svg style="width:16px;height:16px"><use href="#ic-check"/></svg>Update Contact
+      </button>
+    </div>`;
+}
+
+function submitPINChange(){
+  const cur=document.getElementById('prof-cur-pin').value.trim();
+  const nw=document.getElementById('prof-new-pin').value.trim();
+  const conf=document.getElementById('prof-confirm-pin').value.trim();
+  const err=document.getElementById('pin-change-err');
+  if(!cur){err.textContent='Enter your current PIN.';return;}
+  if(cur!==currentUser.pin){err.textContent='Current PIN is incorrect.';return;}
+  if(!nw||nw.length<4){err.textContent='New PIN must be 4 digits.';return;}
+  if(!/^\d{4}$/.test(nw)){err.textContent='PIN must be numbers only.';return;}
+  if(nw!==conf){err.textContent='New PINs do not match.';return;}
+  const idx=STAFF.findIndex(s=>s.id===currentUser.id);
+  if(idx>-1)STAFF[idx].pin=nw;
+  currentUser.pin=nw;
+  err.textContent='';
+  document.getElementById('prof-cur-pin').value='';
+  document.getElementById('prof-new-pin').value='';
+  document.getElementById('prof-confirm-pin').value='';
+  showModal({icon:'ic-check-circle',iconStyle:'green',title:'PIN Updated!',msg:'Your PIN has been changed successfully. Use your new PIN on your next login.',confirmLabel:'Great',confirmStyle:'confirm-gold',cancelLabel:''});
+}
+
+function submitContactUpdate(){
+  const phone=document.getElementById('prof-phone').value.trim();
+  const email=document.getElementById('prof-email').value.trim();
+  const err=document.getElementById('contact-change-err');
+  if(!phone){err.textContent='Phone number required.';return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Valid email required.';return;}
+  const idx=STAFF.findIndex(s=>s.id===currentUser.id);
+  if(idx>-1){STAFF[idx].phone=phone;STAFF[idx].email=email;}
+  currentUser.phone=phone;currentUser.email=email;
+  err.textContent='';
+  showModal({icon:'ic-check-circle',iconStyle:'green',title:'Contact Updated!',msg:'Your phone and email have been saved.',confirmLabel:'Done',confirmStyle:'confirm-gold',cancelLabel:''});
+}
+
+/* ═══════════════════ SETTINGS ════════════════════════════════════════ */
+function openSettings(){
+  closeDrawer();
+  document.getElementById('settings-modal').style.display='flex';
+  renderSettingsBody();
+}
+function closeSettings(){document.getElementById('settings-modal').style.display='none';}
+
+function renderSettingsBody(){
+  const isAdmin=['operator','admin'].includes(currentUser?.role||'');
+  document.getElementById('settings-body').innerHTML=`
+    <!-- Hotel Info (admin/operator only) -->
+    ${isAdmin?`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-business"/></svg>
+      <span style="font-weight:600;font-size:14px">Hotel Information</span>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <label class="section-label">HOTEL NAME</label>
+      <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-business"/></svg><input type="text" id="set-hotel-name" value="${hotelSettings.name}"/></div>
+      <label class="section-label">SUPPORT PHONE</label>
+      <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-phone"/></svg><input type="tel" id="set-hotel-phone" value="${hotelSettings.phone}"/></div>
+      <label class="section-label">SUPPORT EMAIL</label>
+      <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-mail"/></svg><input type="email" id="set-hotel-email" value="${hotelSettings.email}"/></div>
+      <label class="section-label">ADDRESS</label>
+      <div class="input-wrap" style="width:100%;margin-bottom:10px"><svg><use href="#ic-business"/></svg><input type="text" id="set-hotel-addr" value="${hotelSettings.address}"/></div>
+      <label class="section-label">CURRENCY</label>
+      <select class="form-input" id="set-currency">
+        ${['KSh/USD','KSh Only','USD Only','EUR'].map(c=>`<option${hotelSettings.currency===c?' selected':''}>${c}</option>`).join('')}
+      </select>
+      <button class="btn-gold" style="margin-top:8px" onclick="saveHotelSettings()">
+        <svg style="width:16px;height:16px"><use href="#ic-check"/></svg>Save Hotel Settings
+      </button>
+    </div>`:''}
+
+    <!-- Notification Preferences -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-bell"/></svg>
+      <span style="font-weight:600;font-size:14px">Notification Preferences</span>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      ${[
+        {id:'notif-orders',label:'New Order Alerts',sub:'Notify when new orders arrive',def:true},
+        {id:'notif-bills',label:'Bill Requests',sub:'Alert when table calls for bill',def:true},
+        {id:'notif-overdue',label:'Overdue Order Warnings',sub:'Alert after 15 min in queue',def:true},
+        {id:'notif-logins',label:'Staff Login Activity',sub:'Log each staff login',def:false},
+      ].map(n=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+          <div>
+            <div style="font-size:13px;font-weight:500;color:var(--white)">${n.label}</div>
+            <div style="font-size:11px;color:var(--muted)">${n.sub}</div>
+          </div>
+          <div onclick="toggleNotifPref('${n.id}',this)" id="${n.id}" style="width:44px;height:24px;border-radius:12px;background:${n.def?'var(--green)':'rgba(255,255,255,.1)'};cursor:pointer;position:relative;transition:background .2s;flex-shrink:0">
+            <div style="position:absolute;top:3px;${n.def?'right:3px':'left:3px'};width:18px;height:18px;border-radius:50%;background:#fff;transition:all .2s"></div>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <!-- App Info -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">About NEXA</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8">
+        <div>Version: <strong style="color:var(--white)">2.4.1</strong></div>
+        <div>Build: <strong style="color:var(--white)">2026-05-17</strong></div>
+        <div>Timezone: <strong style="color:var(--white)">${hotelSettings.timezone}</strong></div>
+        <div>Support: <strong style="color:var(--gold)">+254 703 684 899</strong></div>
+      </div>
+    </div>`;
+}
+
+function toggleNotifPref(id,el){
+  const isOn=el.style.background.includes('green')||el.style.background==='var(--green)';
+  el.style.background=isOn?'rgba(255,255,255,.1)':'var(--green)';
+  const knob=el.querySelector('div');
+  if(knob){knob.style.left=isOn?'3px':'';knob.style.right=isOn?'':'3px';}
+}
+
+function saveHotelSettings(){
+  hotelSettings.name=document.getElementById('set-hotel-name')?.value||hotelSettings.name;
+  hotelSettings.phone=document.getElementById('set-hotel-phone')?.value||hotelSettings.phone;
+  hotelSettings.email=document.getElementById('set-hotel-email')?.value||hotelSettings.email;
+  hotelSettings.address=document.getElementById('set-hotel-addr')?.value||hotelSettings.address;
+  hotelSettings.currency=document.getElementById('set-currency')?.value||hotelSettings.currency;
+  showModal({icon:'ic-check-circle',iconStyle:'green',title:'Settings Saved',msg:'Hotel information has been updated successfully.',confirmLabel:'OK',confirmStyle:'confirm-gold',cancelLabel:''});
+}
+
+/* ═══════════════════ ADMIN — QUICK ACTIONS ══════════════════════════ */
+// Inject quick-action bar after admin welcome card on login
+function renderAdminQuickActions(){
+  const el=document.getElementById('admin-quick-actions');
+  if(!el)return;
+  const available=tables.filter(t=>t.status==='Available').length;
+  el.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-zap"/></svg>
+      <span style="font-weight:600;font-size:14px">Quick Actions</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px">
+      <button onclick="showQuickCheckin()" class="abtn abtn-green" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px;flex-direction:column;align-items:center;gap:4px;height:64px">
+        <svg><use href="#ic-person-add"/></svg><span>Check-In Guest</span>
+      </button>
+      <button onclick="drawerNav('staff')" class="abtn abtn-blue" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px;flex-direction:column;align-items:center;gap:4px;height:64px">
+        <svg><use href="#ic-restaurant"/></svg><span>${available} Tables Free</span>
+      </button>
+      <button onclick="drawerNav('chef')" class="abtn abtn-amber" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px;flex-direction:column;align-items:center;gap:4px;height:64px">
+        <svg><use href="#ic-flame"/></svg><span>${orders.filter(o=>o.status==='In Progress').length} Live Orders</span>
+      </button>
+      <button onclick="drawerNav('analytics')" class="abtn abtn-red" style="padding:12px;border-radius:12px;justify-content:center;font-size:13px;flex-direction:column;align-items:center;gap:4px;height:64px">
+        <svg><use href="#ic-chart"/></svg><span>Analytics</span>
+      </button>
+    </div>`;
+}
+
+function showQuickCheckin(){
+  showModal({
+    icon:'ic-person-add',iconStyle:'green',
+    title:'Quick Guest Check-In',
+    msg:'<input id="ci-name" class="form-input" placeholder="Guest name" style="margin-top:8px"/>'
+      +'<input id="ci-room" class="form-input" placeholder="Room / Table number"/>',
+    confirmLabel:'Check In',confirmStyle:'confirm-gold',
+    onConfirm:()=>{
+      const name=document.getElementById('ci-name')?.value?.trim()||'Guest';
+      const room=document.getElementById('ci-room')?.value?.trim()||'—';
+      bookings.unshift({id:Date.now(),name,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),status:'Ongoing'});
+      document.getElementById('stat-bookings').textContent=bookings.length;
+      renderBookings();
+      activityLog.unshift({dot:'var(--green)',text:`${name} checked in — ${room}`,time:'Just now'});
+      showModal({icon:'ic-check-circle',iconStyle:'green',title:'Checked In!',msg:`<strong>${name}</strong> has been checked in to <strong>${room}</strong>.`,confirmLabel:'Done',confirmStyle:'confirm-gold',cancelLabel:''});
+    }
+  });
+  setTimeout(()=>{document.getElementById('ci-name')?.focus();},200);
+}
+
+/* ═══════════════════ CHEF — ESTIMATED TIME & NOTES ══════════════════ */
+// Override renderAddUserForm-style form for chef orders with ETA and notes
+function toggleChefForm(){
+  const f=document.getElementById('chef-order-form');
+  f.style.display=f.style.display==='none'?'block':'none';
+}
+function addOrder(){
+  const item=document.getElementById('new-order-item').value.trim();
+  const table=document.getElementById('new-order-table').value.trim();
+  const eta=parseInt(document.getElementById('new-order-eta')?.value)||15;
+  const notes=document.getElementById('new-order-notes')?.value?.trim()||'';
+  if(!item||!table){showModal({icon:'ic-alert',iconStyle:'gold',title:'Missing Fields',msg:'Please fill in both the <strong>item name</strong> and <strong>table number</strong>.',confirmLabel:'OK',confirmStyle:'confirm-gold',cancelLabel:''});return;}
+  orders.unshift({id:Date.now(),item,table,priority:newOrderPriority,status:'In Progress',elapsed:0,eta:eta*60,notes});
+  document.getElementById('new-order-item').value='';
+  document.getElementById('new-order-table').value='';
+  if(document.getElementById('new-order-notes'))document.getElementById('new-order-notes').value='';
+  document.getElementById('chef-order-form').style.display='none';
+  activityLog.unshift({dot:'var(--amber)',text:`New order: ${item} — ${table}`,time:'Just now'});
+  updateChefStats();renderOrders();
+}
+
+/* ═══════════════════ STAFF — TABLE SEARCH ═══════════════════════════ */
+let tableSearchQuery='';
+function setTableSearch(q){tableSearchQuery=q.toLowerCase();renderTables();}
+
+/* ═══════════════════ ANALYTICS — STAFF PERFORMANCE TAB ════════════ */
+let anaTab='overview';
+function setAnaTab(tab,btn){
+  anaTab=tab;
+  document.querySelectorAll('#ana-tab-chips .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderAnaTabContent();
+}
+function renderAnaTabContent(){
+  const container=document.getElementById('ana-tab-content');
+  if(!container)return;
+  if(anaTab==='overview'){
+    container.innerHTML=`
+      <div class="card"><div class="card-title" id="ana-chart-title2"></div><div class="chart-wrap" id="ana-chart2"></div></div>
+      <div class="card"><div class="card-title">Revenue Breakdown</div><div id="ana-breakdown2"></div></div>
+      <div class="card"><div class="card-title">Peak Hours</div><div id="ana-peaks2"></div></div>`;
+    // Re-render using the sub IDs
+    renderAnaChartIn('ana-chart2','ana-chart-title2');
+    renderAnaBreakdownIn('ana-breakdown2');
+    renderAnaPeaksIn('ana-peaks2');
+  } else if(anaTab==='staff'){
+    const staffPerf=[
+      {name:'Marco Rossi',  role:'chef',  orders:24,avg:'18 min',score:92},
+      {name:'Aisha Kimani', role:'chef',  orders:18,avg:'22 min',score:85},
+      {name:'Carlos Mendez',role:'staff', orders:0, avg:'—',tables:4,score:90},
+      {name:'Diana Omondi', role:'staff', orders:0, avg:'—',tables:3,score:88},
+    ];
+    container.innerHTML=`
+      <div class="card">
+        <div class="card-title">Staff Performance — This Shift</div>
+        ${staffPerf.map(s=>`
+          <div style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <div>
+                <div style="font-weight:600;font-size:13px;color:var(--white)">${s.name}</div>
+                <div style="font-size:11px;color:var(--muted)">${ROLE_META[s.role].label} • ${s.orders?s.orders+' orders':s.tables+' tables served'}</div>
+              </div>
+              <div style="font-size:18px;font-weight:700;font-family:var(--font-display);color:${s.score>=90?'var(--green)':s.score>=80?'var(--amber)':'var(--danger)'}">${s.score}%</div>
+            </div>
+            <div class="progress-wrap"><div class="progress-fill" style="width:${s.score}%;background:${s.score>=90?'var(--green)':s.score>=80?'var(--amber)':'var(--danger)'}"></div></div>
+          </div>`).join('')}
+      </div>`;
+  } else if(anaTab==='bookings'){
+    container.innerHTML=`
+      <div class="card">
+        <div class="card-title">Booking Sources</div>
+        ${[{label:'Walk-in',pct:38,color:'var(--accent)'},{label:'Phone',pct:29,color:'var(--gold)'},{label:'Online',pct:22,color:'var(--green)'},{label:'Social Login',pct:11,color:'var(--amber)'}].map(i=>`
+          <div class="breakdown-row">
+            <div class="breakdown-header"><span style="color:var(--white);font-size:12px">${i.label}</span><span style="color:${i.color};font-weight:700;font-size:12px">${i.pct}%</span></div>
+            <div class="progress-wrap"><div class="progress-fill" style="width:${i.pct}%;background:${i.color}"></div></div>
+          </div>`).join('')}
+      </div>
+      <div class="card">
+        <div class="card-title">Top Booked Services</div>
+        ${[{label:'Dinner Reservations',n:52},{label:'Room — Standard',n:28},{label:'Room — Suite',n:14},{label:'Lunch',n:22}].map(i=>`
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px">
+            <span style="color:var(--white)">${i.label}</span>
+            <span style="color:var(--gold);font-weight:700">${i.n}</span>
+          </div>`).join('')}
+      </div>`;
+  }
+}
+
+function renderAnaChartIn(chartId,titleId){
+  const ds=ANA_DATA[anaPeriod],vals=ds[anaMetric],labels=ds.labels;
+  const max=Math.max(...vals),color=anaMetric==='revenue'?'var(--amber)':'var(--accent)';
+  const t=document.getElementById(titleId);if(t)t.textContent=anaPeriod.charAt(0).toUpperCase()+anaPeriod.slice(1)+' '+anaMetric.charAt(0).toUpperCase()+anaMetric.slice(1);
+  const c=document.getElementById(chartId);if(!c)return;
+  c.innerHTML=vals.map((v,i)=>{const h=max>0?Math.round((v/max)*110):2;return `<div class="chart-col"><div class="chart-val">${anaMetric==='revenue'?'$'+v:v}</div><div class="chart-bar" style="height:${h}px;background:${color}"></div><div class="chart-label">${labels[i]}</div></div>`;}).join('');
+}
+function renderAnaBreakdownIn(id){
+  const items=[{label:'Room Bookings',pct:45,color:'var(--accent)'},{label:'Table Bookings',pct:30,color:'var(--green)'},{label:'F&B',pct:15,color:'var(--amber)'},{label:'Other',pct:10,color:'var(--danger)'}];
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=items.map(i=>`<div class="breakdown-row"><div class="breakdown-header"><span style="color:var(--white);font-size:12px">${i.label}</span><span style="color:${i.color};font-weight:700;font-size:12px">${i.pct}%</span></div><div class="progress-wrap"><div class="progress-fill" style="width:${i.pct}%;background:${i.color}"></div></div></div>`).join('');
+}
+function renderAnaPeaksIn(id){
+  const peaks=[{label:'Dinner Peak',time:'7:00 PM – 9:00 PM',pct:100},{label:'Lunch Rush',time:'12:00 PM – 2:00 PM',pct:90},{label:'Early Evening',time:'6:00 PM – 7:00 PM',pct:65},{label:'Breakfast',time:'8:00 AM – 10:00 AM',pct:40}];
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=peaks.map(p=>`<div class="breakdown-row"><div class="breakdown-header"><div><div class="peak-lbl">${p.label}</div><div class="peak-time">${p.time}</div></div><span class="peak-pct">${p.pct}%</span></div><div class="progress-wrap"><div class="progress-fill" style="width:${p.pct}%;background:var(--gold)"></div></div></div>`).join('');
+}
+
+/* ═══════════════════ GUEST — MY BOOKINGS + SPECIAL REQUESTS ════════ */
+let myBookings=[];
+
+function renderGuestHome(){
+  guestNavHistory=['home'];
+  guestState.view='home';setGuestTitle('Guest Portal');
+  const hasBookings=myBookings.length>0;
+  document.getElementById('guest-scroll').innerHTML=`
+    <div class="card" style="margin-bottom:12px;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.05))">
+      <div style="color:var(--gold);font-weight:700;font-size:18px;margin-bottom:4px;font-family:var(--font-display)">Welcome to NEXA${guestState.guestName?' — '+guestState.guestName:''}</div>
+      <div style="color:var(--muted);font-size:13px">Luxury hospitality at your fingertips</div>
+    </div>
+    ${hasBookings?`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span class="live-dot"></span>
+      <span style="font-weight:600;font-size:14px">My Bookings</span>
+    </div>
+    <div class="card" style="margin-bottom:14px;padding:12px">
+      ${myBookings.map((b,i)=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;${i<myBookings.length-1?'border-bottom:1px solid rgba(255,255,255,.06)':''}">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--white)">${b.type} — ${b.summary}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">Ref: ${b.ref} • $${b.total} • ${b.method.toUpperCase()}</div>
+          </div>
+          <span class="pill pill-green">Confirmed</span>
+        </div>`).join('')}
+    </div>`:''}
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <svg style="width:16px;height:16px;color:var(--gold)"><use href="#ic-sparkle"/></svg>
+      <span style="font-weight:600;font-size:14px">What would you like?</span>
+    </div>
+    <div class="guest-nav-card" onclick="guestNav('table')">
+      <div class="guest-icon"><svg><use href="#ic-restaurant"/></svg></div>
+      <div style="flex:1"><div class="guest-nav-title">Book a Table</div><div style="font-size:11px;color:var(--muted)">Reserve for dining</div></div>
+      <div class="chevron"><svg><use href="#ic-chevron-right"/></svg></div>
+    </div>
+    <div class="guest-nav-card" onclick="guestNav('room')">
+      <div class="guest-icon"><svg><use href="#ic-bed"/></svg></div>
+      <div style="flex:1"><div class="guest-nav-title">Book a Room</div><div style="font-size:11px;color:var(--muted)">Standard · Deluxe · Suite</div></div>
+      <div class="chevron"><svg><use href="#ic-chevron-right"/></svg></div>
+    </div>
+    <div class="guest-nav-card" onclick="guestNav('menu')">
+      <div class="guest-icon"><svg><use href="#ic-food"/></svg></div>
+      <div style="flex:1"><div class="guest-nav-title">Browse & Order Menu</div><div style="font-size:11px;color:var(--muted)">Starters · Mains · Desserts</div></div>
+      <div class="chevron"><svg><use href="#ic-chevron-right"/></svg></div>
+    </div>`;
+}
+
+// Add special requests to table booking
+function renderGuestTable(){
+  setGuestTitle('Book a Table');
+  const gs=guestState;
+  const dates=['Today','Tomorrow','Wed','Thu','Fri'];
+  document.getElementById('guest-scroll').innerHTML=`
+    <div class="card"><div class="card-title">📅 Select Date</div>
+      <div class="chips">${dates.map(d=>`<button class="chip${gs.date===d?' active':''}" onclick="guestSetDate('${d}')">${d}</button>`).join('')}</div>
+    </div>
+    <div class="card"><div class="card-title">👥 Number of Guests</div>
+      <div class="counter">
+        <button class="counter-btn" onclick="guestAdj('guests',-1)">−</button>
+        <span class="counter-val">${gs.guests}</span>
+        <button class="counter-btn" onclick="guestAdj('guests',1)">+</button>
+      </div>
+    </div>
+    <div class="card"><div class="card-title">🕐 Select Time</div>
+      <div class="chips">${TIME_SLOTS.map(t=>`<button class="chip${gs.time===t?' active':''}" onclick="guestSetTime('${t}')">${t}</button>`).join('')}</div>
+    </div>
+    <div class="card"><div class="card-title">📝 Special Requests <span style="font-weight:400;color:var(--muted);font-size:12px">(optional)</span></div>
+      <textarea class="form-input" id="guest-special-req" placeholder="e.g. Window seat, birthday cake, dietary requirements..." rows="2">${gs.specialReq||''}</textarea>
+    </div>
+    <button class="btn-gold" style="margin-top:8px" onclick="guestState.specialReq=document.getElementById('guest-special-req')?.value||'';guestProceedPayment('Table',20)">
+      <svg style="width:18px;height:18px"><use href="#ic-arrow-fwd"/></svg>Proceed to Payment ($20 deposit)
+    </button>`;
+}
+
+// Add special requests to room booking
+function renderGuestRoom(){
+  setGuestTitle('Book a Room');
+  const gs=guestState;
+  const rooms=[{type:'Standard',price:80,icon:'ic-bed',desc:'Cozy & comfortable — 1 King Bed'},{type:'Deluxe',price:130,icon:'ic-star',desc:'Premium — King Bed + Lounge'},{type:'Suite',price:220,icon:'ic-diamond',desc:'The ultimate luxury — 2 Rooms'}];
+  document.getElementById('guest-scroll').innerHTML=`
+    <div class="card"><div class="card-title">🛏️ Room Type</div>
+      ${rooms.map(r=>`<div class="room-option${gs.roomType===r.type?' selected':''}" onclick="guestSetRoom('${r.type}')">
+        <svg><use href="#${r.icon}"/></svg>
+        <div style="flex:1"><div style="font-weight:600;color:var(--white)">${r.type}</div><div style="font-size:11px;color:var(--muted)">${r.desc}</div></div>
+        <div style="font-weight:700;color:var(--gold)">$${r.price}/night</div>
+        ${gs.roomType===r.type?`<div class="room-check"><svg><use href="#ic-check-circle"/></svg></div>`:''}
+      </div>`).join('')}
+    </div>
+    <div class="card"><div class="card-title">🌙 Number of Nights</div>
+      <div class="counter">
+        <button class="counter-btn" onclick="guestAdj('nights',-1)">−</button>
+        <span class="counter-val">${gs.nights}</span>
+        <button class="counter-btn" onclick="guestAdj('nights',1)">+</button>
+      </div>
+    </div>
+    ${gs.roomType?`<div class="card" style="border-color:rgba(201,168,76,.2)">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--muted)">$${{Standard:80,Deluxe:130,Suite:220}[gs.roomType]} × ${gs.nights} nights</span><span style="color:var(--gold);font-weight:700">$${({Standard:80,Deluxe:130,Suite:220}[gs.roomType])*gs.nights}</span></div>
+    </div>`:''}
+    <div class="card"><div class="card-title">📝 Special Requests <span style="font-weight:400;color:var(--muted);font-size:12px">(optional)</span></div>
+      <textarea class="form-input" id="guest-room-req" placeholder="e.g. Early check-in, extra pillows, floor preference..." rows="2">${gs.specialReq||''}</textarea>
+    </div>
+    <button class="btn-gold" style="margin-top:8px" onclick="guestState.specialReq=document.getElementById('guest-room-req')?.value||'';guestProceedRoom()">
+      <svg style="width:18px;height:18px"><use href="#ic-arrow-fwd"/></svg>Proceed to Payment
+    </button>`;
+}
+
+// Override paid screen to record booking in myBookings
+function renderGuestPaid(){
+  setGuestTitle('Payment Complete');
+  const gs=guestState;
+  const ref='NX-'+Date.now().toString().slice(-8).toUpperCase();
+  const sumText=gs.bookingType==='Table'?`${gs.date} at ${gs.time} for ${gs.guests} guest(s)`:gs.bookingType==='Room'?`${gs.roomType} Room for ${gs.nights} night(s)`:'Your food order';
+  // Save to my bookings
+  myBookings.unshift({type:gs.bookingType,summary:sumText.split(' for ')[0]||sumText,ref,total:gs.total,method:gs.payMethod||'card',specialReq:gs.specialReq||''});
+  // Add to activity log
+  activityLog.unshift({dot:'var(--green)',text:`Guest booked: ${gs.bookingType} — $${gs.total}`,time:'Just now'});
+  document.getElementById('guest-scroll').innerHTML=`
+    <div class="success-screen fade-in">
+      <div class="success-icon"><svg><use href="#ic-check-circle"/></svg></div>
+      <div style="font-size:24px;font-weight:700;color:var(--white);margin-bottom:6px;font-family:var(--font-display)">Payment Successful!</div>
+      <div style="color:var(--muted);text-align:center;font-size:14px;max-width:240px">${sumText}</div>
+      <div class="success-amount">$${gs.total} paid</div>
+      ${gs.specialReq?`<div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--muted);margin-bottom:10px;text-align:left;width:100%">📝 Special request recorded: <em style="color:var(--white)">${gs.specialReq}</em></div>`:''}
+      <div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);border-radius:12px;padding:12px 16px;font-size:12px;color:var(--muted);margin-bottom:20px;text-align:left;width:100%">
+        <div style="color:var(--green);font-weight:600;margin-bottom:4px">✓ Booking Confirmed</div>
+        Ref: <strong style="color:var(--white)">${ref}</strong><br>
+        ${gs.payMethod?gs.payMethod.toUpperCase():''} • ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+      </div>
+      <div class="success-note"><svg><use href="#ic-mail"/></svg>Receipt sent to your email.</div>
+      <button class="btn-gold" onclick="guestState={view:'home',guests:2,date:'Today',time:null,roomType:null,nights:1,menuCat:'All',cart:{},bookingType:'',total:0,payMethod:null,phone:'+254 7XX XXX XXX',guestName:guestState.guestName,specialReq:''};renderGuestHome()">
+        View My Bookings
+      </button>
+    </div>`;
+}
+
+/* ═══════════════════ HOOK INTO loginSuccess ════════════════════════ */
+const _origLoginSuccess=loginSuccess;
+loginSuccess=function(user){
+  _origLoginSuccess(user);
+  // After login, inject quick actions into admin dashboard
+  setTimeout(()=>{
+    const qa=document.getElementById('admin-quick-actions');
+    if(qa)renderAdminQuickActions();
+  },100);
+};
+
+
 renderSupportContent();
 document.getElementById('inp-pin').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin();});
 document.getElementById('inp-staff-id').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('inp-pin').focus();});
