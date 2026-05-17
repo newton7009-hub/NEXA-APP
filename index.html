@@ -1,3 +1,1300 @@
-<a href="https://snack.expo.dev/@newton7009/nexa?platform=web" target="_blank">
-  <button>Open NEXA App</button>
-</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NEXA — Hospitality Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ── RESET & VARIABLES ─────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c9a84c;
+  --gold-dim:#c9a84c22;
+  --accent:#4cd1ff;
+  --bg:#0f1923;
+  --card:#1a2738;
+  --card2:#243447;
+  --white:#f0f4f8;
+  --muted:#8a9bb0;
+  --danger:#f87171;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --font-display:'Cormorant Garamond',serif;
+  --font-body:'DM Sans',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--font-body);overflow:hidden}
+button{border:none;cursor:pointer;font-family:var(--font-body)}
+input{font-family:var(--font-body);outline:none}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:4px}
+
+/* ── APP SHELL ─────────────────────────────────────────────────────────── */
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.screen{flex:1;overflow:hidden;display:none;flex-direction:column}
+.screen.active{display:flex}
+.scroll{flex:1;overflow-y:auto;padding:16px}
+
+/* ── HOTEL BG ──────────────────────────────────────────────────────────── */
+.hotel-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.hotel-bg span{position:absolute;border-radius:50%;border:1.5px solid rgba(201,168,76,0.1)}
+.hotel-bg .b1{width:280px;height:280px;top:-120px;left:50%;transform:translateX(-50%)}
+.hotel-bg .b2{width:200px;height:200px;top:-80px;left:50%;transform:translateX(-50%);border-color:rgba(201,168,76,0.07)}
+.hotel-bg .b3{width:120px;height:120px;top:30px;left:-30px}
+.hotel-bg .b4{width:140px;height:140px;top:20px;right:-40px}
+.hotel-bg .b5{width:320px;height:200px;bottom:-100px;left:50%;transform:translateX(-50%);border-color:rgba(201,168,76,0.08)}
+.hotel-bg hr{position:absolute;top:180px;left:30px;right:30px;border:none;height:1px;background:rgba(201,168,76,0.08)}
+.hotel-bg .dots{position:absolute;top:178px;display:flex;gap:40px;left:40px}
+.hotel-bg .dots i{width:5px;height:5px;background:rgba(201,168,76,0.2);border-radius:50%;display:block}
+
+/* ── TYPOGRAPHY ────────────────────────────────────────────────────────── */
+.logo-mark{font-family:var(--font-display);font-size:44px;color:var(--gold);letter-spacing:8px;font-weight:700;line-height:1}
+.logo-sub{font-size:10px;letter-spacing:4px;color:var(--muted);margin-top:4px}
+.logo-divider{width:60px;height:1px;background:var(--gold);margin:12px auto;opacity:0.5}
+.screen-title{font-size:20px;font-weight:600;color:var(--white);margin-bottom:16px;letter-spacing:.5px}
+.section-label{font-size:10px;letter-spacing:2.5px;color:var(--muted);margin-bottom:6px;display:block}
+
+/* ── TOPBAR ────────────────────────────────────────────────────────────── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card);border-bottom:1px solid rgba(255,255,255,0.05);flex-shrink:0}
+.topbar-title{font-weight:600;font-size:15px;flex:1;text-align:center}
+.topbar-btn{background:none;color:var(--white);padding:6px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
+.topbar-btn:hover{background:rgba(255,255,255,0.06)}
+.topbar-btn svg{width:22px;height:22px}
+.topbar-btn.gold svg{color:var(--gold)}
+.notif-badge{position:absolute;top:-2px;right:-2px;background:var(--danger);border-radius:50%;width:15px;height:15px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+/* ── CARDS ─────────────────────────────────────────────────────────────── */
+.card{background:var(--card);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:16px;margin-bottom:12px}
+.card-title{font-weight:600;font-size:14px;margin-bottom:12px;color:var(--white)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-border-l{border-left:4px solid var(--gold)}
+
+/* ── STATS ─────────────────────────────────────────────────────────────── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.stat-card{background:var(--card);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:14px;text-align:center}
+.stat-val{font-size:20px;font-weight:700;color:var(--gold);font-family:var(--font-display)}
+.stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ── INPUTS ────────────────────────────────────────────────────────────── */
+.input-wrap{display:flex;align-items:center;background:var(--card);border:1px solid rgba(255,255,255,0.08);border-radius:10px;margin-bottom:6px;transition:border-color .2s}
+.input-wrap:focus-within{border-color:var(--gold)}
+.input-wrap svg{width:18px;height:18px;color:var(--gold);flex-shrink:0;margin-left:12px}
+.input-wrap input{flex:1;background:none;border:none;padding:12px;color:var(--white);font-size:14px}
+.input-wrap input::placeholder{color:var(--muted)}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.error-text{color:var(--danger);font-size:11px;margin-bottom:4px;display:block}
+
+/* ── BUTTONS ───────────────────────────────────────────────────────────── */
+.btn-gold{background:var(--gold);color:#1a1200;font-weight:700;font-size:14px;padding:13px 20px;border-radius:10px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s,transform .1s;cursor:pointer}
+.btn-gold:hover{opacity:.9}
+.btn-gold:active{transform:scale(.98)}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed}
+.btn-outline-danger{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.4);color:var(--danger);font-weight:700;padding:10px 20px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:background .2s}
+.btn-outline-danger:hover{background:rgba(248,113,113,.18)}
+
+/* ── CHIPS ─────────────────────────────────────────────────────────────── */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{border:1px solid var(--gold);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--gold);background:none;cursor:pointer;transition:all .2s;white-space:nowrap}
+.chip:hover{background:rgba(201,168,76,.15)}
+.chip.active{background:var(--gold);color:#1a1200}
+.chip.amber{border-color:var(--amber);color:var(--amber)}
+.chip.amber.active{background:var(--amber);color:#1a1200}
+
+/* ── STATUS PILLS ──────────────────────────────────────────────────────── */
+.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.pill-amber{background:rgba(245,158,11,.15);color:var(--amber)}
+.pill-green{background:rgba(34,197,94,.15);color:var(--green)}
+.pill-blue{background:rgba(76,209,255,.15);color:var(--accent)}
+.pill-red{background:rgba(248,113,113,.15);color:var(--danger)}
+
+/* ── ACTION BUTTONS ────────────────────────────────────────────────────── */
+.action-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.abtn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;transition:opacity .2s}
+.abtn:hover{opacity:.8}
+.abtn-green{border-color:var(--green);background:rgba(34,197,94,.12);color:var(--green)}
+.abtn-amber{border-color:var(--amber);background:rgba(245,158,11,.12);color:var(--amber)}
+.abtn-blue{border-color:var(--accent);background:rgba(76,209,255,.12);color:var(--accent)}
+.abtn-red{border-color:var(--danger);background:rgba(248,113,113,.12);color:var(--danger)}
+.abtn svg{width:14px;height:14px}
+
+/* ── SEARCH ────────────────────────────────────────────────────────────── */
+.search-bar{display:flex;align-items:center;background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:0 12px;margin-bottom:10px;transition:border-color .2s}
+.search-bar:focus-within{border-color:var(--gold)}
+.search-bar svg{width:18px;height:18px;color:var(--gold);flex-shrink:0}
+.search-bar input{flex:1;background:none;border:none;padding:11px 8px;color:var(--white);font-size:14px}
+.search-bar input::placeholder{color:var(--muted)}
+
+/* ── PROGRESS BAR ──────────────────────────────────────────────────────── */
+.progress-wrap{height:6px;background:var(--bg);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width .4s ease}
+
+/* ── BOOKING ROW ───────────────────────────────────────────────────────── */
+.booking-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.booking-row:last-child{border-bottom:none}
+.booking-info{flex:1}
+.booking-name{font-size:14px;font-weight:500;color:var(--white)}
+.booking-time{font-size:12px;color:var(--muted);margin-top:2px}
+.delete-btn{background:none;color:var(--danger);padding:4px;cursor:pointer;border-radius:6px;transition:background .2s}
+.delete-btn:hover{background:rgba(248,113,113,.12)}
+.delete-btn svg{width:16px;height:16px}
+
+/* ── USER WELCOME CARD ─────────────────────────────────────────────────── */
+.welcome-card{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.welcome-avatar{background:var(--gold-dim);border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.welcome-avatar svg{width:24px;height:24px;color:var(--gold)}
+.welcome-name{font-weight:600;color:var(--white)}
+.welcome-id{font-size:11px;color:var(--muted)}
+
+/* ── ORDER CARD ────────────────────────────────────────────────────────── */
+.order-card{background:var(--card);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:16px;margin-bottom:12px;transition:opacity .3s}
+.order-card.urgent{border-left:4px solid var(--danger)}
+.order-card.done{opacity:.55}
+.order-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.order-title{font-weight:600;font-size:15px;color:var(--white)}
+.order-table{font-size:12px;color:var(--muted);margin-top:2px}
+.order-timer{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-bottom:12px}
+.order-timer.overdue{color:var(--danger)}
+.order-timer.done-t{color:var(--green)}
+.order-timer svg{width:14px;height:14px}
+
+/* ── TABLE CARD ────────────────────────────────────────────────────────── */
+.table-card{background:var(--card);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:16px;margin-bottom:12px}
+.table-card.busy{border-left:4px solid var(--danger)}
+.table-card.available{border-left:4px solid var(--green)}
+.table-card.cleaning{border-left:4px solid var(--amber)}
+
+/* ── STAFF PICKER ──────────────────────────────────────────────────────── */
+.staff-picker{background:var(--bg);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px;margin-bottom:10px}
+.staff-picker p{font-size:12px;color:var(--muted);margin-bottom:8px}
+.staff-picker .chips{margin-bottom:0}
+
+/* ── FORM BOX ──────────────────────────────────────────────────────────── */
+.form-box{background:var(--bg);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px;margin-bottom:12px}
+.form-input{width:100%;background:var(--card2);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 12px;color:var(--white);font-size:14px;margin-bottom:8px;font-family:var(--font-body);transition:border-color .2s}
+.form-input:focus{outline:none;border-color:var(--gold)}
+.form-input::placeholder{color:var(--muted)}
+.add-btn{background:var(--gold);color:#1a1200;border:none;border-radius:8px;padding:5px 12px;font-weight:700;font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer}
+.add-btn svg{width:16px;height:16px}
+
+/* ── CHART ─────────────────────────────────────────────────────────────── */
+.chart-wrap{display:flex;align-items:flex-end;gap:4px;height:130px;margin-top:12px;overflow-x:auto;padding-bottom:2px}
+.chart-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:28px}
+.chart-val{font-size:8px;color:var(--muted);white-space:nowrap}
+.chart-bar{width:16px;border-radius:4px 4px 0 0;transition:height .4s ease;min-height:2px}
+.chart-label{font-size:9px;color:var(--muted)}
+
+/* ── LOGIN SCREEN ──────────────────────────────────────────────────────── */
+#screen-login{align-items:center;justify-content:center;position:relative;overflow-y:auto}
+.login-inner{width:100%;max-width:320px;padding:30px 16px;display:flex;flex-direction:column;align-items:center;z-index:1;position:relative}
+.login-toggle{display:flex;background:var(--card);border-radius:12px;padding:4px;margin-bottom:24px}
+.toggle-btn{padding:8px 24px;border-radius:10px;font-weight:600;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;transition:all .2s}
+.toggle-btn.active{background:var(--gold);color:#1a1200}
+.login-panel{width:100%;display:none}
+.login-panel.active{display:block}
+.lock-banner{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--danger);display:flex;align-items:center;gap:8px}
+.lock-banner svg{width:16px;height:16px;flex-shrink:0}
+.warn-banner{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:8px 14px;margin-bottom:8px;font-size:11px;color:var(--amber);text-align:center}
+.security-note{background:var(--card2);border-radius:10px;padding:10px 14px;font-size:11px;color:var(--muted);text-align:center;margin:10px 0;line-height:1.5}
+.social-row{display:flex;gap:8px;margin-top:10px}
+.social-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:13px;color:#fff;font-weight:500;cursor:pointer;border:none;opacity:.5}
+.social-btn svg{width:16px;height:16px}
+.pin-toggle{background:none;border:none;color:var(--muted);padding:0 12px;cursor:pointer;display:flex;align-items:center}
+.pin-toggle svg{width:18px;height:18px}
+
+/* ── DRAWER ────────────────────────────────────────────────────────────── */
+#drawer{position:fixed;inset:0;z-index:100;display:none}
+#drawer.open{display:flex}
+.drawer-overlay{flex:1;background:rgba(0,0,0,.6)}
+.drawer-panel{width:72%;max-width:280px;background:var(--card);height:100%;padding:24px;overflow-y:auto;display:flex;flex-direction:column}
+.drawer-user{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.drawer-avatar{background:var(--gold-dim);border-radius:50%;width:50px;height:50px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.drawer-avatar svg{width:26px;height:26px;color:var(--gold)}
+.drawer-name{font-weight:600;font-size:15px;color:var(--white)}
+.drawer-id{font-size:11px;color:var(--muted);margin-top:2px}
+.drawer-section-lbl{font-size:10px;letter-spacing:2.5px;color:var(--muted);margin-bottom:8px}
+.drawer-item{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;transition:color .2s}
+.drawer-item svg{width:20px;height:20px;color:var(--muted)}
+.drawer-item span{font-size:14px;color:var(--white)}
+.drawer-item:hover span,.drawer-item:hover svg,.drawer-item.active span,.drawer-item.active svg{color:var(--gold)}
+.drawer-bottom{margin-top:auto;padding-top:20px}
+
+/* ── SUPPORT MODAL ─────────────────────────────────────────────────────── */
+#support{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end}
+#support.open{display:flex}
+.support-overlay{position:absolute;inset:0;background:rgba(0,0,0,.6)}
+.support-panel{position:relative;z-index:1;width:100%;max-height:88vh;background:var(--card);border-radius:20px 20px 0 0;padding:20px;display:flex;flex-direction:column}
+.support-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.support-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px}
+.support-title svg{width:22px;height:22px;color:var(--gold)}
+.support-close{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px}
+.support-close svg{width:26px;height:26px}
+.support-body{overflow-y:auto;flex:1}
+.faq-item{background:var(--card2);border-radius:10px;padding:12px;margin-bottom:8px}
+.faq-q{font-size:12px;font-weight:600;color:var(--gold);margin-bottom:4px}
+.faq-a{font-size:12px;color:var(--muted);line-height:1.5}
+.contact-item{display:flex;align-items:center;gap:12px;background:var(--card2);border-radius:10px;padding:12px;margin-bottom:8px}
+.contact-item svg{width:20px;height:20px;color:var(--gold);flex-shrink:0}
+.contact-lbl{font-size:11px;color:var(--muted)}
+.contact-val{font-weight:600;color:var(--white);font-size:14px}
+.status-item{display:flex;align-items:center;justify-content:space-between;background:var(--card2);border-radius:10px;padding:12px;margin-bottom:8px}
+.status-dot{width:8px;height:8px;border-radius:50%;margin-right:6px}
+.status-ok{color:var(--green)}.status-ok .status-dot{background:var(--green)}
+.status-err{color:var(--danger)}.status-err .status-dot{background:var(--danger)}
+.status-right{display:flex;align-items:center;font-size:12px;font-weight:600}
+textarea.form-input{min-height:70px;resize:vertical}
+
+/* ── GUEST / PAYMENT ───────────────────────────────────────────────────── */
+.guest-nav-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--card);border-radius:14px;border:1px solid rgba(255,255,255,.05);margin-bottom:10px;cursor:pointer;transition:border-color .2s}
+.guest-nav-card:hover{border-color:var(--gold)}
+.guest-icon{background:var(--gold-dim);border-radius:10px;padding:10px;display:flex}
+.guest-icon svg{width:24px;height:24px;color:var(--gold)}
+.guest-nav-title{font-weight:600;font-size:15px;color:var(--white);flex:1}
+.chevron svg{width:18px;height:18px;color:var(--muted)}
+.payment-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.pay-method{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .2s;background:var(--bg)}
+.pay-method:hover{border-color:var(--gold)}
+.pay-method.selected{border-width:2px}
+.pay-method svg{width:26px;height:26px}
+.pay-method-name{font-size:12px;font-weight:600;color:var(--white)}
+.pay-method-region{font-size:9px;color:var(--muted)}
+.ssl-note{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--muted);margin:10px 0}
+.ssl-note svg{width:13px;height:13px}
+.cart-summary{background:var(--card);border:1px solid var(--gold);border-radius:14px;padding:16px;margin-top:12px}
+.cart-row{display:flex;justify-content:space-between;padding:4px 0;color:var(--white);font-size:14px}
+.cart-price{color:var(--gold);font-weight:600}
+.success-screen{display:flex;flex-direction:column;align-items:center;padding:60px 24px;text-align:center;position:relative}
+.success-icon{background:rgba(34,197,94,.12);border:2px solid rgba(34,197,94,.3);border-radius:50%;padding:24px;margin-bottom:20px}
+.success-icon svg{width:64px;height:64px;color:var(--green)}
+.success-amount{color:var(--gold);font-size:22px;font-weight:700;margin:10px 0}
+.success-note{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;margin-bottom:30px}
+.success-note svg{width:14px;height:14px}
+
+/* ── COUNTER ───────────────────────────────────────────────────────────── */
+.counter{display:flex;align-items:center;gap:12px;margin-top:8px}
+.counter-btn{background:var(--gold);color:#1a1200;border:none;border-radius:8px;width:34px;height:34px;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.counter-val{font-size:22px;font-weight:700;color:var(--white);min-width:30px;text-align:center}
+.menu-item-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:14px;margin-bottom:8px}
+.menu-item-icon{background:var(--gold-dim);border-radius:8px;padding:10px}
+.menu-item-icon svg{width:20px;height:20px;color:var(--gold)}
+.menu-item-info{flex:1}
+.menu-item-name{font-weight:600;color:var(--white)}
+.menu-item-cat{font-size:12px;color:var(--muted)}
+.menu-item-price{color:var(--gold);font-weight:700;font-size:13px;margin-top:2px}
+.menu-item-qty{display:flex;align-items:center;gap:8px}
+.qty-btn{background:var(--gold);border:none;color:#1a1200;border-radius:6px;width:26px;height:26px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.qty-val{min-width:14px;text-align:center;font-weight:600;color:var(--white);font-size:14px}
+.room-option{display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);transition:background .2s}
+.room-option:hover{background:rgba(201,168,76,.06)}
+.room-option.selected{background:var(--gold-dim)}
+.room-option svg{width:20px;height:20px;color:var(--gold);flex-shrink:0}
+.room-check{margin-left:auto}
+.room-check svg{width:20px;height:20px;color:var(--gold)}
+.bank-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+.bank-label{color:var(--muted)}
+.bank-val{color:var(--white);font-weight:600}
+
+/* ── ANALYTICS ─────────────────────────────────────────────────────────── */
+.breakdown-row{margin-bottom:12px}
+.breakdown-header{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px}
+.peak-lbl{font-weight:600;color:var(--white);font-size:12px}
+.peak-time{font-size:11px;color:var(--muted)}
+.peak-pct{font-weight:700;color:var(--gold);font-size:12px}
+
+/* ── ACCESS DENIED ─────────────────────────────────────────────────────── */
+.access-denied{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px}
+.access-denied svg{width:48px;height:48px;color:var(--danger)}
+
+/* ── ANIMATIONS ────────────────────────────────────────────────────────── */
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade-in{animation:fadeIn .3s ease forwards}
+.spinner{width:18px;height:18px;border:2px solid rgba(26,18,0,.3);border-top-color:#1a1200;border-radius:50%;animation:spin .7s linear infinite}
+
+/* ── RESPONSIVE ────────────────────────────────────────────────────────── */
+@media(min-width:480px){.login-inner{max-width:380px}.drawer-panel{max-width:300px}}
+</style>
+</head>
+<body>
+
+<!-- ── SVG ICON DEFS ──────────────────────────────────────────────────── -->
+<svg style="display:none">
+  <symbol id="ic-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+  <symbol id="ic-headset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+  <symbol id="ic-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="ic-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></symbol>
+  <symbol id="ic-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+  <symbol id="ic-id" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></symbol>
+  <symbol id="ic-keypad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="4" height="4" rx="1"/><rect x="10" y="3" width="4" height="4" rx="1"/><rect x="17" y="3" width="4" height="4" rx="1"/><rect x="3" y="10" width="4" height="4" rx="1"/><rect x="10" y="10" width="4" height="4" rx="1"/><rect x="17" y="10" width="4" height="4" rx="1"/><rect x="10" y="17" width="4" height="4" rx="1"/></symbol>
+  <symbol id="ic-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ic-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="ic-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="ic-shield-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></symbol>
+  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6m4-6v6"/><path d="M9 6V4h6v2"/></symbol>
+  <symbol id="ic-add" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="ic-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+  <symbol id="ic-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="ic-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="ic-restaurant" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></symbol>
+  <symbol id="ic-time" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="ic-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+  <symbol id="ic-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+  <symbol id="ic-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></symbol>
+  <symbol id="ic-receipt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1z"/><line x1="16" y1="8" x2="8" y2="8"/><line x1="16" y1="12" x2="8" y2="12"/><line x1="16" y1="16" x2="12" y2="16"/></symbol>
+  <symbol id="ic-person-add" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></symbol>
+  <symbol id="ic-diamond" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z"/></symbol>
+  <symbol id="ic-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="ic-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+  <symbol id="ic-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+  <symbol id="ic-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></symbol>
+  <symbol id="ic-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></symbol>
+  <symbol id="ic-wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></symbol>
+  <symbol id="ic-business" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="ic-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="ic-bed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></symbol>
+  <symbol id="ic-food" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></symbol>
+  <symbol id="ic-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="ic-call" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="ic-whatsapp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
+  <symbol id="ic-arrow-fwd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="ic-paypal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11C5 11 3 9.5 3 7.5S5 4 7 4h9c1.5 0 3 1 3 3s-1.5 3-3 3H7z"/><path d="M5 14c-2 0-3.5-1.5-3.5-3.5S3 7 5 7h9c1.5 0 3 1 3 3s-1.5 3-3 3H5z"/></symbol>
+  <symbol id="ic-apple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06z"/><path d="M10 2c0 2.5 2 4 4 4-1-2-1-3.5-4-4z"/></symbol>
+  <symbol id="ic-google" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M17.5 12H12v2.5h3.5C14.8 16.2 13.5 17 12 17a5 5 0 1 1 4.9-6H17.5z"/></symbol>
+  <symbol id="ic-windows" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5.5 10.5 4.5V11.5H3z"/><path d="M11.5 4.3 21 3V11.5H11.5z"/><path d="M3 12.5H10.5V19.5L3 18.5z"/><path d="M11.5 12.5H21V21L11.5 19.7z"/></symbol>
+</svg>
+
+<div id="app">
+
+  <!-- ── LOGIN SCREEN ────────────────────────────────────────────────────── -->
+  <div class="screen active" id="screen-login">
+    <div class="hotel-bg">
+      <span class="b1"></span><span class="b2"></span>
+      <span class="b3"></span><span class="b4"></span><span class="b5"></span>
+      <hr><div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="login-inner">
+      <div class="login-toggle">
+        <button class="toggle-btn active" onclick="switchLoginTab('staff')">Staff Login</button>
+        <button class="toggle-btn" onclick="switchLoginTab('guest')">Guest</button>
+      </div>
+      <div class="logoWrap" style="text-align:center;margin-bottom:24px">
+        <svg style="width:28px;height:28px;color:var(--gold);margin-bottom:6px"><use href="#ic-diamond"/></svg>
+        <div class="logo-mark">NEXA</div>
+        <div class="logo-sub">HOSPITALITY MANAGEMENT</div>
+        <div class="logo-divider"></div>
+      </div>
+      <!-- Staff panel -->
+      <div class="login-panel active" id="panel-staff" style="width:100%">
+        <div class="lock-banner" id="lock-banner" style="display:none">
+          <svg><use href="#ic-lock"/></svg>
+          <span id="lock-text">Account locked.</span>
+        </div>
+        <div class="warn-banner" id="warn-banner" style="display:none" id="warn-banner"></div>
+        <label class="section-label">STAFF ID</label>
+        <div class="input-wrap">
+          <svg><use href="#ic-id"/></svg>
+          <input type="text" id="inp-staff-id" placeholder="e.g. ADM-001" autocomplete="off" style="text-transform:uppercase" />
+        </div>
+        <span class="error-text" id="err-staffid"></span>
+        <label class="section-label" style="margin-top:10px">4-DIGIT PIN</label>
+        <div class="input-wrap">
+          <svg><use href="#ic-keypad"/></svg>
+          <input type="password" id="inp-pin" placeholder="Enter PIN" maxlength="4" inputmode="numeric" />
+          <button class="pin-toggle" onclick="togglePin()" id="pin-toggle-btn">
+            <svg id="pin-eye"><use href="#ic-eye"/></svg>
+          </button>
+        </div>
+        <span class="error-text" id="err-pin"></span>
+        <div class="security-note">Secure staff access only. All logins are recorded.<br>Forgotten PIN? Contact your administrator.</div>
+        <button class="btn-gold" id="btn-login" onclick="handleLogin()">
+          <svg style="width:16px;height:16px"><use href="#ic-shield-check"/></svg>
+          <span id="btn-login-text">Secure Login</span>
+        </button>
+      </div>
+      <!-- Guest panel -->
+      <div class="login-panel" id="panel-guest" style="width:100%;text-align:center">
+        <p style="color:var(--muted);font-size:13px;margin-bottom:20px;line-height:1.6">Guests do not need credentials.<br>Access the portal to book tables, rooms and browse our menu.</p>
+        <button class="btn-gold" onclick="goToGuest()">
+          <svg style="width:18px;height:18px"><use href="#ic-arrow-fwd"/></svg>
+          Enter Guest Portal
+        </button>
+        <p style="color:var(--muted);font-size:11px;margin-top:16px">Social login coming soon</p>
+        <div class="social-row" style="justify-content:center;margin-top:8px">
+          <button class="social-btn" style="background:#db4437"><svg style="width:16px;height:16px;color:#fff"><use href="#ic-google"/></svg>Google</button>
+          <button class="social-btn" style="background:#0078D4"><svg style="width:16px;height:16px;color:#fff"><use href="#ic-windows"/></svg>Microsoft</button>
+          <button class="social-btn" style="background:#000"><svg style="width:16px;height:16px;color:#fff"><use href="#ic-apple"/></svg>Apple</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ADMIN DASHBOARD ─────────────────────────────────────────────────── -->
+  <div class="screen" id="screen-admin">
+    <div class="topbar">
+      <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
+      <span class="topbar-title">Admin Dashboard</span>
+      <div style="display:flex;gap:4px">
+        <button class="topbar-btn" onclick="showNotif()" style="position:relative">
+          <svg><use href="#ic-bell"/></svg>
+          <div class="notif-badge" id="notif-badge">3</div>
+        </button>
+        <button class="topbar-btn gold" onclick="openSupport()"><svg><use href="#ic-headset"/></svg></button>
+      </div>
+    </div>
+    <div class="scroll" id="admin-scroll">
+      <div class="card welcome-card"><div class="welcome-avatar"><svg><use href="#ic-shield"/></svg></div><div><div class="welcome-name" id="admin-welcome-name">Welcome</div><div class="welcome-id" id="admin-welcome-id"></div></div></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val" id="stat-bookings" style="color:var(--gold)">5</div><div class="stat-lbl">Bookings</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)">13</div><div class="stat-lbl">Check-ins</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--accent)">$1.4K</div><div class="stat-lbl">Revenue</div></div>
+      </div>
+      <div class="search-bar"><svg><use href="#ic-search"/></svg><input type="text" id="booking-search" placeholder="Search guest..." oninput="renderBookings()" /></div>
+      <div class="chips" id="booking-filters">
+        <button class="chip active" onclick="setFilter('All',this)">All</button>
+        <button class="chip" onclick="setFilter('Ongoing',this)">Ongoing</button>
+        <button class="chip" onclick="setFilter('Ready',this)">Ready</button>
+        <button class="chip" onclick="setFilter('Upcoming',this)">Upcoming</button>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" style="margin-bottom:0">Recent Bookings</span>
+          <button class="add-btn" onclick="toggleAddForm()"><svg><use href="#ic-add"/></svg>Add</button>
+        </div>
+        <div class="form-box" id="add-form" style="display:none">
+          <input class="form-input" id="new-name" placeholder="Guest Name" />
+          <input class="form-input" id="new-time" placeholder="Time (e.g. 5:00 PM)" />
+          <div class="chips" id="status-chips" style="margin-bottom:10px">
+            <button class="chip active" onclick="setNewStatus('Upcoming',this)">Upcoming</button>
+            <button class="chip" onclick="setNewStatus('Ready',this)">Ready</button>
+            <button class="chip" onclick="setNewStatus('Ongoing',this)">Ongoing</button>
+          </div>
+          <button class="btn-gold" onclick="addBooking()">Save Booking</button>
+        </div>
+        <div id="bookings-list"></div>
+      </div>
+      <!-- Inline analytics -->
+      <div style="display:flex;align-items:center;gap:8px;margin:20px 0 8px">
+        <svg style="width:18px;height:18px;color:var(--gold)"><use href="#ic-chart"/></svg>
+        <span style="font-weight:600;font-size:16px">Analytics Overview</span>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val" style="color:var(--gold)">116</div><div class="stat-lbl">Bookings</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)">$4.6K</div><div class="stat-lbl">Revenue</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--accent)">17</div><div class="stat-lbl">Avg/Day</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" style="margin-bottom:0">Weekly Overview</span>
+          <div style="display:flex;gap:6px">
+            <button class="chip active" id="metric-bookings" onclick="setMetric('bookings')">Bookings</button>
+            <button class="chip amber" id="metric-revenue" onclick="setMetric('revenue')">Revenue</button>
+          </div>
+        </div>
+        <div id="week-total" style="color:var(--muted);font-size:12px;margin-bottom:8px"></div>
+        <div class="chart-wrap" id="inline-chart"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Revenue Breakdown</div>
+        <div id="revenue-breakdown"></div>
+      </div>
+      <div class="card" style="margin-bottom:30px">
+        <div class="card-title">Peak Hours</div>
+        <div id="peak-hours"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHEF DASHBOARD ──────────────────────────────────────────────────── -->
+  <div class="screen" id="screen-chef">
+    <div class="topbar">
+      <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
+      <span class="topbar-title">Chef Dashboard</span>
+      <button class="topbar-btn gold" onclick="openSupport()"><svg><use href="#ic-headset"/></svg></button>
+    </div>
+    <div class="scroll">
+      <div class="card welcome-card"><div class="welcome-avatar"><svg><use href="#ic-restaurant"/></svg></div><div><div class="welcome-name" id="chef-welcome-name">Welcome</div><div class="welcome-id" id="chef-welcome-id"></div></div></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val" id="stat-urgent" style="color:var(--danger)">2</div><div class="stat-lbl">Urgent</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-inprog" style="color:var(--amber)">4</div><div class="stat-lbl">In Progress</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-done" style="color:var(--green)">0</div><div class="stat-lbl">Done</div></div>
+      </div>
+      <div class="chips" id="order-filters">
+        <button class="chip active" onclick="setOrderFilter('All',this)">All</button>
+        <button class="chip" onclick="setOrderFilter('In Progress',this)">In Progress</button>
+        <button class="chip" onclick="setOrderFilter('Done',this)">Done</button>
+      </div>
+      <div id="orders-list"></div>
+    </div>
+  </div>
+
+  <!-- ── STAFF DASHBOARD ─────────────────────────────────────────────────── -->
+  <div class="screen" id="screen-staff">
+    <div class="topbar">
+      <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
+      <span class="topbar-title">Staff Dashboard</span>
+      <button class="topbar-btn gold" onclick="openSupport()"><svg><use href="#ic-headset"/></svg></button>
+    </div>
+    <div class="scroll">
+      <div class="card welcome-card"><div class="welcome-avatar"><svg><use href="#ic-people"/></svg></div><div><div class="welcome-name" id="staff-welcome-name">Welcome</div><div class="welcome-id" id="staff-welcome-id"></div></div></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val" id="stat-busy" style="color:var(--danger)">3</div><div class="stat-lbl">Busy</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-avail" style="color:var(--green)">2</div><div class="stat-lbl">Available</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-clean" style="color:var(--amber)">1</div><div class="stat-lbl">Cleaning</div></div>
+      </div>
+      <div id="tables-list"></div>
+    </div>
+  </div>
+
+  <!-- ── ANALYTICS DASHBOARD ────────────────────────────────────────────── -->
+  <div class="screen" id="screen-analytics">
+    <div class="topbar">
+      <button class="topbar-btn" onclick="openDrawer()"><svg><use href="#ic-menu"/></svg></button>
+      <span class="topbar-title">Analytics</span>
+      <button class="topbar-btn gold" onclick="openSupport()"><svg><use href="#ic-headset"/></svg></button>
+    </div>
+    <div class="scroll">
+      <div class="card welcome-card"><div class="welcome-avatar"><svg><use href="#ic-chart"/></svg></div><div><div class="welcome-name" id="ana-welcome-name">Welcome</div><div class="welcome-id" id="ana-welcome-id"></div></div></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val" style="color:var(--gold)">116</div><div class="stat-lbl">Bookings</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)">$4.6K</div><div class="stat-lbl">Revenue</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--accent)">17</div><div class="stat-lbl">Avg/Day</div></div>
+      </div>
+      <div class="chips" id="period-chips">
+        <button class="chip" onclick="setPeriod('daily',this)">Daily</button>
+        <button class="chip active" onclick="setPeriod('weekly',this)">Weekly</button>
+        <button class="chip" onclick="setPeriod('monthly',this)">Monthly</button>
+      </div>
+      <div class="chips" id="ana-metric-chips">
+        <button class="chip active" onclick="setAnaMetric('bookings',this)">Bookings</button>
+        <button class="chip amber" onclick="setAnaMetric('revenue',this)">Revenue</button>
+      </div>
+      <div class="card">
+        <div class="card-title" id="ana-chart-title">Weekly Bookings</div>
+        <div class="chart-wrap" id="ana-chart"></div>
+      </div>
+      <div class="card"><div class="card-title">Revenue Breakdown</div><div id="ana-breakdown"></div></div>
+      <div class="card"><div class="card-title">Peak Hours</div><div id="ana-peaks"></div></div>
+      <button class="btn-gold" style="margin-bottom:30px" onclick="exportReport()">
+        <svg style="width:18px;height:18px"><use href="#ic-download"/></svg>
+        Export Report
+      </button>
+    </div>
+  </div>
+
+  <!-- ── GUEST PORTAL ────────────────────────────────────────────────────── -->
+  <div class="screen" id="screen-guest">
+    <div class="topbar">
+      <button class="topbar-btn" onclick="showScreen('login')"><svg><use href="#ic-back"/></svg></button>
+      <span class="topbar-title" id="guest-title">Guest Portal</span>
+      <button class="topbar-btn gold" onclick="openSupport()"><svg><use href="#ic-headset"/></svg></button>
+    </div>
+    <div class="scroll" id="guest-scroll">
+      <!-- content injected by JS -->
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ── DRAWER ───────────────────────────────────────────────────────────── -->
+<div id="drawer">
+  <div class="drawer-panel" id="drawer-panel">
+    <div class="drawer-user">
+      <div class="drawer-avatar"><svg><use href="#ic-person"/></svg></div>
+      <div class="drawer-name" id="drawer-name">—</div>
+      <div class="drawer-id" id="drawer-id">—</div>
+    </div>
+    <div class="drawer-section-lbl">NAVIGATION</div>
+    <div id="drawer-nav"></div>
+    <div class="drawer-bottom">
+      <div class="drawer-item" onclick="handleLogout()">
+        <svg style="color:var(--danger)"><use href="#ic-logout"/></svg>
+        <span style="color:var(--danger)">Logout</span>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-overlay" onclick="closeDrawer()"></div>
+</div>
+
+<!-- ── SUPPORT MODAL ────────────────────────────────────────────────────── -->
+<div id="support">
+  <div class="support-overlay" onclick="closeSupport()"></div>
+  <div class="support-panel">
+    <div class="support-header">
+      <div class="support-title"><svg><use href="#ic-headset"/></svg>Support Centre</div>
+      <button class="support-close" onclick="closeSupport()"><svg><use href="#ic-close"/></svg></button>
+    </div>
+    <div class="chips">
+      <button class="chip active" onclick="setSupTab('faq',this)">FAQs</button>
+      <button class="chip" onclick="setSupTab('contact',this)">Contact</button>
+      <button class="chip" onclick="setSupTab('status',this)">System</button>
+    </div>
+    <div class="support-body">
+      <div id="sup-faq"></div>
+      <div id="sup-contact" style="display:none"></div>
+      <div id="sup-status" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── DATA ─────────────────────────────────────────────────────────────── */
+const STAFF = [
+  {id:"ADM-001",name:"Sarah Johnson", role:"admin",     pin:"4821"},
+  {id:"CHF-001",name:"Marco Rossi",   role:"chef",      pin:"7364"},
+  {id:"CHF-002",name:"Aisha Kimani",  role:"chef",      pin:"2193"},
+  {id:"STF-001",name:"Carlos Mendez", role:"staff",     pin:"5507"},
+  {id:"STF-002",name:"Diana Omondi",  role:"staff",     pin:"8830"},
+  {id:"ANA-001",name:"James Waweru",  role:"analytics", pin:"3312"},
+];
+const MAX_ATT=3,LOCK_SECS=30;
+let attempts=0,locked=false,lockTimer=0,lockInterval=null;
+let currentUser=null;
+let bookingFilter="All",newBookingStatus="Upcoming";
+let bookings=[
+  {id:1,name:"John Doe",  time:"2:00 PM",status:"Ongoing"},
+  {id:2,name:"Jane Smith",time:"8:00 PM",status:"Ready"},
+  {id:3,name:"Mark Lee",  time:"7:00 PM",status:"Upcoming"},
+  {id:4,name:"Sara Cruz", time:"6:00 PM",status:"Upcoming"},
+  {id:5,name:"Tom Brown", time:"9:00 PM",status:"Ready"},
+];
+let orders=[
+  {id:1,item:"Chicken Fried Rice",table:"Table 3",priority:"Urgent",status:"In Progress",elapsed:0},
+  {id:2,item:"Salad + Water",     table:"Table 1",priority:"Normal",status:"In Progress",elapsed:0},
+  {id:3,item:"Grilled Salmon",    table:"Table 5",priority:"Urgent",status:"In Progress",elapsed:0},
+  {id:4,item:"Pasta Carbonara",   table:"Table 2",priority:"Normal",status:"In Progress",elapsed:0},
+];
+let orderFilter="All";
+let tables=[
+  {id:1,name:"Table 1",status:"Available",assigned:null,bill:false},
+  {id:2,name:"Table 2",status:"Busy",     assigned:"Alice",bill:false},
+  {id:3,name:"Table 3",status:"Busy",     assigned:"Bob",  bill:true},
+  {id:4,name:"Table 4",status:"Cleaning", assigned:"Carlos",bill:false},
+  {id:5,name:"Table 5",status:"Available",assigned:null,bill:false},
+  {id:6,name:"Table 6",status:"Busy",     assigned:"Diana",bill:false},
+];
+let assigningTable=null;
+const STAFF_MEMBERS=["Alice","Bob","Carlos","Diana"];
+const ANA_DATA={
+  weekly: {bookings:[12,18,9,15,20,25,17],revenue:[480,720,360,600,800,1000,680],labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]},
+  monthly:{bookings:[80,95,110,130,120,140,160,155,170,145,190,210],revenue:[3200,3800,4400,5200,4800,5600,6400,6200,6800,5800,7600,8400],labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]},
+  daily:  {bookings:[2,4,1,5,3,6,4,7,5,3,2,4],revenue:[80,160,40,200,120,240,160,280,200,120,80,160],labels:["6a","7a","8a","9a","10a","11a","12p","1p","2p","3p","4p","5p"]},
+};
+let anaPeriod="weekly",anaMetric="bookings";
+let inlineMetric="bookings";
+let orderTimerInterval=null;
+
+/* ── SCREEN NAV ───────────────────────────────────────────────────────── */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const s=document.getElementById('screen-'+id);
+  if(s) s.classList.add('active');
+  closeDrawer();
+}
+
+/* ── AUTH ─────────────────────────────────────────────────────────────── */
+function switchLoginTab(tab){
+  document.querySelectorAll('.toggle-btn').forEach((b,i)=>b.classList.toggle('active',(tab==='staff'&&i===0)||(tab==='guest'&&i===1)));
+  document.getElementById('panel-staff').classList.toggle('active',tab==='staff');
+  document.getElementById('panel-guest').classList.toggle('active',tab==='guest');
+}
+function togglePin(){
+  const inp=document.getElementById('inp-pin');
+  const eye=document.getElementById('pin-eye');
+  if(inp.type==='password'){inp.type='text';eye.innerHTML='<use href="#ic-eye-off"/>';}
+  else{inp.type='password';eye.innerHTML='<use href="#ic-eye"/>';}
+}
+function handleLogin(){
+  if(locked)return;
+  const sid=document.getElementById('inp-staff-id').value.trim().toUpperCase();
+  const pin=document.getElementById('inp-pin').value.trim();
+  document.getElementById('err-staffid').textContent='';
+  document.getElementById('err-pin').textContent='';
+  if(!sid){document.getElementById('err-staffid').textContent='Staff ID is required.';return;}
+  if(!pin){document.getElementById('err-pin').textContent='PIN is required.';return;}
+  if(pin.length<4){document.getElementById('err-pin').textContent='PIN must be 4 digits.';return;}
+  const btn=document.getElementById('btn-login');
+  btn.disabled=true;
+  btn.innerHTML='<div class="spinner"></div>';
+  setTimeout(()=>{
+    const user=STAFF.find(u=>u.id===sid&&u.pin===pin);
+    if(user){
+      attempts=0;currentUser=user;
+      document.getElementById('inp-staff-id').value='';
+      document.getElementById('inp-pin').value='';
+      btn.disabled=false;btn.innerHTML='<svg style="width:16px;height:16px"><use href="#ic-shield-check"/></svg><span>Secure Login</span>';
+      document.getElementById('warn-banner').style.display='none';
+      loginSuccess(user);
+    } else {
+      attempts++;
+      btn.disabled=false;btn.innerHTML='<svg style="width:16px;height:16px"><use href="#ic-shield-check"/></svg><span>Secure Login</span>';
+      document.getElementById('inp-pin').value='';
+      if(attempts>=MAX_ATT){
+        locked=true;lockTimer=LOCK_SECS;
+        document.getElementById('lock-banner').style.display='flex';
+        document.getElementById('warn-banner').style.display='none';
+        lockInterval=setInterval(()=>{
+          lockTimer--;
+          document.getElementById('lock-text').textContent='Account locked. Try again in '+lockTimer+'s';
+          if(lockTimer<=0){locked=false;attempts=0;clearInterval(lockInterval);document.getElementById('lock-banner').style.display='none';}
+        },1000);
+        document.getElementById('err-pin').textContent='Too many attempts. Locked for '+LOCK_SECS+'s.';
+      } else {
+        const left=MAX_ATT-attempts;
+        document.getElementById('warn-banner').style.display='block';
+        document.getElementById('warn-banner').textContent='Warning: '+left+' attempt(s) remaining before lockout';
+        document.getElementById('err-pin').textContent='Invalid ID or PIN.';
+      }
+    }
+  },900);
+}
+function loginSuccess(user){
+  updateDrawer(user);
+  const roleScreen={admin:'admin',chef:'chef',staff:'staff',analytics:'analytics'}[user.role]||'admin';
+  // Update welcome cards
+  if(user.role==='admin'||user.role==='analytics'){
+    document.getElementById('admin-welcome-name').textContent='Welcome, '+user.name;
+    document.getElementById('admin-welcome-id').textContent=user.id+' • Administrator';
+    document.getElementById('ana-welcome-name').textContent='Welcome, '+user.name;
+    document.getElementById('ana-welcome-id').textContent=user.id+' • Analytics';
+  }
+  if(user.role==='chef'){
+    document.getElementById('chef-welcome-name').textContent='Welcome, '+user.name;
+    document.getElementById('chef-welcome-id').textContent=user.id+' • Chef';
+  }
+  if(user.role==='staff'){
+    document.getElementById('staff-welcome-name').textContent='Welcome, '+user.name;
+    document.getElementById('staff-welcome-id').textContent=user.id+' • Staff';
+  }
+  showScreen(roleScreen);
+  renderBookings();renderInlineChart();renderBreakdown();renderPeaks();
+  renderOrders();renderTables();renderAnaChart();renderAnaBreakdown();renderAnaPeaks();
+  startOrderTimers();
+  renderSupportContent();
+}
+function goToGuest(){currentUser=null;showScreen('guest');renderGuestHome();}
+function handleLogout(){currentUser=null;if(orderTimerInterval)clearInterval(orderTimerInterval);showScreen('login');}
+
+/* ── DRAWER ───────────────────────────────────────────────────────────── */
+const ROLE_NAV={
+  admin:[{icon:'ic-shield',label:'Dashboard',target:'admin'},{icon:'ic-restaurant',label:'Chef View',target:'chef'},{icon:'ic-people',label:'Staff View',target:'staff'},{icon:'ic-chart',label:'Analytics',target:'analytics'},{icon:'ic-person',label:'Guest Portal',target:'guest-home'}],
+  chef:[{icon:'ic-restaurant',label:'Chef Dashboard',target:'chef'},{icon:'ic-chart',label:'Analytics',target:'analytics'}],
+  staff:[{icon:'ic-people',label:'Staff Dashboard',target:'staff'}],
+  analytics:[{icon:'ic-chart',label:'Analytics',target:'analytics'}],
+};
+function updateDrawer(user){
+  document.getElementById('drawer-name').textContent=user.name;
+  document.getElementById('drawer-id').textContent=user.id+' • '+user.role.toUpperCase();
+  const items=ROLE_NAV[user.role]||[];
+  document.getElementById('drawer-nav').innerHTML=items.map(i=>`
+    <div class="drawer-item" onclick="drawerNav('${i.target}')">
+      <svg><use href="#${i.icon}"/></svg><span>${i.label}</span>
+    </div>`).join('');
+}
+function drawerNav(target){
+  closeDrawer();
+  if(target==='guest-home'){showScreen('guest');renderGuestHome();}
+  else showScreen(target);
+}
+function openDrawer(){document.getElementById('drawer').classList.add('open');}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');}
+
+/* ── SUPPORT ──────────────────────────────────────────────────────────── */
+function openSupport(){document.getElementById('support').classList.add('open');}
+function closeSupport(){document.getElementById('support').classList.remove('open');}
+function setSupTab(tab,btn){
+  document.querySelectorAll('#support .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sup-faq').style.display=tab==='faq'?'block':'none';
+  document.getElementById('sup-contact').style.display=tab==='contact'?'block':'none';
+  document.getElementById('sup-status').style.display=tab==='status'?'block':'none';
+}
+function renderSupportContent(){
+  const faqs=[
+    {q:"How do I reset my PIN?",a:"Contact your hotel admin (ADM-001) to reset your staff PIN."},
+    {q:"How do I add a booking?",a:"Go to Admin Dashboard, scroll to Recent Bookings and tap the + Add button."},
+    {q:"Can two staff share a login?",a:"No. Each staff member has a unique ID and PIN for audit trail purposes."},
+    {q:"What if I get locked out?",a:"Wait 30 seconds after 3 failed attempts, or contact your admin."},
+    {q:"How do guests book rooms?",a:"Select Guest tab from the login screen (no credentials needed)."},
+    {q:"How do I export analytics?",a:"Go to Analytics Dashboard and click Export Report at the bottom."},
+    {q:"Is payment data stored?",a:"No. Payment data is never stored. All transactions are processed by the payment provider."},
+  ];
+  document.getElementById('sup-faq').innerHTML=faqs.map(f=>`<div class="faq-item"><div class="faq-q">Q: ${f.q}</div><div class="faq-a">A: ${f.a}</div></div>`).join('');
+  document.getElementById('sup-contact').innerHTML=`
+    <div class="contact-item"><svg><use href="#ic-call"/></svg><div><div class="contact-lbl">Phone</div><div class="contact-val">+254 700 123 456</div></div></div>
+    <div class="contact-item"><svg><use href="#ic-mail"/></svg><div><div class="contact-lbl">Email</div><div class="contact-val">support@nexahotel.com</div></div></div>
+    <div class="contact-item"><svg><use href="#ic-whatsapp"/></svg><div><div class="contact-lbl">WhatsApp</div><div class="contact-val">+254 700 123 456</div></div></div>
+    <div class="contact-item"><svg><use href="#ic-time"/></svg><div><div class="contact-lbl">Hours</div><div class="contact-val">24/7 Available</div></div></div>
+    <p style="color:var(--muted);font-size:12px;margin:12px 0 6px">Send us a message</p>
+    <textarea class="form-input" id="sup-msg" placeholder="Describe your issue..." rows="3"></textarea>
+    <button class="btn-gold" onclick="sendSupportMsg()" style="margin-top:6px" id="sup-send-btn">Send Message</button>`;
+  document.getElementById('sup-status').innerHTML=[
+    {name:"Booking Engine",ok:true},{name:"Payment Gateway",ok:true},{name:"Kitchen Display",ok:true},
+    {name:"Analytics",ok:true},{name:"SMS Alerts",ok:false},{name:"Email Service",ok:true},
+  ].map(s=>`<div class="status-item"><span style="color:var(--white);font-size:13px">${s.name}</span><div class="status-right ${s.ok?'status-ok':'status-err'}"><div class="status-dot"></div>${s.ok?'Operational':'Degraded'}</div></div>`).join('');
+}
+function sendSupportMsg(){
+  const btn=document.getElementById('sup-send-btn');
+  btn.textContent='Message Sent!';btn.disabled=true;
+  setTimeout(()=>{btn.textContent='Send Message';btn.disabled=false;if(document.getElementById('sup-msg'))document.getElementById('sup-msg').value='';},2500);
+}
+renderSupportContent();
+
+/* ── ADMIN BOOKINGS ───────────────────────────────────────────────────── */
+function setFilter(f,btn){
+  bookingFilter=f;
+  document.querySelectorAll('#booking-filters .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');renderBookings();
+}
+function setNewStatus(s,btn){
+  newBookingStatus=s;
+  document.querySelectorAll('#status-chips .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleAddForm(){const f=document.getElementById('add-form');f.style.display=f.style.display==='none'?'block':'none';}
+function addBooking(){
+  const n=document.getElementById('new-name').value.trim();
+  const t=document.getElementById('new-time').value.trim();
+  if(!n||!t){alert('Please fill in name and time.');return;}
+  bookings.unshift({id:Date.now(),name:n,time:t,status:newBookingStatus});
+  document.getElementById('new-name').value='';document.getElementById('new-time').value='';
+  document.getElementById('add-form').style.display='none';
+  document.getElementById('stat-bookings').textContent=bookings.length;
+  renderBookings();
+}
+function deleteBooking(id){
+  if(!confirm('Cancel this booking?'))return;
+  bookings=bookings.filter(b=>b.id!==id);
+  document.getElementById('stat-bookings').textContent=bookings.length;
+  renderBookings();
+}
+function renderBookings(){
+  const q=document.getElementById('booking-search').value.toLowerCase();
+  const list=bookings.filter(b=>(bookingFilter==='All'||b.status===bookingFilter)&&b.name.toLowerCase().includes(q));
+  const colors={Ongoing:'var(--amber)',Ready:'var(--green)',Upcoming:'var(--accent)'};
+  document.getElementById('bookings-list').innerHTML=list.length===0
+    ?'<p style="color:var(--muted);text-align:center;padding:10px">No bookings found.</p>'
+    :list.map(b=>`
+      <div class="booking-row">
+        <div class="booking-info"><div class="booking-name">${b.name}</div><div class="booking-time">${b.time}</div></div>
+        <span class="pill" style="background:${colors[b.status]}22;color:${colors[b.status]}">${b.status}</span>
+        <button class="delete-btn" onclick="deleteBooking(${b.id})"><svg><use href="#ic-trash"/></svg></button>
+      </div>`).join('');
+}
+function showNotif(){
+  document.getElementById('notif-badge').style.display='none';
+  alert('Notifications: 3 new bookings received.');
+}
+
+/* ── INLINE ANALYTICS ─────────────────────────────────────────────────── */
+function setMetric(m){
+  inlineMetric=m;
+  document.getElementById('metric-bookings').classList.toggle('active',m==='bookings');
+  document.getElementById('metric-revenue').classList.toggle('active',m==='revenue');
+  renderInlineChart();
+}
+function renderInlineChart(){
+  const vals=inlineMetric==='bookings'?ANA_DATA.weekly.bookings:ANA_DATA.weekly.revenue;
+  const labels=ANA_DATA.weekly.labels;
+  const max=Math.max(...vals);
+  const color=inlineMetric==='bookings'?'var(--accent)':'var(--amber)';
+  const total=vals.reduce((a,b)=>a+b,0);
+  document.getElementById('week-total').textContent='Week total: '+(inlineMetric==='revenue'?'$'+total.toLocaleString():total+' bookings');
+  document.getElementById('inline-chart').innerHTML=vals.map((v,i)=>{
+    const h=max>0?Math.round((v/max)*100):2;
+    return `<div class="chart-col"><div class="chart-val">${inlineMetric==='revenue'?'$'+v:v}</div><div class="chart-bar" style="height:${h}px;background:${color}"></div><div class="chart-label">${labels[i]}</div></div>`;
+  }).join('');
+}
+function renderBreakdown(){
+  const items=[{label:'Rooms',pct:45,color:'var(--accent)'},{label:'Tables',pct:30,color:'var(--green)'},{label:'F&B',pct:15,color:'var(--amber)'},{label:'Other',pct:10,color:'var(--danger)'}];
+  document.getElementById('revenue-breakdown').innerHTML=items.map(i=>`
+    <div class="breakdown-row">
+      <div class="breakdown-header"><span style="color:var(--white);font-size:12px">${i.label}</span><span style="color:${i.color};font-weight:700;font-size:12px">${i.pct}%</span></div>
+      <div class="progress-wrap"><div class="progress-fill" style="width:${i.pct}%;background:${i.color}"></div></div>
+    </div>`).join('');
+}
+function renderPeaks(){
+  const peaks=[{label:'Dinner Peak',time:'7:00 PM – 9:00 PM',pct:100},{label:'Lunch Rush',time:'12:00 PM – 2:00 PM',pct:90},{label:'Early Evening',time:'6:00 PM – 7:00 PM',pct:65},{label:'Breakfast',time:'8:00 AM – 10:00 AM',pct:40}];
+  document.getElementById('peak-hours').innerHTML=peaks.map(p=>`
+    <div class="breakdown-row">
+      <div class="breakdown-header"><div><div class="peak-lbl">${p.label}</div><div class="peak-time">${p.time}</div></div><span class="peak-pct">${p.pct}%</span></div>
+      <div class="progress-wrap"><div class="progress-fill" style="width:${p.pct}%;background:var(--gold)"></div></div>
+    </div>`).join('');
+}
+
+/* ── CHEF / ORDERS ────────────────────────────────────────────────────── */
+function startOrderTimers(){
+  if(orderTimerInterval)clearInterval(orderTimerInterval);
+  orderTimerInterval=setInterval(()=>{
+    orders=orders.map(o=>o.status==='In Progress'?{...o,elapsed:o.elapsed+1}:o);
+    renderOrders();updateChefStats();
+  },1000);
+}
+function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function updateChefStats(){
+  document.getElementById('stat-urgent').textContent=orders.filter(o=>o.priority==='Urgent'&&o.status!=='Done').length;
+  document.getElementById('stat-inprog').textContent=orders.filter(o=>o.status==='In Progress').length;
+  document.getElementById('stat-done').textContent=orders.filter(o=>o.status==='Done').length;
+}
+function setOrderFilter(f,btn){
+  orderFilter=f;
+  document.querySelectorAll('#order-filters .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');renderOrders();
+}
+function markOrderDone(id){orders=orders.map(o=>o.id===id?{...o,status:'Done'}:o);renderOrders();updateChefStats();}
+function renderOrders(){
+  const list=orderFilter==='All'?orders:orders.filter(o=>o.status===orderFilter);
+  document.getElementById('orders-list').innerHTML=list.map(o=>{
+    const urgent=o.priority==='Urgent',done=o.status==='Done',over=o.elapsed>900;
+    const timerColor=done?'var(--green)':over?'var(--danger)':'var(--muted)';
+    const timerText=done?'✓ Completed':fmtTime(o.elapsed)+(over?' ⚠ Overdue':'');
+    return `<div class="order-card${urgent&&!done?' urgent':''}${done?' done':''}">
+      <div class="order-header">
+        <div><div class="order-title">${o.item}</div><div class="order-table">${o.table}</div></div>
+        <span class="pill" style="background:${urgent?'rgba(248,113,113,.15)':'rgba(34,197,94,.15)'};color:${urgent?'var(--danger)':'var(--green)'}">${urgent?'🔴 Urgent':'🟢 Normal'}</span>
+      </div>
+      <div class="order-timer${done?' done-t':over?' overdue':''}">
+        <svg><use href="#ic-time"/></svg>${timerText}
+      </div>
+      ${!done?`<div class="action-btns">
+        <button class="abtn abtn-green" onclick="markOrderDone(${o.id})"><svg><use href="#ic-check"/></svg>Mark Done</button>
+        <button class="abtn abtn-amber" onclick="alert('${o.item} is In Progress.')"><svg><use href="#ic-flame"/></svg>In Progress</button>
+      </div>`:`<div class="action-btns"><div class="abtn abtn-green"><svg><use href="#ic-check"/></svg>Done ✓</div></div>`}
+    </div>`;
+  }).join('');
+}
+
+/* ── STAFF / TABLES ───────────────────────────────────────────────────── */
+function tableColor(s){return s==='Available'?'var(--green)':s==='Cleaning'?'var(--amber)':'var(--danger)';}
+function updateStaffStats(){
+  document.getElementById('stat-busy').textContent=tables.filter(t=>t.status==='Busy').length;
+  document.getElementById('stat-avail').textContent=tables.filter(t=>t.status==='Available').length;
+  document.getElementById('stat-clean').textContent=tables.filter(t=>t.status==='Cleaning').length;
+}
+function markTableClean(id){tables=tables.map(t=>t.id===id?{...t,status:'Available',assigned:null,bill:false}:t);renderTables();updateStaffStats();}
+function callBill(id){
+  tables=tables.map(t=>t.id===id?{...t,bill:true}:t);
+  const tbl=tables.find(t=>t.id===id);alert('Bill called for '+tbl.name+'.');renderTables();
+}
+function toggleAssign(id){assigningTable=assigningTable===id?null:id;renderTables();}
+function assignStaff(tableId,staff){tables=tables.map(t=>t.id===tableId?{...t,assigned:staff}:t);assigningTable=null;renderTables();}
+function renderTables(){
+  document.getElementById('tables-list').innerHTML=tables.map(t=>{
+    const c=tableColor(t.status);
+    const pickerHtml=assigningTable===t.id?`
+      <div class="staff-picker">
+        <p>Select staff member:</p>
+        <div class="chips">${STAFF_MEMBERS.map(s=>`<button class="chip${t.assigned===s?' active':''}" onclick="assignStaff(${t.id},'${s}')">${s}</button>`).join('')}</div>
+      </div>`:''
+    ;
+    return `<div class="table-card ${t.status.toLowerCase()}">
+      <div class="card-header">
+        <span style="font-weight:600;font-size:15px;color:var(--white)">${t.name}</span>
+        <span class="pill" style="background:${c}22;color:${c}">${t.status}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+        <svg style="width:14px;height:14px;color:var(--muted)"><use href="#ic-person"/></svg>
+        <span style="color:var(--muted);font-size:12px">${t.assigned?'Assigned: '+t.assigned:'Unassigned'}</span>
+      </div>
+      ${pickerHtml}
+      <div class="action-btns">
+        <button class="abtn abtn-blue" onclick="toggleAssign(${t.id})"><svg><use href="#ic-person-add"/></svg>Assign</button>
+        ${t.status!=='Available'?`<button class="abtn abtn-green" onclick="markTableClean(${t.id})"><svg><use href="#ic-sparkle"/></svg>Mark Clean</button>`:''}
+        ${t.status==='Busy'?`<button class="abtn ${t.bill?'abtn-amber':'abtn-red'}" onclick="if(!${t.bill})callBill(${t.id})" ${t.bill?'disabled':''}>
+          <svg><use href="#ic-receipt"/></svg>${t.bill?'Bill Called ✓':'Call Bill'}
+        </button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── ANALYTICS SCREEN ─────────────────────────────────────────────────── */
+function setPeriod(p,btn){
+  anaPeriod=p;
+  document.querySelectorAll('#period-chips .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');renderAnaChart();
+}
+function setAnaMetric(m,btn){
+  anaMetric=m;
+  document.querySelectorAll('#ana-metric-chips .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');renderAnaChart();
+}
+function renderAnaChart(){
+  const ds=ANA_DATA[anaPeriod];const vals=ds[anaMetric];const labels=ds.labels;
+  const max=Math.max(...vals);const color=anaMetric==='revenue'?'var(--amber)':'var(--accent)';
+  document.getElementById('ana-chart-title').textContent=anaPeriod.charAt(0).toUpperCase()+anaPeriod.slice(1)+' '+anaMetric.charAt(0).toUpperCase()+anaMetric.slice(1);
+  document.getElementById('ana-chart').innerHTML=vals.map((v,i)=>{
+    const h=max>0?Math.round((v/max)*110):2;
+    return `<div class="chart-col"><div class="chart-val">${anaMetric==='revenue'?'$'+v:v}</div><div class="chart-bar" style="height:${h}px;background:${color}"></div><div class="chart-label">${labels[i]}</div></div>`;
+  }).join('');
+}
+function renderAnaBreakdown(){
+  const items=[{label:'Room Bookings',pct:45,color:'var(--accent)'},{label:'Table Bookings',pct:30,color:'var(--green)'},{label:'F&B',pct:15,color:'var(--amber)'},{label:'Other',pct:10,color:'var(--danger)'}];
+  document.getElementById('ana-breakdown').innerHTML=items.map(i=>`
+    <div class="breakdown-row">
+      <div class="breakdown-header"><span style="color:var(--white);font-size:12px">${i.label}</span><span style="color:${i.color};font-weight:700;font-size:12px">${i.pct}%</span></div>
+      <div class="progress-wrap"><div class="progress-fill" style="width:${i.pct}%;background:${i.color}"></div></div>
+    </div>`).join('');
+}
+function renderAnaPeaks(){
+  const peaks=[{label:'Dinner Peak',time:'7:00 PM – 9:00 PM',pct:100},{label:'Lunch Rush',time:'12:00 PM – 2:00 PM',pct:90},{label:'Early Evening',time:'6:00 PM – 7:00 PM',pct:65},{label:'Breakfast',time:'8:00 AM – 10:00 AM',pct:40}];
+  document.getElementById('ana-peaks').innerHTML=peaks.map(p=>`
+    <div class="breakdown-row">
+      <div class="breakdown-header"><div><div class="peak-lbl">${p.label}</div><div class="peak-time">${p.time}</div></div><span class="peak-pct">${p.pct}%</span></div>
+      <div class="progress-wrap"><div class="progress-fill" style="width:${p.pct}%;background:var(--gold)"></div></div>
+    </div>`).join('');
+}
+function exportReport(){alert('NEXA Weekly Report\n\nTotal Bookings: 116\nTotal Revenue: $4,640\nAvg/Day: 17 bookings\nPeak Day: Saturday (25)\nTop Revenue: Saturday ($1,000)\n\nReport saved to downloads.');}
+
+/* ── GUEST PORTAL ─────────────────────────────────────────────────────── */
+let guestState={view:'home',guests:2,date:'Today',time:null,roomType:null,nights:1,menuCat:'All',cart:{},bookingType:'',total:0,payMethod:null};
+const MENU_ITEMS=[
+  {id:1,name:'Grilled Chicken',price:12,cat:'Mains'},{id:2,name:'Caesar Salad',price:8,cat:'Starters'},
+  {id:3,name:'Pasta Carbonara',price:14,cat:'Mains'},{id:4,name:'Chocolate Lava',price:6,cat:'Desserts'},
+  {id:5,name:'Mango Juice',price:4,cat:'Drinks'},{id:6,name:'Garlic Bread',price:5,cat:'Starters'},
+];
+const PAY_METHODS=[
+  {id:'mpesa',label:'M-Pesa',icon:'ic-phone',color:'#4caf50',region:'East Africa'},
+  {id:'card',label:'Card',icon:'ic-card',color:'#c9a84c',region:'Worldwide'},
+  {id:'paypal',label:'PayPal',icon:'ic-paypal',color:'#003087',region:'International'},
+  {id:'apple',label:'Apple Pay',icon:'ic-apple',color:'#f0f4f8',region:'International'},
+  {id:'google',label:'Google Pay',icon:'ic-google',color:'#4285F4',region:'International'},
+  {id:'pesalink',label:'PesaLink',icon:'ic-swap',color:'#e91e63',region:'East Africa'},
+  {id:'airtel',label:'Airtel Money',icon:'ic-wifi',color:'#f44336',region:'East Africa'},
+  {id:'bank',label:'Bank Transfer',icon:'ic-business',color:'#8a9bb0',region:'Worldwide'},
+];
+const TIME_SLOTS=['12:00 PM','1:00 PM','2:00 PM','6:00 PM','7:00 PM','8:00 PM','9:00 PM'];
+
+function setGuestTitle(t){document.getElementById('guest-title').textContent=t;}
+function guestBack(view){guestState.view=view;renderGuest();}
+
+function renderGuest(){
+  const gs=guestState;
+  const el=document.getElementById('guest-scroll');
+  if(gs.view==='home'){setGuestTitle('Guest Portal');renderGuestHome();return;}
+  if(gs.view==='table'){setGuestTitle('Book a Table');renderGuestTable();return;}
+  if(gs.view==='room'){setGuestTitle('Book a Room');renderGuestRoom();return;}
+  if(gs.view==='menu'){setGuestTitle('Our Menu');renderGuestMenu();return;}
+  if(gs.view==='payment'){setGuestTitle('Payment');renderGuestPayment();return;}
+  if(gs.view==='paid'){setGuestTitle('Payment');renderGuestPaid();return;}
+}
+
+function renderGuestHome(){
+  guestState.view='home';
+  document.getElementById('guest-scroll').innerHTML=`
+    <div class="card" style="margin-bottom:12px">
+      <div style="color:var(--gold);font-weight:700;font-size:16px;margin-bottom:4px">Welcome to NEXA</div>
+      <div style="color:var(--muted);font-size:13px">What would you like to do today?</div>
+    </div>
+    <div class="guest-nav-card" onclick="guestNav('table')">
+      <div class="guest-icon"><svg><use href="#ic-restaurant"/></svg></div>
+      <span class="guest-nav-title">Book a Table</span>
+      <div class="chevron"><svg><use href="#ic-chevron-right"/></svg></div>
+    </div>
+    <div class="guest-nav-card" onclick="guestNav('room')">
+      <div class="guest-icon"><svg><use href="#ic-bed"/></svg></div>
+      <span class="guest-nav-title">Book a Room</span>
+      <div class="chevron"><svg><use href="#ic-chevron-right"/></svg></div>
+    </div>
+    <div class="guest-nav-card" onclick="guestNav('menu')">
+      <div class="guest-icon"><svg><use href="#ic-food"/></svg></div>
+      <span class="guest-nav-title">Browse Menu</span>
+      <div class="chevron"><svg><use href="#ic-chevron-right"/></svg></div>
+    </div>`;
+}
+function guestNav(view){guestState.view=view;renderGuest();}
+
+function renderGuestTable(){
+  setGuestTitle('Book a Table');
+  const gs=guestState;
+  const dates=['Today','Tomorrow','Wed','Thu','Fri'];
+  document.getElementById('guest-scroll').innerHTML=`
+    <div class="card">
+      <div class="card-title">Select Date</div>
+      <div class="chips">${dates.map(d=>`<button class="chip${gs.date===d?' active':''}" onclick="guestSetDate('${d}')">${d}</button>`).join('')}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Number of Guests</div>
+      <div class="counter">
+        <button class="counter-btn" onclick="guestAdj('guests',-1)">-</button>
+        <span class="counter-val">${gs.guests}</span>
+        <button class="counter-btn" onclick="guestAdj('guests',1)">+</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Select Time</div>
+      <div class="chips" style="flex-wrap:wrap">${TIME_SLOTS.map(t=>`<button class="chip${gs.time===t?' active':''}" onclick="guestSetTime('${t}')">${t}</button>`).join('')}</div>
+    </div>
+    <button class="btn-gold" style="margin-top:8px" onclick="guestProceedPayment('Table',20)">Proceed to Payment</button>`;
+}
+function guestSetDate(d){guestState.date=d;renderGuestTable();}
+function guestSetTime(t){guestState.time=t;renderGuestTable();}
+function guestAdj(field,delta){
+  if(field==='guests')guestState.guests=Math.max(1,Math.min(12,guestState.guests+delta));
+  if(field==='nights')guestState.nights=Math.max(1,guestState.nights+delta);
+  renderGuest();
+}
+
+function renderGuestRoom(){
+  const gs=guestState;
+  const rooms=[{type:'Standard',price:80,icon:'ic-bed'},{type:'Deluxe',price:130,icon:'ic-star'},{type:'Suite',price:220,icon:'ic-diamond'}];
+  document.getElementById('guest-scroll').innerHTML=`
+    <div class="card">
+      <div class="card-title">Room Type</div>
+      ${rooms.map(r=>`<div class="room-option${gs.roomType===r.type?' selected':''}" onclick="guestSetRoom('${r.type}')">
+        <svg><use href="#${r.icon}"/></svg>
+        <div><div style="font-weight:600;color:var(--white)">${r.type}</div><div style="font-size:12px;color:var(--muted)">$${r.price}/night</div></div>
+        ${gs.roomType===r.type?`<div class="room-check"><svg><use href="#ic-check-circle"/></svg></div>`:''}
+      </div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="card-title">Number of Nights</div>
+      <div class="counter">
+        <button class="counter-btn" onclick="guestAdj('nights',-1)">-</button>
+        <span class="counter-val">${gs.nights}</span>
+        <button class="counter-btn" onclick="guestAdj('nights',1)">+</button>
+      </div>
+    </div>
+    <button class="btn-gold" style="margin-top:8px" onclick="guestProceedRoom()">Proceed to Payment</button>`;
+}
+function guestSetRoom(t){guestState.roomType=t;renderGuestRoom();}
+function guestProceedRoom(){
+  const gs=guestState;
+  if(!gs.roomType){alert('Please select a room type.');return;}
+  const prices={Standard:80,Deluxe:130,Suite:220};
+  guestProceedPayment('Room',prices[gs.roomType]*gs.nights);
+}
+
+function renderGuestMenu(){
+  const gs=guestState;
+  const cats=['All','Starters','Mains','Desserts','Drinks'];
+  const filtered=gs.menuCat==='All'?MENU_ITEMS:MENU_ITEMS.filter(m=>m.cat===gs.menuCat);
+  const cartItems=MENU_ITEMS.filter(i=>gs.cart[i.id]>0);
+  const cartTotal=cartItems.reduce((s,i)=>s+i.price*(gs.cart[i.id]||0),0);
+  document.getElementById('guest-scroll').innerHTML=`
+    <div class="chips">${cats.map(c=>`<button class="chip${gs.menuCat===c?' active':''}" onclick="guestSetMenuCat('${c}')">${c}</button>`).join('')}</div>
+    ${filtered.map(item=>`
+      <div class="menu-item-card">
+        <div class="menu-item-icon"><svg><use href="#ic-food"/></svg></div>
+        <div class="menu-item-info">
+          <div class="menu-item-name">${item.name}</div>
+          <div class="menu-item-cat">${item.cat}</div>
+          <div class="menu-item-price">$${item.price}</div>
+        </div>
+        <div class="menu-item-qty">
+          <button class="qty-btn" onclick="guestQty(${item.id},-1)">-</button>
+          <span class="qty-val">${gs.cart[item.id]||0}</span>
+          <button class="qty-btn" onclick="guestQty(${item.id},1)">+</button>
+        </div>
+      </div>`).join('')}
+    ${cartItems.length>0?`
+      <div class="cart-summary">
+        <div class="card-title">Your Order</div>
+        ${cartItems.map(i=>`<div class="cart-row"><span>${i.name} x${gs.cart[i.id]}</span><span class="cart-price">$${i.price*gs.cart[i.id]}</span></div>`).join('')}
+        <button class="btn-gold" style="margin-top:10px" onclick="guestProceedPayment('Order',${cartTotal})">Proceed to Payment</button>
+      </div>`:''}`;
+}
+function guestSetMenuCat(c){guestState.menuCat=c;renderGuestMenu();}
+function guestQty(id,delta){guestState.cart[id]=Math.max(0,(guestState.cart[id]||0)+delta);renderGuestMenu();}
+
+function guestProceedPayment(type,total){
+  if(type==='Table'&&!guestState.time){alert('Select a time slot first.');return;}
+  guestState.bookingType=type;guestState.total=total;guestState.payMethod=null;
+  guestState.view='payment';renderGuestPayment();
+}
+
+function renderGuestPayment(){
+  const gs=guestState;
+  const summaryText=gs.bookingType==='Table'?`${gs.date} • ${gs.time} • ${gs.guests} guest(s)`:gs.bookingType==='Room'?`${gs.roomType} Room x${gs.nights} night(s)`:'Food Order';
+  document.getElementById('guest-scroll').innerHTML=`
+    <div class="card">
+      <div class="card-title">Order Summary</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="color:var(--muted);font-size:13px">${summaryText}</span>
+        <span style="color:var(--gold);font-weight:700;font-size:18px">$${gs.total}</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Select Payment Method</div>
+      <p style="color:var(--muted);font-size:11px;margin-bottom:12px">East Africa + International options</p>
+      <div class="payment-grid">
+        ${PAY_METHODS.map(pm=>`
+          <div class="pay-method${gs.payMethod===pm.id?' selected':''}" onclick="guestSetPay('${pm.id}')" style="${gs.payMethod===pm.id?'border-color:'+pm.color+';border-width:2px;background:'+pm.color+'20':''}">
+            <svg style="color:${pm.color}"><use href="#${pm.icon}"/></svg>
+            <div class="pay-method-name">${pm.label}</div>
+            <div class="pay-method-region">${pm.region}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div id="pay-fields"></div>
+    <div class="ssl-note"><svg style="width:13px;height:13px"><use href="#ic-lock"/></svg>256-bit SSL • PCI DSS compliant</div>
+    <button class="btn-gold" style="margin-bottom:30px" id="pay-btn" onclick="guestPay()">
+      <svg style="width:18px;height:18px"><use href="#ic-shield-check"/></svg>
+      Pay $${gs.total} Securely
+    </button>`;
+}
+function guestSetPay(id){
+  guestState.payMethod=id;
+  renderGuestPayment();
+  // Render extra fields
+  const pm=guestState.payMethod;
+  let html='';
+  if(pm==='mpesa'||pm==='pesalink'||pm==='airtel'){
+    html=`<div class="card"><div class="card-title">${pm==='mpesa'?'M-Pesa':pm==='pesalink'?'PesaLink':'Airtel Money'} Details</div>
+      ${pm==='mpesa'?'<p style="color:var(--muted);font-size:12px;margin-bottom:8px">An STK push will be sent to your phone.</p>':''}
+      <div class="input-wrap"><svg><use href="#ic-phone"/></svg><input type="tel" placeholder="+254 7XX XXX XXX" /></div></div>`;
+  } else if(pm==='card'){
+    html=`<div class="card"><div class="card-title">Card Details</div>
+      <p style="color:var(--muted);font-size:11px;margin-bottom:10px">Visa • Mastercard • Amex accepted</p>
+      <div class="input-wrap"><svg><use href="#ic-card"/></svg><input type="text" placeholder="Card number" maxlength="19" /></div>
+      <div class="input-wrap"><svg><use href="#ic-person"/></svg><input type="text" placeholder="Cardholder name" /></div>
+      <div class="input-row">
+        <div class="input-wrap"><svg><use href="#ic-calendar"/></svg><input type="text" placeholder="MM/YY" maxlength="5" /></div>
+        <div class="input-wrap"><svg><use href="#ic-lock"/></svg><input type="password" placeholder="CVV" maxlength="4" /></div>
+      </div></div>`;
+  } else if(pm==='bank'){
+    html=`<div class="card"><div class="card-title">Bank Transfer Details</div>
+      ${[['Bank','Equity Bank Kenya'],['Account','0123456789'],['Name','NEXA Hospitality Ltd'],['Ref','BK-'+Date.now().toString().slice(-6)]].map(r=>`<div class="bank-row"><span class="bank-label">${r[0]}</span><span class="bank-val">${r[1]}</span></div>`).join('')}
+    </div>`;
+  } else if(pm==='paypal'||pm==='apple'||pm==='google'){
+    const name=pm==='paypal'?'PayPal':pm==='apple'?'Apple Pay':'Google Pay';
+    html=`<div class="card"><div class="card-title">${name}</div>
+      <p style="color:var(--muted);font-size:13px;text-align:center;margin:10px 0">You will be redirected to complete your $${guestState.total} payment.</p></div>`;
+  }
+  document.getElementById('pay-fields').innerHTML=html;
+}
+function guestPay(){
+  const btn=document.getElementById('pay-btn');
+  if(!guestState.payMethod){alert('Select a payment method.');return;}
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
+  setTimeout(()=>{guestState.view='paid';renderGuestPaid();},1800);
+}
+function renderGuestPaid(){
+  const gs=guestState;
+  const sumText=gs.bookingType==='Table'?`${gs.date} at ${gs.time} for ${gs.guests} guest(s)`:gs.bookingType==='Room'?`${gs.roomType} Room for ${gs.nights} night(s)`:'Your food order';
+  document.getElementById('guest-scroll').innerHTML=`
+    <div class="success-screen">
+      <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none">
+        <span style="position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;border:1.5px solid rgba(34,197,94,.12)"></span>
+      </div>
+      <div class="success-icon"><svg><use href="#ic-check-circle"/></svg></div>
+      <div style="font-size:22px;font-weight:700;color:var(--white);margin-bottom:6px">Payment Successful!</div>
+      <div style="color:var(--muted);text-align:center">${sumText}</div>
+      <div class="success-amount">$${gs.total} paid</div>
+      <div class="success-note"><svg><use href="#ic-mail"/></svg>Receipt sent to your email.</div>
+      <button class="btn-gold" onclick="guestState={view:'home',guests:2,date:'Today',time:null,roomType:null,nights:1,menuCat:'All',cart:{},bookingType:'',total:0,payMethod:null};renderGuestHome()">Back to Home</button>
+    </div>`;
+}
+
+/* ── INIT ─────────────────────────────────────────────────────────────── */
+renderSupportContent();
+// Enter on login
+document.getElementById('inp-pin').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin();});
+document.getElementById('inp-staff-id').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('inp-pin').focus();});
+</script>
+</body>
+</html>
